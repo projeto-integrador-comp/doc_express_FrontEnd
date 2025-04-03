@@ -1,0 +1,55 @@
+.listContainer {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.header {
+  display: flex;
+  // background-color: #ddd;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-bottom: 10px; /* Espaçamento entre o cabeçalho e os documentos */
+}
+
+.documentItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.documentNameHeader {
+  flex: 3;
+  text-align: center;
+}
+.documentHeader {
+  flex: 1;
+  text-align: center;
+}
+
+.documentName {
+  flex: 3;
+  text-align: left;
+}
+.documentItem {
+  flex: 1;
+  text-align: center;
+}
+
+.checkbox {
+  margin-right: 10px;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.deleteButton {
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}

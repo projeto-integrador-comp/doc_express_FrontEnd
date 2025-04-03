@@ -1,0 +1,15 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dateContainer {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+}
+
+.dateContainer > div {
+    flex: 1;
+  }
