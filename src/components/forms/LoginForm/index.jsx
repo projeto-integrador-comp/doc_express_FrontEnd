@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { schema } from "./validator";
 import { Input } from "../Input";
 import styles from "./style.module.scss";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserContext } from "../../../providers/UserContext";
 
 export const LoginForm = () => {
   const {
@@ -17,8 +18,14 @@ export const LoginForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
+  const { userLogin } = useContext(UserContext);
+
+  const submit = (data) => {
+    userLogin(data, setLoading, reset);
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit(submit)}>
       <div className={styles.formBox}>
         <h2 className="title textCenter">Login</h2>
         <Input

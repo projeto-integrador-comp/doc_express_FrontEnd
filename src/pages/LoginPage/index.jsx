@@ -10,8 +10,10 @@ export const LoginPage = () => {
           <div className={styles.infosBox}>
             <h1 className="title big bold primary-focus">DocExpress</h1>
             <p className="title big bold">
-              <span className="title big bold primary">Nunca</span> mais{" "}
-              <span className="title big bold primary">perca</span> um prazo
+              <span className="title big bold primary">Gestão</span> de
+              <span> </span>
+              <span className="title big bold primary">envios</span> sem
+              estresse
             </p>
             <p className="text gray300">Seu fluxo de documentos agilizado</p>
             <div className={styles.imgBox}>
