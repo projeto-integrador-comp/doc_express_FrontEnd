@@ -1,0 +1,10 @@
+.container {
+  margin: 0 auto;
+  padding: 13px;
+  width: 100%;
+  max-width: 790px;
+
+  &.dash {
+    padding: 0 13px;
+  }
+}
