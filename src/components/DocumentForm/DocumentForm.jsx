@@ -37,22 +37,22 @@ const DocumentForm = ({ onAddDocument }) => {
         value={form.description}
         onChange={handleChange}
       />
-      <div className={styles.dateContainer}>
-        <Input
-          label="Data de entrega"
-          name="date"
-          type="date"
-          value={form.date}
-          onChange={handleChange}
-        />
-        <Input
+      {/* <div className={styles.dateContainer}> */}
+      <Input
+        label="Data de entrega"
+        name="date"
+        type="date"
+        value={form.date}
+        onChange={handleChange}
+      />
+      {/* <Input
           label="Notificar em"
           name="notifyAt"
           type="date"
           value={form.notifyAt}
           onChange={handleChange}
-        />
-      </div>
+        /> */}
+      {/* </div> */}
       <Button type="submit">Cadastrar</Button>
     </form>
   );

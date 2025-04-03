@@ -1,23 +1,22 @@
 .inputContainer {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .label {
-    color: white;
-    margin-bottom: 5px;
-  }
-  
-  .input {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #555;
-    background-color: #222;
-    color: white;
-  
-    &:focus {
-      border-color: #007bff;
-      outline: none;
-    }
-  }
-  
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: var(--gray200);
+  margin-bottom: 5px;
+}
+
+.input {
+  height: 2.75rem;
+  padding: 0 16px;
+  width: 100%;
+  border: 1px solid var(--gray600);
+  border-radius: 4px;
+  background-color: var(--gray800);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray100);
+}

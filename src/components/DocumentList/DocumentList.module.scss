@@ -12,11 +12,24 @@
   margin-bottom: 10px; /* Espaçamento entre o cabeçalho e os documentos */
 }
 
-.documentItem {
+.document {
   display: flex;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  height: 2.75rem;
+  padding: 0 16px;
+  width: 100%;
+  border: 1px solid var(--gray600);
+  border-radius: 4px;
+  background-color: var(--gray800);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray100);
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--gray800) 95%, black);
+  }
 }
 
 .documentNameHeader {
@@ -53,3 +66,4 @@
   cursor: pointer;
   font-size: 18px;
 }
+

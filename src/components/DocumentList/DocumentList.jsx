@@ -20,7 +20,7 @@ const DocumentList = ({ documents, setDocuments }) => {
 
       {/* Lista de documentos */}
       {documents.map((doc, index) => (
-        <div key={index} className={styles.documentItem}>
+        <div key={index} className={styles.document}>
           <input
             type="checkbox"
             checked={doc.checked || false}
