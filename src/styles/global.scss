@@ -1,0 +1,30 @@
+:root {
+  --color-primary: rgb(122, 178, 255);
+  --color-primary-focus: rgb(0, 125, 254);
+  --color-primary-negative: rgb(1, 85, 183);
+
+  --gray100: rgb(33, 37, 41);
+  --gray200: rgb(52, 58, 64);
+  --gray300: rgb(73, 80, 87);
+  --gray400: rgb(134, 142, 150);
+  --gray500: rgb(173, 181, 189);
+  --gray600: rgb(233, 236, 239);
+  --gray700: rgb(241, 243, 245);
+  --gray800: rgb(248, 249, 250);
+  --gray900: rgb(252, 254, 255);
+
+  --white: rgb(255, 255, 255);
+  --blue: rgb(54, 79, 199);
+
+  --toastify-color-success: rgb(8, 127, 91);
+  --toastify-color-error: rgb(199, 54, 80);
+
+  --back-drop-color: rgba(30, 30, 30, 0.502);
+
+  --font-primary: "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--white);
+  font-family: var(--font-primary);
+}

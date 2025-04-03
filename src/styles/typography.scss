@@ -1,0 +1,57 @@
+.title {
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--gray100);
+    font-size: 1.25rem; //20px
+  
+    &.label {
+      font-size: 1rem; //16px
+    }
+    &.big {
+      font-size: clamp(1.625rem, 4vw, 2rem); //32px
+    }
+    &.modal {
+      font-size: 1.3125rem; //21px
+    }
+    &.bold {
+      font-weight: 600;
+    }
+    &.textCenter {
+      text-align: center;
+    }
+  
+    &.primary {
+      color: var(--color-primary);
+    }
+  }
+  
+  .text {
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--gray100);
+    font-size: 1rem;
+  
+    &.info {
+      font-size: 0.6875rem; // 11px
+    }
+    &.medium {
+      font-size: 0.875rem; // 14px
+    }
+    &.bold {
+      font-weight: 500;
+    }
+    &.textCenter {
+      text-align: center;
+    }
+  
+    &.primary {
+      color: var(--color-primary);
+    }
+    &.gray300 {
+      color: var(--gray300);
+    }
+    &.blue {
+      color: var(--blue);
+    }
+  }
+  
