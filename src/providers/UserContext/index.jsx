@@ -36,9 +36,32 @@ const UserProvider = ({ children }) => {
     }
   };
 
+  const userRegister = async (formData, setLoading, reset) => {
+    try {
+      setLoading(true);
+      await api.post("/users", formData);
+      toast.success("Usuário cadastrado");
+      reset();
+      navigate("/");
+    } catch (error) {
+      if (error.response?.data.message === "Email already exists.") {
+        toast.error("Email já cadastrado");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <UserContext.Provider
-      value={{ user, documentsList, setDocumentsList, loading, userLogin }}
+      value={{
+        user,
+        documentsList,
+        setDocumentsList,
+        loading,
+        userLogin,
+        userRegister,
+      }}
     >
       {children}
     </UserContext.Provider>
