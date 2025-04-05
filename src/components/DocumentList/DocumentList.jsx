@@ -1,12 +1,17 @@
 import styles from "./DocumentList.module.scss";
 
 const DocumentList = ({ documents, setDocuments }) => {
-  // Função para marcar/desmarcar um documento
   const handleCheckboxChange = (index) => {
     setDocuments((prevDocuments) =>
       prevDocuments.map((doc, i) =>
         i === index ? { ...doc, checked: !doc.checked } : doc
       )
+    );
+  };
+
+  const handleDelete = (index) => {
+    setDocuments((prevDocuments) =>
+      prevDocuments.filter((_, i) => i !== index)
     );
   };
 
@@ -18,32 +23,31 @@ const DocumentList = ({ documents, setDocuments }) => {
         <span className={styles.documentHeader}>Excluir</span>
       </div>
 
-      {/* Lista de documentos */}
       {documents.map((doc, index) => (
-        <div key={index} className={styles.document}>
+        <div
+          key={index}
+          className={`${styles.document} ${
+            doc.checked ? styles.completed : ""
+          }`}
+        >
           <input
             type="checkbox"
             checked={doc.checked || false}
             onChange={() => handleCheckboxChange(index)}
             className={styles.checkbox}
           />
-          <span
-            className={`${styles.documentName} ${
-              doc.checked ? styles.completed : ""
-            }`}
-          >
+          <span className={styles.documentName}>
+            {/* Bolinha verde */}
+            {doc.checked && <span className={styles.statusDot} />}
             {doc.name}
           </span>
-          <span
-            className={`${styles.documentItem} ${
-              doc.checked ? styles.completed : ""
-            }`}
+          <span className={styles.documentItem}>{doc.date}</span>
+          <button
+            className={styles.deleteButton}
+            onClick={() => handleDelete(index)}
           >
-            {doc.date}
-          </span>
-          {/* <span className={styles.documentName}>{doc.name}</span>
-          <span className={styles.documentItem}>{doc.date}</span> */}
-          <button className={styles.deleteButton}>🗑</button>
+            🗑
+          </button>
         </div>
       ))}
     </div>

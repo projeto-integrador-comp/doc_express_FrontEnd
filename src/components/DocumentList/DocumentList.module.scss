@@ -27,18 +27,19 @@
   line-height: 1.5;
   color: var(--gray100);
 
-  &:hover {
-    background-color: color-mix(in srgb, var(--gray800) 95%, black);
-  }
+  // &:hover {
+  //   background-color: color-mix(in srgb, var(--gray800) 95%, black);
+  // }
 }
 
 .documentNameHeader {
   flex: 3;
-  text-align: center;
+  text-align: left;
 }
 .documentHeader {
   flex: 1;
   text-align: center;
+  border-right: 3px solid var(--gray600);
 }
 
 .documentName {
@@ -54,9 +55,9 @@
   margin-right: 10px;
 }
 
-.completed {
-  text-decoration: line-through;
-  color: #999;
+.completed {  
+  
+ color: #a19999;
 }
 
 .deleteButton {
@@ -66,4 +67,15 @@
   cursor: pointer;
   font-size: 18px;
 }
+
+.statusDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #4caf50; // verde
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
 

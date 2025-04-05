@@ -5,56 +5,40 @@ import DocumentList from "../../components/DocumentList/DocumentList";
 
 export const DashboardPage = () => {
   const [documents, setDocuments] = useState([]);
+  // Estado para o filtro selecionado (null inicialmente)
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddDocument = (newDoc) => {
-    setDocuments([...documents, newDoc]);
-    closeModal();
+  const handleAddDocument = (newDocument) => {
+    setDocuments([...documents, newDocument]);
   };
 
+  // Função para lidar com mudanças nos radio buttons
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  // Filtrar documentos - versão temporária que mostra todos
+  const filteredDocuments = [...documents];
 
-  const filteredDocuments =
-    selectedFilter === "tipo2"
-      ? documents.filter((doc) => new Date(doc.date) >= new Date())
-      : selectedFilter === "tipo3"
-      ? documents.filter((doc) => doc.checked)
-      : documents;
+  // // Filtrar documentos baseado no radio button selecionado
+  // const filteredDocuments = documents.filter(doc => {
+  //   // Se nenhum filtro está selecionado, mostra todos
+  //   if (!selectedFilter) return true;
+
+  //   // Adicione suas condições de filtro específicas
+  //   return doc.tipo === selectedFilter;
+  // });
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Painel de Documentos</h2>
-
-      {/* Botão para abrir o modal */}
-      <button className={styles.openButton} onClick={openModal}>
-        Cadastrar
-      </button>
-      <br />
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h2 className={styles.title}>Cadastrar Documento</h2>
-            <DocumentForm onAddDocument={handleAddDocument} />
-            <button className={styles.closeButton} onClick={closeModal}>
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      <div className={styles.formContainer}>
+        <h2 className={styles.title}>Cadastrar Documento</h2>
+        <DocumentForm onAddDocument={handleAddDocument} />
+      </div>
 
       {/* Div de filtros */}
-      <fieldset>
-        <h3 className={styles.filterTitle}>Filtro</h3>        
       <div className={styles.filterContainer}>
-        
+        <h3 className={styles.filterTitle}>Filtrar por:</h3>
         <div className={styles.filterOptions}>
           <label>
             <input
@@ -74,7 +58,7 @@ export const DashboardPage = () => {
               checked={selectedFilter === "tipo2"}
               onChange={handleFilterChange}
             />
-            Próximos do vencimento
+            Proximos do vencimento
           </label>
           <label>
             <input
@@ -88,20 +72,13 @@ export const DashboardPage = () => {
           </label>
         </div>
       </div>
-      </fieldset>
 
-      {/* Lista de documentos */}
       <div className={styles.listContainer}>
-        <fieldset>
-          <legend>
-              <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
-          </legend>
+        <h3 className={styles.subTitle}>Documentos</h3>
         <DocumentList
           documents={filteredDocuments}
           setDocuments={setDocuments}
         />
-
-        </fieldset>
       </div>
     </div>
   );
