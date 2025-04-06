@@ -1,5 +1,13 @@
 import styles from "./DocumentList.module.scss";
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 const DocumentList = ({ documents, setDocuments }) => {
   const handleCheckboxChange = (index) => {
     setDocuments((prevDocuments) =>
@@ -41,7 +49,9 @@ const DocumentList = ({ documents, setDocuments }) => {
             {doc.checked && <span className={styles.statusDot} />}
             {doc.name}
           </span>
-          <span className={styles.documentItem}>{doc.date}</span>
+          <span className={styles.documentItem}>
+            {formatDate(doc.date)}
+          </span>
           <button
             className={styles.deleteButton}
             onClick={() => handleDelete(index)}

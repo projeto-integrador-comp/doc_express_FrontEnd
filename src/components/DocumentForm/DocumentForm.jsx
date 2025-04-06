@@ -31,7 +31,7 @@ const DocumentForm = ({ onAddDocument }) => {
         value={form.name}
         onChange={handleChange}
       />
-      <Input
+      <textarea
         label="Descrição"
         name="description"
         value={form.description}
