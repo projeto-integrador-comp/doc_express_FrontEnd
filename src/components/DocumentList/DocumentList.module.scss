@@ -55,9 +55,8 @@
   margin-right: 10px;
 }
 
-.completed {  
-  
- color: #a19999;
+.completed {
+  color: #a19999;
 }
 
 .deleteButton {
@@ -68,14 +67,45 @@
   font-size: 18px;
 }
 
+// .statusDot {
+//   display: inline-block;
+//   width: 10px;
+//   height: 10px;
+//   background-color: #4caf50; // verde
+//   border-radius: 50%;
+//   margin-right: 8px;
+//   vertical-align: middle;
+// }
 .statusDot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: #4caf50; // verde
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+  display: inline-block;
   margin-right: 8px;
-  vertical-align: middle;
 }
 
+.statusDotGreen {
+  background-color: var(--green);
+}
 
+.statusDotRed {
+  background-color: var(--red);
+}
+
+.statusDotYellow {
+  background-color: var(--yellow);
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 8px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--red); 
+  }
+}

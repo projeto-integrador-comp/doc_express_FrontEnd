@@ -22,7 +22,20 @@ export const DashboardPage = () => {
 
   const filteredDocuments =
     selectedFilter === "tipo2"
-      ? documents.filter((doc) => new Date(doc.date) >= new Date())
+      ? // ? documents.filter((doc) => new Date(doc.date) >= new Date())
+        documents.filter((doc) => {
+          const docDate = new Date(doc.date);
+          docDate.setHours(0, 0, 0, 0); // zera a hora da data do doc
+
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // zera a hora de hoje
+
+          const sevenDaysFromNow = new Date();
+          sevenDaysFromNow.setDate(today.getDate() + 7);
+          sevenDaysFromNow.setHours(0, 0, 0, 0); // zera a hora do futuro
+
+          return docDate >= today && docDate <= sevenDaysFromNow;
+        })
       : selectedFilter === "tipo3"
       ? documents.filter((doc) => doc.checked)
       : documents;
@@ -52,55 +65,53 @@ export const DashboardPage = () => {
 
       {/* Div de filtros */}
       <fieldset>
-        <h3 className={styles.filterTitle}>Filtro</h3>        
-      <div className={styles.filterContainer}>
-        
-        <div className={styles.filterOptions}>
-          <label>
-            <input
-              type="radio"
-              name="documentFilter"
-              value="tipo1"
-              checked={selectedFilter === "tipo1"}
-              onChange={handleFilterChange}
-            />
-            Todos
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="documentFilter"
-              value="tipo2"
-              checked={selectedFilter === "tipo2"}
-              onChange={handleFilterChange}
-            />
-            Próximos do vencimento
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="documentFilter"
-              value="tipo3"
-              checked={selectedFilter === "tipo3"}
-              onChange={handleFilterChange}
-            />
-            Entregues
-          </label>
+        <h3 className={styles.filterTitle}>Filtro</h3>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterOptions}>
+            <label>
+              <input
+                type="radio"
+                name="documentFilter"
+                value="tipo1"
+                checked={selectedFilter === "tipo1"}
+                onChange={handleFilterChange}
+              />
+              Todos
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="documentFilter"
+                value="tipo2"
+                checked={selectedFilter === "tipo2"}
+                onChange={handleFilterChange}
+              />
+              Próximos do vencimento
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="documentFilter"
+                value="tipo3"
+                checked={selectedFilter === "tipo3"}
+                onChange={handleFilterChange}
+              />
+              Entregues
+            </label>
+          </div>
         </div>
-      </div>
       </fieldset>
 
       {/* Lista de documentos */}
       <div className={styles.listContainer}>
         <fieldset>
           <legend>
-              <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
+            <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
           </legend>
-        <DocumentList
-          documents={filteredDocuments}
-          setDocuments={setDocuments}
-        />
-
+          <DocumentList
+            documents={filteredDocuments}
+            setDocuments={setDocuments}
+          />
         </fieldset>
       </div>
     </div>

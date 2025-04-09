@@ -1,4 +1,5 @@
 import styles from "./DocumentList.module.scss";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -21,6 +22,28 @@ const DocumentList = ({ documents, setDocuments }) => {
     setDocuments((prevDocuments) =>
       prevDocuments.filter((_, i) => i !== index)
     );
+  };
+
+  const getStatusDotClass = (doc) => {
+    if (doc.checked) {
+      return styles.statusDotGreen;
+    }
+
+    const docDate = new Date(doc.date);
+    docDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(today.getDate() + 7);
+    sevenDaysFromNow.setHours(0, 0, 0, 0);
+
+    if (docDate >= today && docDate <= sevenDaysFromNow) {
+      return styles.statusDotRed;
+    }
+
+    return styles.statusDotYellow;
   };
 
   return (
@@ -46,17 +69,24 @@ const DocumentList = ({ documents, setDocuments }) => {
           />
           <span className={styles.documentName}>
             {/* Bolinha verde */}
-            {doc.checked && <span className={styles.statusDot} />}
+            {/* {doc.checked && <span className={styles.statusDot} />} */}
+            <span className={`${styles.statusDot} ${getStatusDotClass(doc)}`} />
             {doc.name}
           </span>
-          <span className={styles.documentItem}>
-            {formatDate(doc.date)}
-          </span>
-          <button
+          <span className={styles.documentItem}>{formatDate(doc.date)}</span>
+          {/* <button
             className={styles.deleteButton}
             onClick={() => handleDelete(index)}
           >
             🗑
+          </button> */}
+
+          <button
+            className={styles.iconButton}
+            onClick={() => handleDelete(index)}
+            title="Excluir"
+          >
+            <FaTrashAlt />
           </button>
         </div>
       ))}
