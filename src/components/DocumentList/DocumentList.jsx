@@ -1,5 +1,7 @@
 import styles from "./DocumentList.module.scss";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from "framer-motion";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -10,19 +12,15 @@ const formatDate = (dateString) => {
 };
 
 const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
-  const handleCheckboxChange = (index) => {
+  const handleCheckboxChange = (docToUpdate) => {
     setDocuments((prevDocuments) =>
-      prevDocuments.map((doc, i) =>
-        i === index ? { ...doc, checked: !doc.checked } : doc
+      prevDocuments.map((doc) =>
+        doc === docToUpdate ? { ...doc, checked: !doc.checked } : doc
       )
     );
   };
 
   const getStatusDotClass = (doc) => {
-    // if (doc.checked) {
-    //   return styles.statusDotGreen;
-    // }
-
     const docDate = new Date(doc.date);
     docDate.setHours(0, 0, 0, 0);
 
@@ -44,6 +42,17 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
     // return styles.statusDotYellow;
   };
 
+  const sortedDocuments = [...documents].sort((a, b) => {
+    if (a.checked !== b.checked) {
+      return a.checked ? 1 : -1;
+    }
+
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    return a.checked ? dateB - dateA : dateA - dateB;
+  });
+
   return (
     <div className={styles.listContainer}>
       <div className={styles.header}>
@@ -54,49 +63,56 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
         <span className={styles.documentHeader}>Excluir</span>
       </div>
 
-      {documents.map((doc, index) => (
-        <div
-          key={index}
-          className={`${styles.document} ${
-            doc.checked ? styles.completed : ""
-          }`}
-        >
-          <div className={styles.actionCell}>
+      <AnimatePresence>
+        {sortedDocuments.map((doc) => (
+          <motion.div
+            key={doc.name} // ou use doc.id se tiver
+            className={`${styles.document} ${
+              doc.checked ? styles.completed : ""
+            }`}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            layout
+            transition={{ duration: 0.3 }}
+          >
+            <div className={styles.actionCell}>
+              <button
+                className={`${styles.finalizeButton} ${
+                  doc.checked ? styles.reopen : ""
+                }`}
+                onClick={() => handleCheckboxChange(doc)}
+              >
+                {doc.checked ? "Reabrir" : "Finalizar"}
+              </button>
+            </div>
+
+            <span className={styles.documentName}>
+              <span
+                className={`${styles.statusDot} ${getStatusDotClass(doc)}`}
+              />
+              {doc.name}
+            </span>
+            <span className={styles.documentItem}>{formatDate(doc.date)}</span>
+
             <button
-              className={`${styles.finalizeButton} ${
-                doc.checked ? styles.reopen : ""
-              }`}
-              onClick={() => handleCheckboxChange(index)}
+              className={styles.iconChangeButton}
+              onClick={() => onEdit(doc)}
+              title="Editar"
             >
-              {doc.checked ? "Reabrir" : "Finalizar"}
+              <FaEdit />
             </button>
-          </div>
 
-          <span className={styles.documentName}>
-            {/* Bolinha verde */}
-            {/* {doc.checked && <span className={styles.statusDot} />} */}
-            <span className={`${styles.statusDot} ${getStatusDotClass(doc)}`} />
-            {doc.name}
-          </span>
-          <span className={styles.documentItem}>{formatDate(doc.date)}</span>
-
-          <button
-            className={styles.iconChangeButton}
-            onClick={() => onEdit(doc)} // aqui estava passando o index
-            title="Editar"
-          >
-            <FaEdit />
-          </button>
-
-          <button
-            className={styles.iconDeleteButton}
-            onClick={() => onDelete(doc)}
-            title="Excluir"
-          >
-            <FaTrashAlt />
-          </button>
-        </div>
-      ))}
+            <button
+              className={styles.iconDeleteButton}
+              onClick={() => onDelete(doc)}
+              title="Excluir"
+            >
+              <FaTrashAlt />
+            </button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 };

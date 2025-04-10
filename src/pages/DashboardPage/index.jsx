@@ -70,7 +70,11 @@ export const DashboardPage = () => {
           sevenDaysFromNow.setDate(today.getDate() + 15);
           sevenDaysFromNow.setHours(0, 0, 0, 0);
 
-          return docDate >= today && docDate <= sevenDaysFromNow;
+          return (
+            !doc.checked && // <-- aqui garante que ele não esteja finalizado
+            docDate >= today &&
+            docDate <= sevenDaysFromNow
+          );
         })
       : selectedFilter === "tipo3"
       ? documents.filter((doc) => doc.checked)
