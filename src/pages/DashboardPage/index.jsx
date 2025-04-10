@@ -9,36 +9,81 @@ export const DashboardPage = () => {
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [editData, setEditData] = useState(null);
+  const [docToDelete, setDocToDelete] = useState(null);
+
+  const openDeleteModal = (doc) => {
+    setDocToDelete(doc);
+  };
+
+  const confirmDelete = () => {
+    setDocuments((prev) => prev.filter((d) => d !== docToDelete));
+    setDocToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setDocToDelete(null);
+  };
+
   const handleAddDocument = (newDoc) => {
-    setDocuments([...documents, newDoc]);
+    if (editData) {
+      // Se for edição, atualiza o documento
+      const updatedDocs = documents.map((doc) =>
+        doc === editData ? { ...doc, ...newDoc } : doc
+      );
+      setDocuments(updatedDocs);
+      setEditData(null);
+    } else {
+      // Se for novo, adiciona
+      setDocuments([...documents, newDoc]);
+    }
+
     closeModal();
+  };
+
+  const handleEditDocument = (doc) => {
+    setEditData(doc);
+    setIsModalOpen(true);
   };
 
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
   };
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setEditData(null); // limpa qualquer edição anterior
+    setIsModalOpen(true);
+  };
+
   const closeModal = () => setIsModalOpen(false);
 
   const filteredDocuments =
     selectedFilter === "tipo2"
-      ? // ? documents.filter((doc) => new Date(doc.date) >= new Date())
-        documents.filter((doc) => {
+      ? documents.filter((doc) => {
           const docDate = new Date(doc.date);
-          docDate.setHours(0, 0, 0, 0); // zera a hora da data do doc
+          docDate.setHours(0, 0, 0, 0);
 
           const today = new Date();
-          today.setHours(0, 0, 0, 0); // zera a hora de hoje
+          today.setHours(0, 0, 0, 0);
 
           const sevenDaysFromNow = new Date();
-          sevenDaysFromNow.setDate(today.getDate() + 7);
-          sevenDaysFromNow.setHours(0, 0, 0, 0); // zera a hora do futuro
+          sevenDaysFromNow.setDate(today.getDate() + 15);
+          sevenDaysFromNow.setHours(0, 0, 0, 0);
 
           return docDate >= today && docDate <= sevenDaysFromNow;
         })
       : selectedFilter === "tipo3"
       ? documents.filter((doc) => doc.checked)
+      : selectedFilter === "tipo4"
+      ? documents.filter((doc) => {
+          const docDate = new Date(doc.date);
+          const today = new Date();
+
+          docDate.setHours(0, 0, 0, 0);
+          today.setHours(0, 0, 0, 0);
+
+          return docDate < today && !doc.checked;
+        })
       : documents;
 
   return (
@@ -48,11 +93,30 @@ export const DashboardPage = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <h2 className={styles.title}>Cadastrar Documento</h2>
-            <DocumentForm onAddDocument={handleAddDocument} />
+            {/* <h2 className={styles.title}>Cadastrar Documento</h2> */}
+            <DocumentForm
+              onAddDocument={handleAddDocument}
+              existingData={editData}
+            />
             <button className={styles.closeButton} onClick={closeModal}>
               Fechar
             </button>
+          </div>
+        </div>
+      )}
+
+      {docToDelete && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Deseja realmente excluir "{docToDelete.name}"?</h3>
+            <div className={styles.buttonGroup}>
+              <button onClick={confirmDelete} className={styles.closeButton}>
+                Sim, excluir
+              </button>
+              <button onClick={cancelDelete} className={styles.openButton}>
+                Cancelar
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -92,6 +156,16 @@ export const DashboardPage = () => {
               />
               Entregues
             </label>
+            <label>
+              <input
+                type="radio"
+                name="documentFilter"
+                value="tipo4"
+                checked={selectedFilter === "tipo4"}
+                onChange={handleFilterChange}
+              />
+              Vencidos (não entregues)
+            </label>
           </div>
         </div>
       </fieldset>
@@ -105,6 +179,8 @@ export const DashboardPage = () => {
           <DocumentList
             documents={filteredDocuments}
             setDocuments={setDocuments}
+            onEdit={(doc) => handleEditDocument(doc)}
+            onDelete={(doc) => openDeleteModal(doc)}
           />
         </fieldset>
       </div>

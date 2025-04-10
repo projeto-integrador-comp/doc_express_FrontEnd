@@ -1,14 +1,22 @@
 import styles from "./DocumentForm.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 
-const DocumentForm = ({ onAddDocument }) => {
+const DocumentForm = ({ onAddDocument, existingData }) => {
   const [form, setForm] = useState({
     name: "",
     description: "",
     date: "",
   });
+
+  useEffect(() => {
+    if (existingData) {
+      setForm(existingData);
+    } else {
+      setForm({ name: "", description: "", date: "" });
+    }
+  }, [existingData]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,6 +32,10 @@ const DocumentForm = ({ onAddDocument }) => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
+      <h2 className={styles.formTitle}>
+        {existingData ? "Editar Documento" : "Cadastrar Documento"}
+      </h2>
+
       <div className={styles.inputContainer}>
         <Input
           label="Nome"
@@ -51,7 +63,9 @@ const DocumentForm = ({ onAddDocument }) => {
           onChange={handleChange}
         />
       </div>
-      <Button type="submit">Cadastrar</Button>
+      <Button type="submit">
+        {existingData ? "Salvar Alterações" : "Cadastrar"}
+      </Button>
     </form>
   );
 };
