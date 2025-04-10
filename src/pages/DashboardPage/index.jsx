@@ -2,6 +2,7 @@ import styles from "./style.module.scss";
 import { useState } from "react";
 import DocumentForm from "../../components/DocumentForm/DocumentForm";
 import DocumentList from "../../components/DocumentList/DocumentList";
+import Header from "../../components/Header/Header";
 
 export const DashboardPage = () => {
   const [documents, setDocuments] = useState([]);
@@ -42,15 +43,8 @@ export const DashboardPage = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Painel de Documentos</h2>
+      <Header onOpenModal={openModal} />
 
-      {/* Botão para abrir o modal */}
-      <button className={styles.openButton} onClick={openModal}>
-        Cadastrar
-      </button>
-      <br />
-
-      {/* Modal */}
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -65,7 +59,7 @@ export const DashboardPage = () => {
 
       {/* Div de filtros */}
       <fieldset>
-        <h3 className={styles.filterTitle}>Filtro</h3>
+        {/* <h3 className={styles.filterTitle}>Filtro</h3> */}
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>
             <label>

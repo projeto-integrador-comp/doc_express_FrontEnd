@@ -51,6 +51,7 @@ const DocumentList = ({ documents, setDocuments }) => {
       <div className={styles.header}>
         <span className={styles.documentNameHeader}>Nome</span>
         <span className={styles.documentHeader}>Data</span>
+        <span className={styles.documentHeader}>Editar</span>
         <span className={styles.documentHeader}>Excluir</span>
       </div>
 
@@ -74,12 +75,14 @@ const DocumentList = ({ documents, setDocuments }) => {
             {doc.name}
           </span>
           <span className={styles.documentItem}>{formatDate(doc.date)}</span>
-          {/* <button
-            className={styles.deleteButton}
-            onClick={() => handleDelete(index)}
+
+          <button
+            className={styles.iconButton}
+            onClick={() => alert("Editar ainda não implementado")}
+            title="Editar"
           >
-            🗑
-          </button> */}
+            <FaEdit />
+          </button>
 
           <button
             className={styles.iconButton}

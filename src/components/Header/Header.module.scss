@@ -1,0 +1,41 @@
+.header {
+  background-color: var(--color-primary);
+  color: var(--white);
+  // display: flex;
+
+  // align-items: center;
+
+  // // border-radius: 8px;
+  // margin-bottom: 24px;
+  // width: 100%;
+}
+
+.headerContainer {
+  max-width: 1024px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 auto;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.addButton {
+  background-color: var(--green);
+  color: var(--white);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--green) 85%, black);
+  }
+}

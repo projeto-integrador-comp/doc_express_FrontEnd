@@ -1,9 +1,11 @@
 .container {
   // background: #222;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  // padding: 20px;
+  // border-radius: 8px;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: var(--gray200);
+  // max-width: 1024px;
+  margin: 0 auto;
 }
 
 .formContainer {
@@ -17,12 +19,25 @@
 }
 
 .listContainer {
-  max-width: 800px;
+  max-width: 1024px;
+  width: 100%;
+  height: 100%;
+  padding: 5rem 0.5rem 0 0.5rem;
   align-items: center;
   justify-content: center;
   margin: 0 auto;
   border-radius: 8px;
-  padding: 20px;
+  fieldset {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    // border: none;
+
+    legend {
+      margin: 0 auto;
+    }
+  }
 }
 
 .title {
@@ -41,28 +56,28 @@
   border-radius: 8px;
   display: inline-block; /* Faz o elemento encolher ao tamanho do conteúdo */
   font-size: 16px;
-  color: #333;
+  color: var(--gray800);
   border: 1px solid #ccc;
-  background-color: #f9f9f9; /* Opcional: dá um destaque leve */
+  background-color: var(--color-primary);
 }
 
 .filterContainer {
   max-width: 800px;
   margin: 0 auto;
-  padding: 8px;
+  padding: 8px 0.5rem 0 0.5rem;
   border-radius: 8px;
 }
 
-.filterTitle {
-  display: inline-block; /* Faz o elemento encolher ao tamanho do conteúdo */
-  font-size: 16px;
-  color: #333;
-  margin-left: 5px;
-  border: 1px solid #ccc;
-  padding: 4px 8px; /* Adiciona um pouco de espaço interno */
-  border-radius: 4px; /* Opcional: deixa a borda com cantos arredondados */
-  background-color: #f9f9f9; /* Opcional: dá um destaque leve */
-}
+// .filterTitle {
+//   display: inline-block; /* Faz o elemento encolher ao tamanho do conteúdo */
+//   font-size: 16px;
+//   color: #333;
+//   margin-left: 5px;
+//   border: 1px solid #ccc;
+//   padding: 4px 8px; /* Adiciona um pouco de espaço interno */
+//   border-radius: 4px; /* Opcional: deixa a borda com cantos arredondados */
+//   background-color: #f9f9f9; /* Opcional: dá um destaque leve */
+// }
 
 .filterOptions {
   display: flex;
@@ -88,8 +103,8 @@
     transition: all 0.2s ease;
 
     &:checked {
-      border-color: var(--blue);
-      background-color: var(--blue);
+      border-color: var(--color-primary);
+      background-color: var(--color-primary);
       box-shadow: inset 0 0 0 2px white;
     }
 
@@ -112,12 +127,15 @@
 }
 
 .modalContent {
+  font-family: var(--font-primary);
   background: white;
   padding: 20px;
+  margin: 20px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   min-width: 300px;
-  text-align: center;
+  width: 600px;
+  text-align: left;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -125,10 +143,28 @@
 
 .modalContent input,
 .modalContent textarea {
+  // width: 100%;
+  // padding: 8px;
+  // border: 1px solid #ccc;
+  // border-radius: 4px;
+
+  height: 2.75rem;
+  padding: 0 16px;
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--gray600);
   border-radius: 4px;
+  background-color: var(--gray800);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray100);
+}
+
+.modalContent input:focus,
+.modalContent textarea:focus {
+  border: 2px solid var(--gray500);
+  outline: none;
 }
 
 .addButton {
@@ -141,21 +177,36 @@
 }
 
 .closeButton {
-  background-color: #dc3545;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
+  // background-color: #dc3545;
+  // color: white;
+  // padding: 8px 12px;
+  // border: none;
+  // cursor: pointer;
+  // border-radius: 4px;
+  padding: 0 16px;
+  height: 2.375rem;
+  border: 1px solid transparent;
   border-radius: 4px;
+  background-color: var(--red);
+  color: var(--gray900);
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--red) 85%, black);
+  }
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; // Centraliza o conteúdo horizontalmente
-  justify-content: center; // Centraliza verticalmente
-  height: 100vh; // Faz o conteúdo ocupar toda a altura da tela
-}
+// .container {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center; // Centraliza o conteúdo horizontalmente
+//   justify-content: center; // Centraliza verticalmente
+//   height: 100vh; // Faz o conteúdo ocupar toda a altura da tela
+// }
 
 .title {
   text-align: center;
@@ -182,14 +233,16 @@
   margin-top: 20px;
 }
 
-.listContainer {
-  margin-top: 20px;
-  width: 60%;
-  text-align: center;
-}
+// .listContainer {
+//   margin-top: 20px;
+//   width: 100%;
+//   text-align: center;
+// }
 
 fieldset {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
+  // border: 1px solid #ccc;
+  // padding: 10px;
+  // border-radius: 5px;
+  width: 100%;
+  border: none;
 }

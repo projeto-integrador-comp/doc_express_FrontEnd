@@ -1,9 +1,15 @@
-.form {
+// .form {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 15px;
+// }
+
+.inputContainer {
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
-
 // .dateContainer {
 //   display: flex;
 //   flex: 1;

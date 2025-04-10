@@ -8,7 +8,6 @@ const DocumentForm = ({ onAddDocument }) => {
     name: "",
     description: "",
     date: "",
-    notifyAt: "",
   });
 
   const handleChange = (e) => {
@@ -19,40 +18,39 @@ const DocumentForm = ({ onAddDocument }) => {
     e.preventDefault();
     if (form.name) {
       onAddDocument({ ...form, checked: false });
-      setForm({ name: "", description: "", date: "", notifyAt: "" });
+      setForm({ name: "", description: "", date: "" });
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <Input
-        label="Nome do documento"
-        name="name"
-        value={form.name}
-        onChange={handleChange}
-      />
-      <textarea
-        label="Descrição"
-        name="description"
-        value={form.description}
-        onChange={handleChange}
-      />
-      {/* <div className={styles.dateContainer}> */}
-      <Input
-        label="Data de entrega"
-        name="date"
-        type="date"
-        value={form.date}
-        onChange={handleChange}
-      />
-      {/* <Input
-          label="Notificar em"
-          name="notifyAt"
-          type="date"
-          value={form.notifyAt}
+      <div className={styles.inputContainer}>
+        <Input
+          label="Nome"
+          name="name"
+          value={form.name}
           onChange={handleChange}
-        /> */}
-      {/* </div> */}
+          placeholder="Digite o nome do documento"
+        />
+        <label className={styles.label} htmlFor="description">
+          Descrição
+        </label>
+        <textarea
+          label="Descrição"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Descreva o documento aqui..."
+        />
+        {/* <div className={styles.dateContainer}> */}
+        <Input
+          label="Data de entrega"
+          name="date"
+          type="date"
+          value={form.date}
+          onChange={handleChange}
+        />
+      </div>
       <Button type="submit">Cadastrar</Button>
     </form>
   );
