@@ -8,7 +8,7 @@ import { DocumentContext } from "../../providers/DocumentContext";
 export const DashboardPage = () => {
   const { documentsList, setDocumentsList } = useContext(DocumentContext);
   console.log(documentsList);
-  const [documents, setDocuments] = useState([]);
+  // const [documents, setDocuments] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -20,7 +20,7 @@ export const DashboardPage = () => {
   };
 
   const confirmDelete = () => {
-    setDocuments((prev) => prev.filter((d) => d !== docToDelete));
+    setDocumentsList((prev) => prev.filter((d) => d !== docToDelete));
     setDocToDelete(null);
   };
 
@@ -31,14 +31,14 @@ export const DashboardPage = () => {
   const handleAddDocument = (newDoc) => {
     if (editData) {
       // Se for edição, atualiza o documento
-      const updatedDocs = documents.map((doc) =>
+      const updatedDocs = documentsList.map((doc) =>
         doc === editData ? { ...doc, ...newDoc } : doc
       );
-      setDocuments(updatedDocs);
+      setDocumentsList(updatedDocs);
       setEditData(null);
     } else {
       // Se for novo, adiciona
-      setDocuments([...documents, newDoc]);
+      setDocumentsList([...documentsList, newDoc]);
     }
 
     closeModal();
@@ -62,7 +62,7 @@ export const DashboardPage = () => {
 
   const filteredDocuments =
     selectedFilter === "tipo2"
-      ? documents.filter((doc) => {
+      ? documentsList.filter((doc) => {
           const docDate = new Date(doc.date);
           docDate.setHours(0, 0, 0, 0);
 
@@ -80,9 +80,9 @@ export const DashboardPage = () => {
           );
         })
       : selectedFilter === "tipo3"
-      ? documents.filter((doc) => doc.checked)
+      ? documentsList.filter((doc) => doc.checked)
       : selectedFilter === "tipo4"
-      ? documents.filter((doc) => {
+      ? documentsList.filter((doc) => {
           const docDate = new Date(doc.date);
           const today = new Date();
 
@@ -91,7 +91,7 @@ export const DashboardPage = () => {
 
           return docDate < today && !doc.checked;
         })
-      : documents;
+      : documentsList;
 
   return (
     <div className={styles.container}>
@@ -185,7 +185,7 @@ export const DashboardPage = () => {
           </legend>
           <DocumentList
             documents={filteredDocuments}
-            setDocuments={setDocuments}
+            setDocuments={setDocumentsList}
             onEdit={(doc) => handleEditDocument(doc)}
             onDelete={(doc) => openDeleteModal(doc)}
           />

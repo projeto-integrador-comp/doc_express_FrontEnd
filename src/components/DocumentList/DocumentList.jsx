@@ -79,11 +79,11 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
             <div className={styles.actionCell}>
               <button
                 className={`${styles.finalizeButton} ${
-                  doc.checked ? styles.reopen : ""
+                  doc.delivered ? styles.reopen : ""
                 }`}
                 onClick={() => handleCheckboxChange(doc)}
               >
-                {doc.checked ? "Reabrir" : "Finalizar"}
+                {doc.delivered ? "Reabrir" : "Finalizar"}
               </button>
             </div>
 
@@ -91,9 +91,9 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
               <span
                 className={`${styles.statusDot} ${getStatusDotClass(doc)}`}
               />
-              {doc.name}
+              {doc.documentName}
             </span>
-            <span className={styles.documentItem}>{formatDate(doc.date)}</span>
+            <span className={styles.documentItem}>{formatDate(doc.submissionDate)}</span>
 
             <button
               className={styles.iconChangeButton}
