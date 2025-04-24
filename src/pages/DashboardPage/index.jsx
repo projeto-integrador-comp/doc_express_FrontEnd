@@ -1,10 +1,13 @@
 import styles from "./style.module.scss";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DocumentForm from "../../components/DocumentForm/DocumentForm";
 import DocumentList from "../../components/DocumentList/DocumentList";
 import Header from "../../components/Header/Header";
+import { DocumentContext } from "../../providers/DocumentContext";
 
 export const DashboardPage = () => {
+  const { documentsList, setDocumentsList } = useContext(DocumentContext);
+  console.log(documentsList);
   const [documents, setDocuments] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,11 +1,9 @@
 import { createContext, useState, useContext } from "react";
 import { UserContext } from "../UserContext";
-import { toast } from "react-toastify";
-import { api } from "../../services/api";
 
 export const DocumentContext = createContext({});
 
-export const DocumentProvider = ({ children }) => {
+const DocumentProvider = ({ children }) => {
   const [hiddenCreateDocument, setHiddenCreateDocument] = useState(true);
   const [editingDocument, setEditingDocument] = useState(null);
 
@@ -26,3 +24,5 @@ export const DocumentProvider = ({ children }) => {
     </DocumentContext.Provider>
   );
 };
+
+export default DocumentProvider;
