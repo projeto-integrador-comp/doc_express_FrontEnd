@@ -43,14 +43,14 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
   };
 
   const sortedDocuments = [...documents].sort((a, b) => {
-    if (a.checked !== b.checked) {
-      return a.checked ? 1 : -1;
+    if (a.delivered !== b.delivered) {
+      return a.delivered ? 1 : -1;
     }
 
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
+    const dateA = new Date(a.submissionDate);
+    const dateB = new Date(b.submissionDate);
 
-    return a.checked ? dateB - dateA : dateA - dateB;
+    return a.delivered ? dateB - dateA : dateA - dateB;
   });
 
   return (
@@ -66,7 +66,7 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
       <AnimatePresence>
         {sortedDocuments.map((doc) => (
           <motion.div
-            key={doc.name} // ou use doc.id se tiver
+            key={doc.id} // ou use doc.id se tiver
             className={`${styles.document} ${
               doc.checked ? styles.completed : ""
             }`}
