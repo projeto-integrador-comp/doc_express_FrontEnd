@@ -1,5 +1,5 @@
 import loginImg from "../../assets/login.jpg";
-import { LoginForm } from "../../components/forms/LoginForm";
+import { LoginUserForm } from "../../components/forms/LoginUserForm";
 import styles from "./style.module.scss";
 
 export const LoginPage = () => {
@@ -28,7 +28,7 @@ export const LoginPage = () => {
               </a>
             </div>
           </div>
-          <LoginForm />
+          <LoginUserForm />
         </div>
       </div>
     </main>

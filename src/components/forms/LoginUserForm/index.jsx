@@ -7,7 +7,7 @@ import styles from "./style.module.scss";
 import { useContext, useState } from "react";
 import { UserContext } from "../../../providers/UserContext";
 
-export const LoginForm = () => {
+export const LoginUserForm = () => {
   const {
     register,
     handleSubmit,
