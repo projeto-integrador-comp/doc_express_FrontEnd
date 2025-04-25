@@ -1,14 +1,19 @@
 import styles from "./style.module.scss";
 import { useContext, useState } from "react";
-import DocumentForm from "../../components/DocumentForm/DocumentForm";
 import DocumentList from "../../components/DocumentList/DocumentList";
 import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
+import { RegisterDocumentForm } from "../../components/forms/RegisterDocumentForm";
 
 export const DashboardPage = () => {
-  const { documentsList, setDocumentsList } = useContext(DocumentContext);
-  console.log(documentsList);
-  // const [documents, setDocuments] = useState([]);
+  const {
+    hiddenCreateDocument,
+    setHiddenCreateDocument,
+    editingDocument,
+    documentsList,
+    setDocumentsList,
+  } = useContext(DocumentContext);
+
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -95,17 +100,16 @@ export const DashboardPage = () => {
 
   return (
     <div className={styles.container}>
-      <Header onOpenModal={openModal} />
+      <Header />
 
-      {isModalOpen && (
+      {!hiddenCreateDocument && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            {/* <h2 className={styles.title}>Cadastrar Documento</h2> */}
-            <DocumentForm
-              onAddDocument={handleAddDocument}
-              existingData={editData}
-            />
-            <button className={styles.closeButton} onClick={closeModal}>
+            <RegisterDocumentForm />
+            <button
+              className={styles.closeButton}
+              onClick={() => setHiddenCreateDocument(true)}
+            >
               Fechar
             </button>
           </div>
