@@ -7,7 +7,7 @@ import { schema } from "./validator";
 import { Input } from "../Input";
 import { Link } from "react-router-dom";
 
-export const RegisterForm = () => {
+export const RegisterUserForm = () => {
   const {
     register,
     handleSubmit,

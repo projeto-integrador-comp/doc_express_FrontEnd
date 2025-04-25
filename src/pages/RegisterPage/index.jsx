@@ -1,13 +1,13 @@
 import styles from "./style.module.scss";
 import registerImg from "../../assets/register.jpg";
-import { RegisterForm } from "../../components/forms/RegisterForm";
+import { RegisterUserForm } from "../../components/forms/RegisterUserForm";
 
 export const RegisterPage = () => {
   return (
     <main>
       <div className="container">
         <div className={styles.mainBox}>
-          <RegisterForm />
+          <RegisterUserForm />
           <div className={styles.infosBox}>
             <h1 className="title big bold primary-focus">DocExpress</h1>
             <p className="title big bold primary">Bem Vindo!</p>
