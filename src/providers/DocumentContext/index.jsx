@@ -30,7 +30,7 @@ const DocumentProvider = ({ children }) => {
       setDocumentsList(newDocumentsList);
 
       reset();
-      toast.success("Contato cadastrado");
+      toast.success("Documento cadastrado");
       setHiddenCreateDocument(true);
     } catch (error) {
       toast.error("Erro ao cadastrar,tente novamente!");
