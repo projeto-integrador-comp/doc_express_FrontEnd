@@ -68,7 +68,7 @@ export const DashboardPage = () => {
   const filteredDocuments =
     selectedFilter === "tipo2"
       ? documentsList.filter((doc) => {
-          const docDate = new Date(doc.date);
+          const docDate = new Date(doc.submissionDate);
           docDate.setHours(0, 0, 0, 0);
 
           const today = new Date();
@@ -79,22 +79,22 @@ export const DashboardPage = () => {
           sevenDaysFromNow.setHours(0, 0, 0, 0);
 
           return (
-            !doc.checked && // <-- aqui garante que ele não esteja finalizado
+            !doc.delivered && // <-- aqui garante que ele não esteja finalizado
             docDate >= today &&
             docDate <= sevenDaysFromNow
           );
         })
       : selectedFilter === "tipo3"
-      ? documentsList.filter((doc) => doc.checked)
+      ? documentsList.filter((doc) => doc.delivered)
       : selectedFilter === "tipo4"
       ? documentsList.filter((doc) => {
-          const docDate = new Date(doc.date);
+          const docDate = new Date(doc.submissionDate);
           const today = new Date();
 
           docDate.setHours(0, 0, 0, 0);
           today.setHours(0, 0, 0, 0);
 
-          return docDate < today && !doc.checked;
+          return docDate < today && !doc.delivered;
         })
       : documentsList;
 
@@ -155,7 +155,7 @@ export const DashboardPage = () => {
                 checked={selectedFilter === "tipo2"}
                 onChange={handleFilterChange}
               />
-              Próximos do vencimento
+              Próximos do vencimento (15 dias)
             </label>
             <label>
               <input

@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import styles from "./style.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validator";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { DocumentContext } from "../../../providers/DocumentContext";
 import Button from "../../Button/Button";
 import { Input } from "../Input";
 
@@ -12,12 +13,16 @@ export const RegisterDocumentForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   const [loading, setLoading] = useState(false);
 
+  const { documentRegister } = useContext(DocumentContext);
+
   const submit = (data) => {
-    console.log(data);
+    documentRegister(data, setLoading, reset);
   };
   return (
     <form onSubmit={handleSubmit(submit)} className={styles.form}>
