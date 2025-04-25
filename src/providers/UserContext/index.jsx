@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
@@ -13,6 +13,29 @@ const UserProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const pathname = window.location.pathname;
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("@tokenDocExpress");
+
+  //   const userAutoLogin = async () => {
+  //     try {
+  //       setLoading(true);
+
+  //       const { data } = await api.get("/profile", {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setUser(data.user);
+  //       setDocumentsList(data.user.documents);
+  //       navigate(pathname);
+  //     } catch (error) {
+  //       if (error.response?.status == 401) toast.error("Acesso expirado");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   if (token) userAutoLogin();
+  // });
 
   const userLogin = async (formData, setLoading, reset) => {
     try {
@@ -30,6 +53,8 @@ const UserProvider = ({ children }) => {
     } catch (error) {
       if (error.response?.data.message === "Invalid credentials.") {
         toast.error("Email e/ou senha incorretos");
+      } else if (error.message === "Request failed with status code 401") {
+        toast.warn("servidor inativo. Tente novamente para iniciálo!");
       }
     } finally {
       setLoading(false);
