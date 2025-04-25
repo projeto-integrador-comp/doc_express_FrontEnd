@@ -1,14 +1,14 @@
 import styles from "./DocumentList.module.scss";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
+const formatDate = (date) => {
+  const dateOnly = date.split("T")[0];
+
+  const [year, month, day] = dateOnly.split("-");
+  const formatted = `${day}/${month}/${year}`;
+
+  return formatted;
 };
 
 const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
@@ -21,7 +21,7 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
   };
 
   const getStatusDotClass = (doc) => {
-    const docDate = new Date(doc.date);
+    const docDate = new Date(doc.submissionDate);
     docDate.setHours(0, 0, 0, 0);
 
     const today = new Date();
@@ -31,15 +31,13 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
     proximosDoVencimento.setDate(today.getDate() + 15);
     proximosDoVencimento.setHours(0, 0, 0, 0);
 
-    if (docDate >= today && docDate <= proximosDoVencimento && !doc.checked) {
+    if (docDate >= today && docDate <= proximosDoVencimento && !doc.delivered) {
       return styles.statusDotYellow;
     }
 
-    if (docDate <= today && !doc.checked) {
+    if (docDate <= today && !doc.delivered) {
       return styles.statusDotRed;
     }
-
-    // return styles.statusDotYellow;
   };
 
   const sortedDocuments = [...documents].sort((a, b) => {
@@ -66,7 +64,7 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
       <AnimatePresence>
         {sortedDocuments.map((doc) => (
           <motion.div
-            key={doc.id} // ou use doc.id se tiver
+            key={doc.id}
             className={`${styles.document} ${
               doc.checked ? styles.completed : ""
             }`}
@@ -83,7 +81,7 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
                 }`}
                 onClick={() => handleCheckboxChange(doc)}
               >
-                {doc.delivered ? "Reabrir" : "Finalizar"}
+                {doc.delivered ? "Entregue" : "Entregar"}
               </button>
             </div>
 
@@ -93,7 +91,9 @@ const DocumentList = ({ documents, setDocuments, onEdit, onDelete }) => {
               />
               {doc.documentName}
             </span>
-            <span className={styles.documentItem}>{formatDate(doc.submissionDate)}</span>
+            <span className={styles.documentItem}>
+              {formatDate(doc.submissionDate)}
+            </span>
 
             <button
               className={styles.iconChangeButton}
