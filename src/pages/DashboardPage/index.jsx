@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
 import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
-import DocumentList from "../../components/DocumentList/DocumentList";
+import { DocumentList } from "../../components/DocumentList/index.jsx";
 
 export const DashboardPage = () => {
   const {
@@ -118,9 +118,7 @@ export const DashboardPage = () => {
         </div>
       )}
 
-      {/* Div de filtros */}
       <fieldset>
-        {/* <h3 className={styles.filterTitle}>Filtro</h3> */}
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>
             <label>
@@ -167,18 +165,12 @@ export const DashboardPage = () => {
         </div>
       </fieldset>
 
-      {/* Lista de documentos */}
       <div className={styles.listContainer}>
         <fieldset>
           <legend>
             <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
           </legend>
-          <DocumentList
-            documents={filteredDocuments}
-            setDocuments={setDocumentsList}
-            onEdit={(doc) => handleEditDocument(doc)}
-            onDelete={(doc) => openDeleteModal(doc)}
-          />
+          <DocumentList documents={filteredDocuments} />
         </fieldset>
       </div>
     </div>
