@@ -25,7 +25,7 @@ export const RegisterDocumentForm = () => {
     documentRegister(data, setLoading, reset);
   };
   return (
-    <form onSubmit={handleSubmit(submit)} className={styles.form}>
+    <form onSubmit={handleSubmit(submit)}>
       <h2 className={styles.formTitle}>Cadastrar Documento</h2>
       <div className={styles.inputContainer}>
         <Input
