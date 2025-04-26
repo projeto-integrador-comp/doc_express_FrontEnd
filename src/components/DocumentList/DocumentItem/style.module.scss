@@ -1,0 +1,117 @@
+.document {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  height: 2.75rem;
+  width: 100%;
+  border: 1px solid var(--gray600);
+  border-radius: 4px;
+  background-color: var(--gray800);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gray100);
+  &.completed {
+    color: #a19999;
+  }
+
+  .actionCell {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+
+    .finalizeButton {
+      font-family: var(--font-primary);
+      height: 2.375rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s;
+
+      border: 1px solid var(--gray600);
+      background-color: transparent;
+      color: var(--gray100);
+      padding: 0 16px;
+
+      &:hover {
+        background-color: var(--color-primary);
+        color: var(--gray900);
+      }
+
+      &.reopen {
+        background-color: var(--green);
+        color: var(--gray900);
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--green) 85%, black);
+        }
+      }
+    }
+  }
+  .documentName {
+    flex: 4;
+    text-align: left;
+    padding-left: 1rem;
+
+    .statusDot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+
+      &.statusDotYellow {
+        background-color: var(--yellow);
+      }
+
+      &.statusDotRed {
+        background-color: var(--red);
+      }
+    }
+  }
+
+  .documentItem {
+    flex: 1;
+    text-align: center;
+  }
+
+  .iconChangeButton {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--gray400);
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--blue);
+    }
+  }
+
+  .iconDeleteButton {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--gray400);
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--red);
+    }
+  }
+}

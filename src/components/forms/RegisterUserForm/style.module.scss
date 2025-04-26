@@ -1,0 +1,15 @@
+.formBox {
+  border: 1px solid var(--gray600);
+  border-radius: 4px;
+  padding: 44px 24px;
+  max-width: 100rem;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 4vw, 1.625rem);
+}
+
+@media (min-width: 760px) {
+  .formBox {
+    width: 369px;
+  }
+}

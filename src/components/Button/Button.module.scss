@@ -1,0 +1,17 @@
+.button {
+  padding: 0 16px;
+  height: 2.375rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: var(--color-primary);
+  color: var(--gray900);
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 85%, black);
+  }
+}

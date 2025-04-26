@@ -1,0 +1,14 @@
+.listContainer {
+  width: 100%;
+}
+
+.empty{
+  background-color: var(--gray700);
+  border: 1px dashed var(--gray500);
+  border-radius: 4px;
+  padding: 20px 0 20px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--gray600);
+  }
+}
