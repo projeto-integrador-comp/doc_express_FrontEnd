@@ -1,14 +1,13 @@
 import styles from "./style.module.scss";
 import { useContext, useState } from "react";
-import DocumentList from "../../components/DocumentList/DocumentList";
 import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
-import { RegisterDocumentForm } from "../../components/forms/RegisterDocumentForm";
+import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
+import DocumentList from "../../components/DocumentList/DocumentList";
 
 export const DashboardPage = () => {
   const {
     hiddenCreateDocument,
-    setHiddenCreateDocument,
     editingDocument,
     documentsList,
     setDocumentsList,
@@ -74,14 +73,14 @@ export const DashboardPage = () => {
           const today = new Date();
           today.setHours(0, 0, 0, 0);
 
-          const sevenDaysFromNow = new Date();
-          sevenDaysFromNow.setDate(today.getDate() + 15);
-          sevenDaysFromNow.setHours(0, 0, 0, 0);
+          const fifteenDaysFromNow = new Date();
+          fifteenDaysFromNow.setDate(today.getDate() + 15);
+          fifteenDaysFromNow.setHours(0, 0, 0, 0);
 
           return (
             !doc.delivered && // <-- aqui garante que ele não esteja finalizado
             docDate >= today &&
-            docDate <= sevenDaysFromNow
+            docDate <= fifteenDaysFromNow
           );
         })
       : selectedFilter === "tipo3"
@@ -101,20 +100,7 @@ export const DashboardPage = () => {
   return (
     <div className={styles.container}>
       <Header />
-
-      {!hiddenCreateDocument && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <RegisterDocumentForm />
-            <button
-              className={styles.closeButton}
-              onClick={() => setHiddenCreateDocument(true)}
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      {!hiddenCreateDocument && <RegisterDocumentModal />}
 
       {docToDelete && (
         <div className={styles.modalOverlay}>
