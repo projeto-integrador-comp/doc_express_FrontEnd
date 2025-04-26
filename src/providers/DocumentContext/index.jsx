@@ -34,7 +34,33 @@ const DocumentProvider = ({ children }) => {
       setHiddenCreateDocument(true);
     } catch (error) {
       toast.error("Erro ao cadastrar,tente novamente!");
-      console.log(error)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const documentUpdate = async (formData, setLoading, id) => {
+    const token = localStorage.getItem("@tokenDocExpress");
+
+    try {
+      setLoading(true);
+
+      const { data } = await api.patch(`/documents/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const newDocumentsList = documentsList.map((document) =>
+        document.id === id ? (document = data) : document
+      );
+      setDocumentsList(newDocumentsList);
+
+      setEditingDocument(null);
+      toast.success("Documento atualizado");
+    } catch (error) {
+      console.log(error);
+      toast.error("Erro ao atualizar,tente novamente!");
     } finally {
       setLoading(false);
     }
@@ -50,6 +76,7 @@ const DocumentProvider = ({ children }) => {
         documentsList,
         setDocumentsList,
         documentRegister,
+        documentUpdate,
       }}
     >
       {children}
