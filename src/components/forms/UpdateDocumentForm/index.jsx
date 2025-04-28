@@ -52,7 +52,7 @@ export const UpdateDocumentForm = () => {
           disabled={loading}
           error={errors.submissionDate}
           {...register("submissionDate")}
-          defaultValue={editingDocument.submissionDate}
+          defaultValue={editingDocument.submissionDate.split("T")[0]}
         />
       </div>
       <Button type="submit">Editar</Button>
