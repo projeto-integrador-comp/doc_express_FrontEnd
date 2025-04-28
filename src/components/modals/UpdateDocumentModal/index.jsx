@@ -6,15 +6,17 @@ import { UpdateDocumentForm } from "../../forms/UpdateDocumentForm";
 export const UpdateDocumentModal = () => {
   const { setEditingDocument } = useContext(DocumentContext);
 
-  <div role="dialog" className={styles.modalOverlay}>
-    <div className={styles.modalContent}>
-      <UpdateDocumentForm />
-      <button
-        className={styles.closeButton}
-        onClick={() => setEditingDocument(null)}
-      >
-        Fechar
-      </button>
+  return (
+    <div role="dialog" className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <UpdateDocumentForm />
+        <button
+          className={styles.closeButton}
+          onClick={() => setEditingDocument(null)}
+        >
+          Fechar
+        </button>
+      </div>
     </div>
-  </div>;
+  );
 };

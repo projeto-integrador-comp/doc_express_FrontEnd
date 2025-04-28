@@ -4,6 +4,7 @@ import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
 import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
 import { DocumentList } from "../../components/DocumentList/index.jsx";
+import { UpdateDocumentModal } from "../../components/modals/UpdateDocumentModal/index.jsx";
 
 export const DashboardPage = () => {
   const {
@@ -14,14 +15,8 @@ export const DashboardPage = () => {
   } = useContext(DocumentContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [editData, setEditData] = useState(null);
   const [docToDelete, setDocToDelete] = useState(null);
-
-  const openDeleteModal = (doc) => {
-    setDocToDelete(doc);
-  };
 
   const confirmDelete = () => {
     setDocumentsList((prev) => prev.filter((d) => d !== docToDelete));
@@ -32,37 +27,9 @@ export const DashboardPage = () => {
     setDocToDelete(null);
   };
 
-  const handleAddDocument = (newDoc) => {
-    if (editData) {
-      // Se for edição, atualiza o documento
-      const updatedDocs = documentsList.map((doc) =>
-        doc === editData ? { ...doc, ...newDoc } : doc
-      );
-      setDocumentsList(updatedDocs);
-      setEditData(null);
-    } else {
-      // Se for novo, adiciona
-      setDocumentsList([...documentsList, newDoc]);
-    }
-
-    closeModal();
-  };
-
-  const handleEditDocument = (doc) => {
-    setEditData(doc);
-    setIsModalOpen(true);
-  };
-
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-
-  const openModal = () => {
-    setEditData(null); // limpa qualquer edição anterior
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => setIsModalOpen(false);
 
   const filteredDocuments =
     selectedFilter === "tipo2"
@@ -101,6 +68,7 @@ export const DashboardPage = () => {
     <div className={styles.container}>
       <Header />
       {!hiddenCreateDocument && <RegisterDocumentModal />}
+      {editingDocument && <UpdateDocumentModal />}
 
       {docToDelete && (
         <div className={styles.modalOverlay}>
