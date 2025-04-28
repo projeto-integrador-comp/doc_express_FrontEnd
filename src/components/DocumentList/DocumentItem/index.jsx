@@ -1,8 +1,12 @@
 import styles from "./style.module.scss";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { DocumentContext } from "../../../providers/DocumentContext";
 
 export const DocumentItem = ({ doc }) => {
+  const { setEditingDocument } = useContext(DocumentContext);
+
   const getStatusDotClass = (doc) => {
     const docDate = new Date(doc.submissionDate);
     docDate.setHours(0, 0, 0, 0);
@@ -55,7 +59,6 @@ export const DocumentItem = ({ doc }) => {
             {doc.delivered ? "Entregue" : "Entregar"}
           </button>
         </div>
-       
 
         <span className={styles.documentName}>
           <span className={`${styles.statusDot} ${getStatusDotClass(doc)}`} />
@@ -67,7 +70,7 @@ export const DocumentItem = ({ doc }) => {
 
         <button
           className={styles.iconChangeButton}
-          onClick={() => console.log(`editar ${doc.id}`)}
+          onClick={() => setEditingDocument(doc)}
           title="Editar"
         >
           <FaEdit />
