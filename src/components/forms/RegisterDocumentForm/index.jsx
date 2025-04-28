@@ -52,7 +52,7 @@ export const RegisterDocumentForm = () => {
           {...register("submissionDate")}
         />
       </div>
-      <Button type="submit">Cadastrar</Button>
+      <Button type="submit">{loading ? "Cadastrando..." : "Cadastrar"}</Button>
     </form>
   );
 };
