@@ -5,11 +5,13 @@ import { DocumentContext } from "../../providers/DocumentContext";
 import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
 import { DocumentList } from "../../components/DocumentList/index.jsx";
 import { UpdateDocumentModal } from "../../components/modals/UpdateDocumentModal/index.jsx";
+import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal/index.jsx";
 
 export const DashboardPage = () => {
   const {
     hiddenCreateDocument,
     editingDocument,
+    deletingDocument,
     documentsList,
     setDocumentsList,
   } = useContext(DocumentContext);
@@ -69,22 +71,7 @@ export const DashboardPage = () => {
       <Header />
       {!hiddenCreateDocument && <RegisterDocumentModal />}
       {editingDocument && <UpdateDocumentModal />}
-
-      {docToDelete && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>Deseja realmente excluir "{docToDelete.name}"?</h3>
-            <div className={styles.buttonGroup}>
-              <button onClick={confirmDelete} className={styles.closeButton}>
-                Sim, excluir
-              </button>
-              <button onClick={cancelDelete} className={styles.openButton}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {deletingDocument && <DeleteDocumentModal />}
 
       <fieldset>
         <div className={styles.filterContainer}>

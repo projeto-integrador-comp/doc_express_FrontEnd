@@ -61,7 +61,7 @@ export const RegisterUserForm = () => {
           {...register("confirmPassword")}
         />
         <button type="submit" className="btn">
-          Cadastrar
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
 
         <Link to={"/"}>

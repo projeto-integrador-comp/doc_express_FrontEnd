@@ -5,7 +5,8 @@ import { useContext } from "react";
 import { DocumentContext } from "../../../providers/DocumentContext";
 
 export const DocumentItem = ({ doc }) => {
-  const { setEditingDocument } = useContext(DocumentContext);
+  const { setEditingDocument, setdeletingDocument } =
+    useContext(DocumentContext);
 
   const getStatusDotClass = (doc) => {
     const docDate = new Date(doc.submissionDate);
@@ -78,7 +79,7 @@ export const DocumentItem = ({ doc }) => {
 
         <button
           className={styles.iconDeleteButton}
-          onClick={() => console.log(`excluir ${doc.id}`)}
+          onClick={() => setdeletingDocument(doc)}
           title="Excluir"
         >
           <FaTrashAlt />

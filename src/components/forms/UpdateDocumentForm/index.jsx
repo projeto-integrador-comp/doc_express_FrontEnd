@@ -55,7 +55,7 @@ export const UpdateDocumentForm = () => {
           defaultValue={editingDocument.submissionDate.split("T")[0]}
         />
       </div>
-      <Button type="submit">Editar</Button>
+      <Button type="submit">{loading ? "Editando..." : "Editar"}</Button>
     </form>
   );
 };
