@@ -13,21 +13,9 @@ export const DashboardPage = () => {
     editingDocument,
     deletingDocument,
     documentsList,
-    setDocumentsList,
   } = useContext(DocumentContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
-
-  const [docToDelete, setDocToDelete] = useState(null);
-
-  const confirmDelete = () => {
-    setDocumentsList((prev) => prev.filter((d) => d !== docToDelete));
-    setDocToDelete(null);
-  };
-
-  const cancelDelete = () => {
-    setDocToDelete(null);
-  };
 
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
