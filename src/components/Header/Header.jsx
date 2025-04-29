@@ -1,6 +1,7 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import styles from "./Header.module.scss";
 import { DocumentContext } from "../../providers/DocumentContext";
+import { RxHamburgerMenu, RxChevronDown } from "react-icons/rx";
 
 const Header = () => {
   const { setHiddenCreateDocument } = useContext(DocumentContext);
@@ -31,11 +32,8 @@ const Header = () => {
         <h1 className={styles.logo}>DocExpress</h1>
 
         <div className={styles.menuContainer} ref={menuRef}>
-          <button
-            className={styles.menuButton}
-            onClick={toggleMenu}
-          >
-            ☰
+          <button className={styles.menuButton} onClick={toggleMenu}>
+            {!menuOpen ? <RxHamburgerMenu /> : <RxChevronDown />}
           </button>
 
           {menuOpen && (
@@ -50,27 +48,33 @@ const Header = () => {
                   </button>
                 </li> */}
                 <li>
-                  <button onClick={() => {                    
-                    setMenuOpen(false);
-                  }}>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                    }}
+                  >
                     Atualizar Conta
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => {                    
-                    setMenuOpen(false);
-                  }}>
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                    }}
+                  >
                     Excluir Conta
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => {
-                    setHiddenCreateDocument(false);
-                    setMenuOpen(false);
-                  }}>
+                  <button
+                    onClick={() => {
+                      setHiddenCreateDocument(false);
+                      setMenuOpen(false);
+                    }}
+                  >
                     Logout
                   </button>
-                </li>                
+                </li>
               </ul>
             </nav>
           )}

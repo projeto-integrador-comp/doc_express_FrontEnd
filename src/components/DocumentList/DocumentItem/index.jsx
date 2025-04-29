@@ -1,11 +1,11 @@
 import styles from "./style.module.scss";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DocumentContext } from "../../../providers/DocumentContext";
 
 export const DocumentItem = ({ doc }) => {
-  const { setEditingDocument, setdeletingDocument } =
+  const { setEditingDocument, setdeletingDocument, documentUpdate } =
     useContext(DocumentContext);
 
   const getStatusDotClass = (doc) => {
@@ -36,6 +36,12 @@ export const DocumentItem = ({ doc }) => {
 
     return formatted;
   };
+  const [loading, setLoading] = useState(false);
+  const deliver = (doc) => {
+  
+
+    documentUpdate({ delivered: !doc.delivered }, setLoading, doc.id);
+  };
 
   return (
     <li>
@@ -55,7 +61,7 @@ export const DocumentItem = ({ doc }) => {
             className={`${styles.finalizeButton} ${
               doc.delivered ? styles.reopen : ""
             }`}
-            onClick={() => console.log(doc)}
+            onClick={() => deliver(doc)}
           >
             {doc.delivered ? "Entregue" : "Entregar"}
           </button>
