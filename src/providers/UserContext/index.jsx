@@ -77,6 +77,51 @@ const UserProvider = ({ children }) => {
     }
   };
 
+  const userUpdate = async (formData, setLoading, id, setHiddenUserModal) => {
+    const token = localStorage.getItem("@tokenDocExpress");
+
+    try {
+      setLoading(true);
+      const { data } = await api.patch(`/users/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser({ ...user, ...data });
+      toast.success("Usuário atualizado");
+      setHiddenUserModal(true);
+    } catch (error) {
+      if (error.response?.data.message === "Email already exists.") {
+        toast.error("Email já cadastrado");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const userDelete = async () => {
+    const token = localStorage.getItem("@tokenDocExpress");
+    try {
+      await api.delete(`/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(null);
+      setDocumentsList([]);
+      toast.error("Usuário deletado");
+      navigate("/");
+      localStorage.removeItem("@tokenMyContacts");
+    } catch (error) {
+      if (error.response?.data.message === "User not found.") {
+        toast.error("Usuário não encontrado");
+      }
+    }
+  };
+
+  const userLogout = () => {
+    setUser(null);
+    setDocumentsList([]);
+    toast.error("Usuário deslogado");
+    navigate("/");
+    localStorage.removeItem("@tokenDocExpress");
+  };
   return (
     <UserContext.Provider
       value={{
@@ -86,6 +131,9 @@ const UserProvider = ({ children }) => {
         loading,
         userLogin,
         userRegister,
+        userUpdate,
+        userDelete,
+        userLogout,
       }}
     >
       {children}
