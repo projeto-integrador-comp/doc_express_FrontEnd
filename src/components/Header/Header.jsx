@@ -1,21 +1,28 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import styles from "./Header.module.scss";
 import { DocumentContext } from "../../providers/DocumentContext";
 
 const Header = () => {
   const { setHiddenCreateDocument } = useContext(DocumentContext);
-  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null); // Referência para o menu
 
-  // Função para detectar se a tela é pequena
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
-  // Verifica quando a página carrega e quando a tela é redimensionada
+  // Fecha o menu se clicar fora
   useEffect(() => {
-    handleResize(); // Checa na primeira vez
-    window.addEventListener("resize", handleResize); // Atualiza se mudar o tamanho
-    return () => window.removeEventListener("resize", handleResize); // Limpa evento
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
@@ -23,12 +30,51 @@ const Header = () => {
       <div className={styles.headerContainer}>
         <h1 className={styles.logo}>DocExpress</h1>
 
-        <button
-          className={styles.addButton}
-          onClick={() => setHiddenCreateDocument(false)}
-        >
-          {isMobile ? "☰" : "Cadastrar Documento"}
-        </button>
+        <div className={styles.menuContainer} ref={menuRef}>
+          <button
+            className={styles.menuButton}
+            onClick={toggleMenu}
+          >
+            ☰
+          </button>
+
+          {menuOpen && (
+            <nav className={styles.menu}>
+              <ul>
+                {/* <li>
+                  <button onClick={() => {
+                    setHiddenCreateDocument(false);
+                    setMenuOpen(false);
+                  }}>
+                    ➕ Cadastrar Documento
+                  </button>
+                </li> */}
+                <li>
+                  <button onClick={() => {                    
+                    setMenuOpen(false);
+                  }}>
+                    Atualizar Conta
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => {                    
+                    setMenuOpen(false);
+                  }}>
+                    Excluir Conta
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => {
+                    setHiddenCreateDocument(false);
+                    setMenuOpen(false);
+                  }}>
+                    Logout
+                  </button>
+                </li>                
+              </ul>
+            </nav>
+          )}
+        </div>
       </div>
     </header>
   );
