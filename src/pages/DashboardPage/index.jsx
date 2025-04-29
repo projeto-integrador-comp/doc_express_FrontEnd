@@ -6,6 +6,8 @@ import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentM
 import { DocumentList } from "../../components/DocumentList/index.jsx";
 import { UpdateDocumentModal } from "../../components/modals/UpdateDocumentModal/index.jsx";
 import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal/index.jsx";
+import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.jsx";
+import { UserContext } from "../../providers/UserContext/index.jsx";
 
 export const DashboardPage = () => {
   const {
@@ -15,6 +17,7 @@ export const DashboardPage = () => {
     deletingDocument,
     documentsList,
   } = useContext(DocumentContext);
+  const { deletingUser } = useContext(UserContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
@@ -61,7 +64,7 @@ export const DashboardPage = () => {
       {!hiddenCreateDocument && <RegisterDocumentModal />}
       {editingDocument && <UpdateDocumentModal />}
       {deletingDocument && <DeleteDocumentModal />}
-
+      {deletingUser && <DeleteUserModal />}
       <fieldset>
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>

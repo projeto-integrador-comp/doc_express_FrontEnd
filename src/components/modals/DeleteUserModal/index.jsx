@@ -1,6 +1,11 @@
+import { useContext, useState } from "react";
 import styles from "./style.module.scss";
+import { UserContext } from "../../../providers/UserContext";
 
 export const DeleteUserModal = () => {
+  const { deletingUser, setDeletingUser, userDelete } = useContext(UserContext);
+
+  const [loading, setLoading] = useState(false);
   return (
     <div role="dialog" className={styles.modalOverlay}>
       <div className={styles.modalContent}>
@@ -8,13 +13,13 @@ export const DeleteUserModal = () => {
         <p>todos os seus dados serão perdidos</p>
         <div className={styles.buttonGroup}>
           <button
-            onClick={() => documentDelete(setLoading, deletingDocument.id)}
+            onClick={() => userDelete(setLoading, deletingUser.id)}
             className={styles.closeButton}
           >
-            {loading ? "Excluindo..." : "Sim, excluir"}
+            {loading ? "Excluindo" : "Sim, excluir"}
           </button>
           <button
-            onClick={() => console.log("deletar conta")}
+            onClick={() => setDeletingUser(null)}
             className={styles.openButton}
           >
             Cancelar

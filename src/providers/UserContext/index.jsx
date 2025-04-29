@@ -9,6 +9,7 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [documentsList, setDocumentsList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deletingUser, setDeletingUser] = useState(null);
 
   const navigate = useNavigate();
 
@@ -97,14 +98,18 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  const userDelete = async () => {
+  const userDelete = async (setLoading, id) => {
     const token = localStorage.getItem("@tokenDocExpress");
+
     try {
+      setLoading(true);
       await api.delete(`/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(null);
       setDocumentsList([]);
+
+      setDeletingUser(null);
       toast.error("Usuário deletado");
       navigate("/");
       localStorage.removeItem("@tokenMyContacts");
@@ -112,6 +117,8 @@ const UserProvider = ({ children }) => {
       if (error.response?.data.message === "User not found.") {
         toast.error("Usuário não encontrado");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,6 +136,8 @@ const UserProvider = ({ children }) => {
         documentsList,
         setDocumentsList,
         loading,
+        deletingUser,
+        setDeletingUser,
         userLogin,
         userRegister,
         userUpdate,

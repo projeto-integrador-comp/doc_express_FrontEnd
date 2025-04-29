@@ -2,9 +2,11 @@ import { useContext, useState, useRef, useEffect } from "react";
 import styles from "./Header.module.scss";
 import { DocumentContext } from "../../providers/DocumentContext";
 import { RxHamburgerMenu, RxChevronDown } from "react-icons/rx";
+import { UserContext } from "../../providers/UserContext";
 
 const Header = () => {
   const { setHiddenCreateDocument } = useContext(DocumentContext);
+  const { user, setDeletingUser } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null); // Referência para o menu
 
@@ -59,6 +61,7 @@ const Header = () => {
                 <li>
                   <button
                     onClick={() => {
+                      setDeletingUser(user);
                       setMenuOpen(false);
                     }}
                   >
