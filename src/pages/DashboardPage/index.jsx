@@ -10,6 +10,7 @@ import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal
 export const DashboardPage = () => {
   const {
     hiddenCreateDocument,
+    setHiddenCreateDocument,
     editingDocument,
     deletingDocument,
     documentsList,
@@ -111,7 +112,12 @@ export const DashboardPage = () => {
       <div className={styles.listContainer}>
         <fieldset>
           <legend>
-            <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
+            <button
+              className={styles.addButton}
+              onClick={() => setHiddenCreateDocument(false)}
+            >
+              Cadastrar Documento
+            </button>
           </legend>
           <DocumentList documents={filteredDocuments} />
         </fieldset>
