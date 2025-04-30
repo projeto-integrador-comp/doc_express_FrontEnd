@@ -61,15 +61,18 @@ export const RegisterUserForm = () => {
           disabled={loading}
           {...register("confirmPassword")}
         />
-        <button type="submit" className="btn">
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </button>
+
         {loading ? (
           <img src={loadingImg} />
         ) : (
-          <Link to={"/"}>
-            <button className="btn transparent">Votar para o login</button>
-          </Link>
+          <div className={styles.registerBox}>
+            <button type="submit" className="btn">
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
+            <Link to={"/"}>
+              <button className="btn transparent">Votar para o login</button>
+            </Link>
+          </div>
         )}
       </div>
     </form>

@@ -46,13 +46,13 @@ export const LoginUserForm = () => {
           {...register("password")}
         />
 
-        <button type="submit" className="btn">
-          {loading ? "Acessando..." : "Acessar"}
-        </button>
         {loading ? (
           <img src={loadingImg} />
         ) : (
           <div className={styles.registerBox}>
+            <button type="submit" className="btn">
+              {loading ? "Acessando..." : "Acessar"}
+            </button>
             <div>
               <p className="text bold medium textCenter">
                 Ainda não possui conta?

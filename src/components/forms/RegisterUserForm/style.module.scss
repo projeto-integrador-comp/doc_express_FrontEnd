@@ -7,6 +7,11 @@
   flex-direction: column;
   gap: clamp(1.25rem, 4vw, 1.625rem);
 
+  .registerBox {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 4vw, 1.625rem);
+  }
   img {
     width: 12rem;
     align-self: center;
