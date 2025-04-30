@@ -9,13 +9,13 @@ import { PrivateRoutes } from "./PrivateRoutes";
 export const RoutesMain = () => {
   return (
     <Routes>
-      {/* <Route element={<PublicRoutes />}> */}
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      {/* </Route> */}
-      {/* <Route element={<PrivateRoutes />}> */}
-      <Route path="/dashboard" element={<DashboardPage />} />
-      {/* </Route> */}
+      <Route element={<PublicRoutes />}>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
+      <Route element={<PrivateRoutes />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
