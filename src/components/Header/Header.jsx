@@ -1,20 +1,18 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import styles from "./Header.module.scss";
-import { DocumentContext } from "../../providers/DocumentContext";
 import { RxHamburgerMenu, RxChevronDown } from "react-icons/rx";
+import { TbLogout, TbUserEdit, TbUserX } from "react-icons/tb";
 import { UserContext } from "../../providers/UserContext";
 
 const Header = () => {
-  const { setHiddenCreateDocument } = useContext(DocumentContext);
-  const { user, setDeletingUser } = useContext(UserContext);
+  const { user, setDeletingUser, userLogout } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null); // Referência para o menu
+  const menuRef = useRef(null);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Fecha o menu se clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -41,21 +39,23 @@ const Header = () => {
           {menuOpen && (
             <nav className={styles.menu}>
               <ul>
-                {/* <li>
-                  <button onClick={() => {
-                    setHiddenCreateDocument(false);
-                    setMenuOpen(false);
-                  }}>
-                    ➕ Cadastrar Documento
+                <li>
+                  <button
+                    onClick={() => {
+                      userLogout();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <TbLogout /> Sair
                   </button>
-                </li> */}
+                </li>
                 <li>
                   <button
                     onClick={() => {
                       setMenuOpen(false);
                     }}
                   >
-                    Atualizar Conta
+                    <TbUserEdit /> Atualizar
                   </button>
                 </li>
                 <li>
@@ -65,17 +65,7 @@ const Header = () => {
                       setMenuOpen(false);
                     }}
                   >
-                    Excluir Conta
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setHiddenCreateDocument(false);
-                      setMenuOpen(false);
-                    }}
-                  >
-                    Logout
+                    <TbUserX /> Excluir
                   </button>
                 </li>
               </ul>
