@@ -40,9 +40,7 @@ export const DashboardPage = () => {
           fifteenDaysFromNow.setHours(0, 0, 0, 0);
 
           return (
-            !doc.delivered && // <-- aqui garante que ele não esteja finalizado
-            docDate >= today &&
-            docDate <= fifteenDaysFromNow
+            !doc.delivered && docDate >= today && docDate <= fifteenDaysFromNow
           );
         })
       : selectedFilter === "tipo3"
