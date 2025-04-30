@@ -8,6 +8,7 @@ import { UpdateDocumentModal } from "../../components/modals/UpdateDocumentModal
 import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal/index.jsx";
 import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.jsx";
 import { UserContext } from "../../providers/UserContext/index.jsx";
+import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
 
 export const DashboardPage = () => {
   const {
@@ -17,7 +18,7 @@ export const DashboardPage = () => {
     deletingDocument,
     documentsList,
   } = useContext(DocumentContext);
-  const { deletingUser } = useContext(UserContext);
+  const { deletingUser, hiddenUpdateUser } = useContext(UserContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
@@ -39,9 +40,7 @@ export const DashboardPage = () => {
           fifteenDaysFromNow.setHours(0, 0, 0, 0);
 
           return (
-            !doc.delivered && // <-- aqui garante que ele não esteja finalizado
-            docDate >= today &&
-            docDate <= fifteenDaysFromNow
+            !doc.delivered && docDate >= today && docDate <= fifteenDaysFromNow
           );
         })
       : selectedFilter === "tipo3"
@@ -65,6 +64,7 @@ export const DashboardPage = () => {
       {editingDocument && <UpdateDocumentModal />}
       {deletingDocument && <DeleteDocumentModal />}
       {deletingUser && <DeleteUserModal />}
+      {!hiddenUpdateUser && <UpdateUserModal />}
       <fieldset>
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>
