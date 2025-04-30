@@ -5,13 +5,11 @@ export const schema = z
     name: z
       .string()
       .max(120, "Máximo 120 caracteres")
-      .min(2, "Mínimo 2 caracteres")
-      .optional(),
+      .min(2, "Mínimo 2 caracteres"),
     email: z
       .string()
       .max(120, "Máximo 120 caracteres")
-      .email("Forneça um e-mail válido")
-      .optional(),
+      .email("Forneça um e-mail válido"),
     password: z
       .string()
       .refine((val) => val === "" || (val.length >= 6 && val.length <= 120), {
@@ -19,7 +17,6 @@ export const schema = z
       })
       .optional(),
     confirmPassword: z.string().optional(),
-    admin: z.boolean().optional(),
   })
   .superRefine((data, ctx) => {
     const { password, confirmPassword } = data;
