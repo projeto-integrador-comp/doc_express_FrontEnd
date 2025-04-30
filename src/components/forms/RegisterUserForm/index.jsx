@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validator";
 import { Input } from "../Input";
 import { Link } from "react-router-dom";
+import loadingImg from "../../../assets/loading.svg";
 
 export const RegisterUserForm = () => {
   const {
@@ -63,10 +64,13 @@ export const RegisterUserForm = () => {
         <button type="submit" className="btn">
           {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
-
-        <Link to={"/"}>
-          <button className="btn transparent">Votar para o login</button>
-        </Link>
+        {loading ? (
+          <img src={loadingImg} />
+        ) : (
+          <Link to={"/"}>
+            <button className="btn transparent">Votar para o login</button>
+          </Link>
+        )}
       </div>
     </form>
   );
