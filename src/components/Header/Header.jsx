@@ -5,7 +5,8 @@ import { TbLogout, TbUserEdit, TbUserX } from "react-icons/tb";
 import { UserContext } from "../../providers/UserContext";
 
 const Header = () => {
-  const { user, setDeletingUser, userLogout } = useContext(UserContext);
+  const { user, setDeletingUser, setHiddenUpdateUser, userLogout } =
+    useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -52,6 +53,7 @@ const Header = () => {
                 <li>
                   <button
                     onClick={() => {
+                      setHiddenUpdateUser(false);
                       setMenuOpen(false);
                     }}
                   >
