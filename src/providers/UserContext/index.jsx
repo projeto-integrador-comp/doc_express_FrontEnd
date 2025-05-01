@@ -37,7 +37,7 @@ const UserProvider = ({ children }) => {
     };
 
     if (token) userAutoLogin();
-  });
+  }, []);
 
   const userLogin = async (formData, setLoading, reset) => {
     try {
