@@ -31,7 +31,7 @@ export const DocumentList = ({ documents }) => {
               onClick={() => setHiddenCreateDocument(false)}
             >
               <p className="title  textCenter">
-                Você ainda não possui usuários cadastrados
+                Você ainda não possui documentos cadastrados
               </p>
             </li>
           )}
