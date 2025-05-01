@@ -16,28 +16,28 @@ const UserProvider = ({ children }) => {
 
   const pathname = window.location.pathname;
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("@tokenDocExpress");
+  useEffect(() => {
+    const token = localStorage.getItem("@tokenDocExpress");
 
-  //   const userAutoLogin = async () => {
-  //     try {
-  //       setLoading(true);
+    const userAutoLogin = async () => {
+      try {
+        setLoading(true);
 
-  //       const { data } = await api.get("/profile", {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-  //       setUser(data.user);
-  //       setDocumentsList(data.user.documents);
-  //       navigate(pathname);
-  //     } catch (error) {
-  //       if (error.response?.status == 401) toast.error("Acesso expirado");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+        const { data } = await api.get("/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(data.user);
+        setDocumentsList(data.user.documents);
+        navigate(pathname);
+      } catch (error) {
+        if (error.response?.status == 401) toast.error("Acesso expirado");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   if (token) userAutoLogin();
-  // });
+    if (token) userAutoLogin();
+  });
 
   const userLogin = async (formData, setLoading, reset) => {
     try {
