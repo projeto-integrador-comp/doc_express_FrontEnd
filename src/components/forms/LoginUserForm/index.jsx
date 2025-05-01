@@ -6,6 +6,7 @@ import { Input } from "../Input";
 import styles from "./style.module.scss";
 import { useContext, useState } from "react";
 import { UserContext } from "../../../providers/UserContext";
+import loadingImg from "../../../assets/loading.svg";
 
 export const LoginUserForm = () => {
   const {
@@ -45,18 +46,27 @@ export const LoginUserForm = () => {
           {...register("password")}
         />
 
-        <button type="submit" className="btn">
-          {loading ? "Acessando..." : "Acessar"}
-        </button>
-        <div>
-          <p className="text bold medium textCenter">Ainda não possui conta?</p>
-          <p className="text medium gray300 textCenter">
-            Clique no botão abaixo para se cadastrar rapidamente
-          </p>
-        </div>
-        <Link to={"/register"}>
-          <button className="btn transparent">Cadastre-se</button>
-        </Link>
+        {loading ? (
+          <img src={loadingImg} />
+        ) : (
+          <div className={styles.registerBox}>
+            <button type="submit" className="btn">
+              {loading ? "Acessando..." : "Acessar"}
+            </button>
+            <div>
+              <p className="text bold medium textCenter">
+                Ainda não possui conta?
+              </p>
+              <p className="text medium gray300 textCenter">
+                Clique no botão abaixo para se cadastrar rapidamente
+              </p>
+            </div>
+
+            <Link to={"/register"}>
+              <button className="btn transparent">Cadastre-se</button>
+            </Link>
+          </div>
+        )}
       </div>
     </form>
   );

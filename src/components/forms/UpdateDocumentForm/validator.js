@@ -8,5 +8,4 @@ export const schema = z.object({
     .min(2, "Mínimo 2 caracteres")
     .nonempty("O nome é obrigatório"),
   note: z.string().max(50, "Máximo 50 caracteres").default(""),
-  delivered: z.boolean().default(false),
 });

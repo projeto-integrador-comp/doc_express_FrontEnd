@@ -6,6 +6,22 @@
   display: flex;
   flex-direction: column;
   gap: clamp(1.25rem, 4vw, 1.625rem);
+
+  .registerBox {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 4vw, 1.625rem);
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.25rem, 4vw, 1.625rem);
+    }
+  }
+  img {
+    width: 200px;
+    align-self: center;
+  }
 }
 
 @media (min-width: 760px) {

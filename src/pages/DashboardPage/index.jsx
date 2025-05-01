@@ -4,65 +4,27 @@ import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
 import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
 import { DocumentList } from "../../components/DocumentList/index.jsx";
+import { UpdateDocumentModal } from "../../components/modals/UpdateDocumentModal/index.jsx";
+import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal/index.jsx";
+import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.jsx";
+import { UserContext } from "../../providers/UserContext/index.jsx";
+import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
 
 export const DashboardPage = () => {
   const {
     hiddenCreateDocument,
+    setHiddenCreateDocument,
     editingDocument,
+    deletingDocument,
     documentsList,
-    setDocumentsList,
   } = useContext(DocumentContext);
+  const { deletingUser, hiddenUpdateUser } = useContext(UserContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [editData, setEditData] = useState(null);
-  const [docToDelete, setDocToDelete] = useState(null);
-
-  const openDeleteModal = (doc) => {
-    setDocToDelete(doc);
-  };
-
-  const confirmDelete = () => {
-    setDocumentsList((prev) => prev.filter((d) => d !== docToDelete));
-    setDocToDelete(null);
-  };
-
-  const cancelDelete = () => {
-    setDocToDelete(null);
-  };
-
-  const handleAddDocument = (newDoc) => {
-    if (editData) {
-      // Se for edição, atualiza o documento
-      const updatedDocs = documentsList.map((doc) =>
-        doc === editData ? { ...doc, ...newDoc } : doc
-      );
-      setDocumentsList(updatedDocs);
-      setEditData(null);
-    } else {
-      // Se for novo, adiciona
-      setDocumentsList([...documentsList, newDoc]);
-    }
-
-    closeModal();
-  };
-
-  const handleEditDocument = (doc) => {
-    setEditData(doc);
-    setIsModalOpen(true);
-  };
 
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
   };
-
-  const openModal = () => {
-    setEditData(null); // limpa qualquer edição anterior
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => setIsModalOpen(false);
 
   const filteredDocuments =
     selectedFilter === "tipo2"
@@ -78,9 +40,7 @@ export const DashboardPage = () => {
           fifteenDaysFromNow.setHours(0, 0, 0, 0);
 
           return (
-            !doc.delivered && // <-- aqui garante que ele não esteja finalizado
-            docDate >= today &&
-            docDate <= fifteenDaysFromNow
+            !doc.delivered && docDate >= today && docDate <= fifteenDaysFromNow
           );
         })
       : selectedFilter === "tipo3"
@@ -101,23 +61,10 @@ export const DashboardPage = () => {
     <div className={styles.container}>
       <Header />
       {!hiddenCreateDocument && <RegisterDocumentModal />}
-
-      {docToDelete && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>Deseja realmente excluir "{docToDelete.name}"?</h3>
-            <div className={styles.buttonGroup}>
-              <button onClick={confirmDelete} className={styles.closeButton}>
-                Sim, excluir
-              </button>
-              <button onClick={cancelDelete} className={styles.openButton}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {editingDocument && <UpdateDocumentModal />}
+      {deletingDocument && <DeleteDocumentModal />}
+      {deletingUser && <DeleteUserModal />}
+      {!hiddenUpdateUser && <UpdateUserModal />}
       <fieldset>
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>
@@ -168,7 +115,12 @@ export const DashboardPage = () => {
       <div className={styles.listContainer}>
         <fieldset>
           <legend>
-            <h3 className={styles.subTitle}>Documentos Cadastrados</h3>
+            <button
+              className={styles.addButton}
+              onClick={() => setHiddenCreateDocument(false)}
+            >
+              Cadastrar Documento
+            </button>
           </legend>
           <DocumentList documents={filteredDocuments} />
         </fieldset>

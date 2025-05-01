@@ -1,41 +1,44 @@
-import { useContext, useState } from "react";
-import styles from "./style.module.scss";
-import { UserContext } from "../../../providers/UserContext";
 import { useForm } from "react-hook-form";
+import styles from "./style.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validator";
+import { useContext, useState } from "react";
 import { Input } from "../Input";
-import { Link } from "react-router-dom";
-import loadingImg from "../../../assets/loading.svg";
+import Button from "../../Button/Button";
+import { UserContext } from "../../../providers/UserContext";
 
-export const RegisterUserForm = () => {
+export const UpdateUserForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: zodResolver(schema),
   });
 
   const [loading, setLoading] = useState(false);
 
-  const { userRegister } = useContext(UserContext);
+  const { user, userUpdate } = useContext(UserContext);
 
   const submit = (data) => {
-    userRegister(data, setLoading, reset);
+    if (data.email == user.email) delete data.email;
+    if (data.password == "") delete data.password;
+    if (data.confirmPassword == "") delete data.confirmPassword;
+
+    userUpdate(data, setLoading, user.id);
   };
   return (
     <form onSubmit={handleSubmit(submit)}>
-      <div className={styles.formBox}>
-        <h2 className="title textCenter">Cadastro</h2>
+      <h2 className={styles.formTitle}>Atualizar Conta</h2>
+      <div className={styles.inputContainer}>
         <Input
           label="Nome"
           type="text"
-          placeholder="Digite aqui seu nome"
+          placeholder="Digite o nome do documento"
           error={errors.name}
           disabled={loading}
           {...register("name")}
+          defaultValue={user.name}
         />
         <Input
           label="Email"
@@ -44,6 +47,7 @@ export const RegisterUserForm = () => {
           error={errors.email}
           disabled={loading}
           {...register("email")}
+          defaultValue={user.email}
         />
         <Input
           label="Senha"
@@ -61,20 +65,8 @@ export const RegisterUserForm = () => {
           disabled={loading}
           {...register("confirmPassword")}
         />
-
-        {loading ? (
-          <img src={loadingImg} />
-        ) : (
-          <div className={styles.registerBox}>
-            <button type="submit" className="btn">
-              {loading ? "Cadastrando..." : "Cadastrar"}
-            </button>
-            <Link to={"/"}>
-              <button className="btn transparent">Votar para o login</button>
-            </Link>
-          </div>
-        )}
       </div>
+      <Button type="submit">{loading ? "Atualizando..." : "Atualizar"}</Button>
     </form>
   );
 };

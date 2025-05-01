@@ -8,6 +8,7 @@ export const DocumentContext = createContext({});
 const DocumentProvider = ({ children }) => {
   const [hiddenCreateDocument, setHiddenCreateDocument] = useState(true);
   const [editingDocument, setEditingDocument] = useState(null);
+  const [deletingDocument, setdeletingDocument] = useState(null);
 
   const { documentsList, setDocumentsList } = useContext(UserContext);
 
@@ -59,8 +60,34 @@ const DocumentProvider = ({ children }) => {
       setEditingDocument(null);
       toast.success("Documento atualizado");
     } catch (error) {
-      console.log(error);
-      toast.error("Erro ao atualizar,tente novamente!");
+      if (error.response?.data.message === "User does not have this document")
+        toast.error("documento não encontrado");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const documentDelete = async (setLoading, id) => {
+    const token = localStorage.getItem("@tokenDocExpress");
+
+    try {
+      setLoading(true);
+      await api.delete(`/documents/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const newDocumentsList = documentsList.filter(
+        (document) => document.id != id
+      );
+      setDocumentsList(newDocumentsList);
+
+      setdeletingDocument(null);
+      toast.success("Documento deletado");
+    } catch (error) {
+      if (error.response?.data.message === "User does not have this document")
+        toast.error("documento não encontrado");
     } finally {
       setLoading(false);
     }
@@ -73,10 +100,13 @@ const DocumentProvider = ({ children }) => {
         setHiddenCreateDocument,
         editingDocument,
         setEditingDocument,
+        deletingDocument,
+        setdeletingDocument,
         documentsList,
         setDocumentsList,
         documentRegister,
         documentUpdate,
+        documentDelete,
       }}
     >
       {children}

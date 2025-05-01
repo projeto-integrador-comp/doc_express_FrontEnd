@@ -9,8 +9,7 @@ function App() {
 
   return (
     <>
-      {/* {loading ? <Loading /> : <RoutesMain />} */}
-      <RoutesMain />
+      {loading ? <Loading /> : <RoutesMain />}
       <ToastContainer autoClose={3 * 1000} />
     </>
   );
