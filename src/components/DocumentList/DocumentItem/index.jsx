@@ -24,7 +24,7 @@ export const DocumentItem = ({ doc }) => {
     } else if (docDate <= today && !doc.delivered) {
       return styles.statusDotRed;
     } else {
-      return "";
+      return styles.statusDotgray;
     }
   };
 
@@ -38,8 +38,6 @@ export const DocumentItem = ({ doc }) => {
   };
   const [loading, setLoading] = useState(false);
   const deliver = (doc) => {
-  
-
     documentUpdate({ delivered: !doc.delivered }, setLoading, doc.id);
   };
 
@@ -55,7 +53,8 @@ export const DocumentItem = ({ doc }) => {
         layout
         transition={{ duration: 0.3 }}
       >
-        <div className={styles.actionCell}>
+        <div className={styles.contentBox}>
+          <span className={`${styles.statusDot} ${getStatusDotClass(doc)}`} />
           <button
             type="button"
             className={`${styles.finalizeButton} ${
@@ -65,31 +64,32 @@ export const DocumentItem = ({ doc }) => {
           >
             {doc.delivered ? "Entregue" : "Entregar"}
           </button>
+
+          <div className={styles.documentContent}>
+            <div>
+              <p>{doc.documentName}</p>
+              <p>{formatDate(doc.submissionDate)}</p>
+            </div>
+            <p>{doc.note}</p>
+          </div>
         </div>
 
-        <span className={styles.documentName}>
-          <span className={`${styles.statusDot} ${getStatusDotClass(doc)}`} />
-          {doc.documentName}
-        </span>
-        <span className={styles.documentItem}>
-          {formatDate(doc.submissionDate)}
-        </span>
-
-        <button
-          className={styles.iconChangeButton}
-          onClick={() => setEditingDocument(doc)}
-          title="Editar"
-        >
-          <FaEdit />
-        </button>
-
-        <button
-          className={styles.iconDeleteButton}
-          onClick={() => setdeletingDocument(doc)}
-          title="Excluir"
-        >
-          <FaTrashAlt />
-        </button>
+        <div className={styles.buttonBox}>
+          <button
+            className={styles.iconChangeButton}
+            onClick={() => setEditingDocument(doc)}
+            title="Editar"
+          >
+            <FaEdit />
+          </button>
+          <button
+            className={styles.iconDeleteButton}
+            onClick={() => setdeletingDocument(doc)}
+            title="Excluir"
+          >
+            <FaTrashAlt />
+          </button>
+        </div>
       </motion.div>
     </li>
   );
