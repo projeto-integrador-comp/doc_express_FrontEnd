@@ -17,7 +17,7 @@ git clone git@github.com:Miguel-Lucio/PI_grupo19_FrontEnd.git
 2. Instale as dependências:
 
 ```shell
-npm run dev
+npm install
 ```
 
 3. Para Rodar a aplicação utilize o comando abaixo:
