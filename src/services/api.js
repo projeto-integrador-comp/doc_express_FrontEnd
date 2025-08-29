@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://pi-grupo19-api.onrender.com",
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 30 * 1000,
 });
