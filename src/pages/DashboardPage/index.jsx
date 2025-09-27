@@ -1,5 +1,5 @@
 import styles from "./style.module.scss";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import { DocumentContext } from "../../providers/DocumentContext";
 import { RegisterDocumentModal } from "../../components/modals/RegisterDocumentModal";
@@ -10,7 +10,7 @@ import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.j
 import { UserContext } from "../../providers/UserContext/index.jsx";
 import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
 import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
-// import { ModelDetailsModal } from "../../components/modals/ModelDetailsModal";
+import { ModelDetailsModal } from "../../components/modals/ModelDetailsModal";
 
 export const DashboardPage = () => {
   const {
@@ -19,10 +19,33 @@ export const DashboardPage = () => {
     editingDocument,
     deletingDocument,
     documentsList,
+    viewingDocument, 
+    setViewingDocument,
   } = useContext(DocumentContext);
   const { deletingUser, hiddenUpdateUser } = useContext(UserContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
+
+  // NOVO: Crie um documento falso com a mesma estrutura de um real
+  const mockDocument = {
+    title: "Documento de Teste para Visualização",
+    description: "Esta é uma descrição detalhada do documento para fins de estilização e teste do layout do modal.",
+    submissionDate: new Date().toISOString(), // Usa a data e hora atuais
+    delivered: false,
+    fileUrl: "https://www.google.com" // Um link de exemplo
+  };
+
+  // NOVO: Use o useEffect para abrir o modal assim que a página carregar
+  useEffect(() => {
+    // Define o documento falso no contexto, o que fará o modal aparecer
+    setViewingDocument(mockDocument);
+
+    // Função de limpeza para quando o componente for desmontado
+    return () => {
+      setViewingDocument(null);
+    };
+  }, []); // O array vazio [] garante que isso só rode uma vez
+
 
   // NOVO: Adicione este estado para controlar o modal de confirmação (mudar para true caso queira testar)
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -70,6 +93,9 @@ export const DashboardPage = () => {
       {deletingDocument && <DeleteDocumentModal />}
       {deletingUser && <DeleteUserModal />}
       {!hiddenUpdateUser && <UpdateUserModal />}
+
+      {/* NOVO: Renderize o ModelDetailsModal aqui. Ele não precisa de props! */}
+      {/* <ModelDetailsModal /> */}
 
 
       {/* NOVO: Renderize seu modal de confirmação aqui */}
