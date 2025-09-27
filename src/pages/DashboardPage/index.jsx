@@ -10,7 +10,7 @@ import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.j
 import { UserContext } from "../../providers/UserContext/index.jsx";
 import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
 import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
-import { ModelDetailsModal } from "../../components/modals/ModelDetailsModal";
+// import { ModelDetailsModal } from "../../components/modals/ModelDetailsModal";
 
 export const DashboardPage = () => {
   const {
@@ -24,8 +24,8 @@ export const DashboardPage = () => {
 
   const [selectedFilter, setSelectedFilter] = useState(null);
 
-  // NOVO: Adicione este estado para controlar o modal de confirmação
-  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(true);
+  // NOVO: Adicione este estado para controlar o modal de confirmação (mudar para true caso queira testar)
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
