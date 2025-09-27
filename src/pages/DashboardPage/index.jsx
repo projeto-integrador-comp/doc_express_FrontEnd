@@ -9,6 +9,8 @@ import { DeleteDocumentModal } from "../../components/modals/DeleteDocumentModal
 import { DeleteUserModal } from "../../components/modals/DeleteUserModal/index.jsx";
 import { UserContext } from "../../providers/UserContext/index.jsx";
 import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
+import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
+import { ModelDetailsModal } from "../../components/modals/ModelDetailsModal";
 
 export const DashboardPage = () => {
   const {
@@ -21,6 +23,9 @@ export const DashboardPage = () => {
   const { deletingUser, hiddenUpdateUser } = useContext(UserContext);
 
   const [selectedFilter, setSelectedFilter] = useState(null);
+
+  // NOVO: Adicione este estado para controlar o modal de confirmação
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(true);
 
   const handleFilterChange = (e) => {
     setSelectedFilter(e.target.value);
@@ -65,6 +70,20 @@ export const DashboardPage = () => {
       {deletingDocument && <DeleteDocumentModal />}
       {deletingUser && <DeleteUserModal />}
       {!hiddenUpdateUser && <UpdateUserModal />}
+
+
+      {/* NOVO: Renderize seu modal de confirmação aqui */}
+      {isConfirmationModalOpen && (
+        <DeleteConfirmationModal
+            // As props abaixo são suposições. Verifique seu componente!
+            isOpen={isConfirmationModalOpen}
+            onClose={() => setIsConfirmationModalOpen(false)}
+            onConfirm={() => console.log("Confirmado!")}
+            title="Tem certeza?"
+            message="Esta ação é permanente e não pode ser desfeita."
+        />
+      )}
+
       <fieldset>
         <div className={styles.filterContainer}>
           <div className={styles.filterOptions}>

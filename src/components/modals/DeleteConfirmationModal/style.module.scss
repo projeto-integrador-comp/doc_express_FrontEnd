@@ -1,0 +1,189 @@
+/* --- Variáveis --- */
+// Paleta de Cores
+$color-primary: #007bff;
+$color-danger: #dc3545;
+$color-danger-hover: #c82333;
+$color-secondary-bg: #f1f3f5;
+$color-secondary-hover: #e9ecef;
+$color-text-primary: #212529;
+$color-text-secondary: #495057;
+$color-border: #dee2e6;
+$color-background: #ffffff;
+$color-overlay: rgba(18, 26, 38, 0.6);
+
+// Tipografia
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+// Outros
+$border-radius: 8px;
+$transition-speed: 0.25s;
+$box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+
+/* --- Animações --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Estilos do Modal --- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $color-overlay;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn $transition-speed ease-out;
+}
+
+.modalContent {
+  background: $color-background;
+  padding: 2rem;
+  border-radius: $border-radius;
+  width: 90%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: $box-shadow;
+  font-family: $font-family-base;
+  animation: slideInUp $transition-speed ease-out;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid $color-border;
+
+  h2 {
+    font-size: 1.5rem;
+    color: $color-text-primary;
+    margin: 0;
+  }
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  line-height: 0.5;
+  cursor: pointer;
+  color: #adb5bd;
+  transition: color $transition-speed ease;
+
+  &:hover {
+    color: $color-text-primary;
+  }
+}
+
+.modalBody {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: $color-text-secondary;
+  
+  // Estilo para o parágrafo de confirmação
+  p {
+    margin: 0;
+  }
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid $color-border;
+}
+
+// Base para todos os botões no rodapé
+.modalFooter button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all $transition-speed ease;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+/* --- Botão de Cancelar (Ação Secundária) --- */
+.cancelButton {
+  background-color: $color-secondary-bg;
+  color: $color-text-secondary;
+
+  &:hover {
+    background-color: $color-secondary-hover;
+    transform: translateY(-2px);
+  }
+}
+
+/* --- Botão de Confirmar (Ação Destrutiva) --- */
+.confirmButton {
+  background-color: $color-danger;
+  color: white;
+  
+  &:hover {
+    background-color: $color-danger-hover;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($color-danger, 0.3);
+  }
+
+  &:focus-visible {
+    outline-color: $color-danger;
+  }
+}
+
+/* --- Estilos antigos para referência (se ainda usar) --- */
+.detailsList {
+  display: grid;
+  gap: 1rem;
+  dt { font-weight: bold; color: #555; }
+  dd { margin: 0; padding: 0.5rem; background-color: #f9f9f9; border-radius: 4px; }
+}
+.statusDelivered { color: #28a745; font-weight: bold; }
+.statusPending { color: #ffc107; font-weight: bold; }
+
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .modalHeader h2 {
+    font-size: 1.25rem;
+  }
+  
+  .modalFooter {
+    flex-direction: column-reverse; // Empilha os botões em telas menores
+    
+    button {
+      width: 100%;
+    }
+  }
+}

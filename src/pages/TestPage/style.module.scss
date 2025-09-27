@@ -1,0 +1,56 @@
+.container {
+  padding: 2rem;
+  font-family: sans-serif;
+  background-color: #f4f7f9;
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+  }
+  p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+  }
+}
+
+.feedback {
+  background-color: #ecf0f1;
+  border-left: 5px solid #3498db;
+  padding: 1rem;
+  margin: 0 auto 2rem auto;
+  max-width: 800px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.testButton {
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid #3498db;
+  background-color: white;
+  color: #3498db;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+}
