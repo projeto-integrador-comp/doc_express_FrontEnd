@@ -3,6 +3,7 @@ import styles from "./Header.module.scss";
 import { RxHamburgerMenu, RxChevronDown } from "react-icons/rx";
 import { TbLogout, TbUserEdit, TbUserX } from "react-icons/tb";
 import { UserContext } from "../../providers/UserContext";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { user, setDeletingUser, setHiddenUpdateUser, userLogout } =
@@ -31,6 +32,11 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.headerContainer}>
         <h1 className={styles.logo}>DocExpress</h1>
+
+        <nav>
+          <Link to="/upload">Upload</Link>
+          <Link to="/dashboard">Dashboard</Link>
+        </nav>
 
         <div className={styles.menuContainer} ref={menuRef}>
           <button className={styles.menuButton} onClick={toggleMenu}>

@@ -5,6 +5,7 @@ import { DashboardPage } from "../pages/DashboardPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import { PublicRoutes } from "./PublicRoutes";
 import { PrivateRoutes } from "./PrivateRoutes";
+import UploadPage from "../pages/UploadPage/UploadPage";
 
 export const RoutesMain = () => {
   return (
@@ -15,6 +16,9 @@ export const RoutesMain = () => {
       </Route>
       <Route element={<PrivateRoutes />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+      <Route element={<PrivateRoutes />}>
+        <Route path="/upload" element={<UploadPage />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
     </Routes>
