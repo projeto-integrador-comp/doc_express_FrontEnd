@@ -5,6 +5,7 @@ import { DashboardPage } from "../pages/DashboardPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import { PublicRoutes } from "./PublicRoutes";
 import { PrivateRoutes } from "./PrivateRoutes";
+import { ModelListPage } from "../pages/ModelListPage";
 
 export const RoutesMain = () => {
   return (
@@ -13,10 +14,17 @@ export const RoutesMain = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
-      <Route element={<PrivateRoutes />}>
+      <Route element={<PublicRoutes />}>
         <Route path="/dashboard" element={<DashboardPage />} />
       </Route>
       <Route path="*" element={<ErrorPage />} />
+      <Route>
+        <Route element={<PublicRoutes />}>
+          <Route path="/models" element={<ModelListPage />} />
+        </Route>
+      </Route>
     </Routes>
+
+    
   );
 };
