@@ -9,6 +9,7 @@ const DocumentProvider = ({ children }) => {
   const [hiddenCreateDocument, setHiddenCreateDocument] = useState(true);
   const [editingDocument, setEditingDocument] = useState(null);
   const [deletingDocument, setdeletingDocument] = useState(null);
+  const [viewingDocument, setViewingDocument] = useState(null);
 
   const { documentsList, setDocumentsList } = useContext(UserContext);
 
@@ -107,6 +108,8 @@ const DocumentProvider = ({ children }) => {
         documentRegister,
         documentUpdate,
         documentDelete,
+        viewingDocument,
+        setViewingDocument,
       }}
     >
       {children}
