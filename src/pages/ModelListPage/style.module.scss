@@ -1,4 +1,13 @@
 .container {
   color: var(--gray200);
   margin: 0 auto;
+
+  h1 {
+    text-align: center;
+    padding: 2rem 0;
+    margin: auto;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: var(--gray100);
+  }
 }
