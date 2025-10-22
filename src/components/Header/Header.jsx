@@ -34,10 +34,9 @@ const Header = () => {
         <h1 className={styles.logo}>DocExpress</h1>
 
         <nav>
-          <div>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/models">Modelos</Link>
-          </div>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/models">Modelos</Link>
+          <Link to="/upload">Upload</Link>
         </nav>
 
         <div className={styles.menuContainer} ref={menuRef}>

@@ -43,27 +43,55 @@ export const ModelDetailsModal = () => {
     setViewingModel(null);
   };
 
-  const handleDownload = async () => {
-    if (downloading) return;
+  // const handleDownload = async () => {
+  //   if (downloading) return;
 
-    setDownloading(true);
+  //   setDownloading(true);
+
+  //   try {
+  //     // Use sua API local como proxy para o download
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/templates/${viewingModel.id}/download`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`Erro ${response.status}`);
+  //     }
+
+  //     const blob = await response.blob();
+  //     const url = window.URL.createObjectURL(blob);
+  //     const link = document.createElement("a");
+  //     link.href = url;
+  //     link.download = viewingModel.fileName;
+  //     document.body.appendChild(link);
+  //     link.click();
+
+  //     window.URL.revokeObjectURL(url);
+  //     document.body.removeChild(link);
+
+  //     toast.success("Download realizado com sucesso!");
+  //   } catch (error) {
+  //     console.error("Erro no download:", error);
+  //     toast.error("Erro ao baixar o arquivo");
+
+  //     // Fallback: tenta abrir diretamente (pode não funcionar por CORS)
+  //     window.open(viewingModel.fileUrl, "_blank");
+  //   } finally {
+  //     setDownloading(false);
+  //   }
+  // };
+
+  const handleDownload = async () => {
+    if (!viewingModel?.fileUrl) return;
 
     try {
-      // Use sua API local como proxy para o download
-      const response = await fetch(
-        `http://localhost:3000/templates/${viewingModel.id}/download`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}`);
-      }
-
+      const response = await fetch(viewingModel.fileUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -71,19 +99,10 @@ export const ModelDetailsModal = () => {
       link.download = viewingModel.fileName;
       document.body.appendChild(link);
       link.click();
-
-      window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
-
       toast.success("Download realizado com sucesso!");
-    } catch (error) {
-      console.error("Erro no download:", error);
+    } catch (err) {
       toast.error("Erro ao baixar o arquivo");
-
-      // Fallback: tenta abrir diretamente (pode não funcionar por CORS)
-      window.open(viewingModel.fileUrl, "_blank");
-    } finally {
-      setDownloading(false);
     }
   };
 
