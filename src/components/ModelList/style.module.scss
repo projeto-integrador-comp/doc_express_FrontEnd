@@ -1,14 +1,33 @@
+.container {
+  margin: 0 auto;
+  padding: 0 6rem;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
+
 .modelGrid {
   display: flex;
   flex-wrap: wrap;
-  // gap: 1rem;
-  justify-content: center;
-  padding: 1rem;
+  gap: 1rem;
+  justify-content: flex-start; // Desktop: alinha à esquerda
+  padding: 1rem 0;
+  max-width: 105rem;
+  width: 100%;
+
+  // Mobile: centraliza o conteúdo
+  @media (max-width: 767px) {
+    justify-content: center;
+  }
 }
 
-.emptyMessage {
+.empty {
   text-align: center;
   padding: 2rem;
   color: var(--gray300);
   font-family: var(--font-primary);
+  width: 100%;
 }
