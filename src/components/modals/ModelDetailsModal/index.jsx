@@ -1,14 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useState } from "react";
 import styles from "./style.module.scss";
 import { UserContext } from "../../../providers/UserContext";
 import { DocumentContext } from "../../../providers/DocumentContext";
 import { ModelContext } from "../../../providers/ModelContext";
 import { toast } from "react-toastify";
+import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 
 const DownloadIcon = () => (
   <svg
-    width="24"
-    height="24"
+    width="16"
+    height="16"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -30,66 +32,154 @@ const DownloadIcon = () => (
   </svg>
 );
 
-export const ModelDetailsModal = () => {
-  const { viewingModel, setViewingModel } = useContext(ModelContext);
-  const [downloading, setDownloading] = useState(false);
+const EditIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
-  // Se não há documento selecionado para visualização, o modal não renderiza nada.
+const DeleteIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ModelDetailsModal = () => {
+  const {
+    viewingModel,
+    setViewingModel,
+    updateModel,
+    deleteModel,
+    loadModels,
+  } = useContext(ModelContext);
+
+  const [downloading, setDownloading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedModel, setEditedModel] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   if (!viewingModel) {
     return null;
   }
 
   const handleClose = () => {
     setViewingModel(null);
+    setIsEditing(false);
+    setEditedModel(null);
+    setShowDeleteModal(false);
   };
 
-  // const handleDownload = async () => {
-  //   if (downloading) return;
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedModel({
+      name: viewingModel.name,
+      description: viewingModel.description,
+    });
+  };
 
-  //   setDownloading(true);
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedModel(null);
+  };
 
-  //   try {
-  //     // Use sua API local como proxy para o download
-  //     const response = await fetch(
-  //       `${import.meta.env.VITE_API_URL}/templates/${viewingModel.id}/download`,
-  //       {
-  //         method: "GET",
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
-  //         },
-  //       }
-  //     );
+  const handleSave = async () => {
+    if (!editedModel) return;
 
-  //     if (!response.ok) {
-  //       throw new Error(`Erro ${response.status}`);
-  //     }
+    // Validação básica
+    if (!editedModel.name.trim()) {
+      toast.error("O nome do modelo é obrigatório");
+      return;
+    }
 
-  //     const blob = await response.blob();
-  //     const url = window.URL.createObjectURL(blob);
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.download = viewingModel.fileName;
-  //     document.body.appendChild(link);
-  //     link.click();
+    setSaving(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/templates/${viewingModel.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
+          },
+          body: JSON.stringify({
+            name: editedModel.name.trim(),
+            description: editedModel.description.trim(),
+          }),
+        }
+      );
 
-  //     window.URL.revokeObjectURL(url);
-  //     document.body.removeChild(link);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
 
-  //     toast.success("Download realizado com sucesso!");
-  //   } catch (error) {
-  //     console.error("Erro no download:", error);
-  //     toast.error("Erro ao baixar o arquivo");
+      const updatedModel = await response.json();
 
-  //     // Fallback: tenta abrir diretamente (pode não funcionar por CORS)
-  //     window.open(viewingModel.fileUrl, "_blank");
-  //   } finally {
-  //     setDownloading(false);
-  //   }
-  // };
+      // ATUALIZA O CONTEXTO - IMPORTANTE!
+      if (updateModel) {
+        updateModel(viewingModel.id, updatedModel);
+      }
+
+      // Recarrega a lista para garantir sincronização
+      if (loadModels) {
+        await loadModels();
+      }
+
+      setIsEditing(false);
+      setEditedModel(null);
+      toast.success("Modelo atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar modelo:", error);
+      toast.error(error.message || "Erro ao atualizar o modelo");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditedModel((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleDownload = async () => {
     if (!viewingModel?.fileUrl) return;
 
+    setDownloading(true);
     try {
       const response = await fetch(viewingModel.fileUrl);
       const blob = await response.blob();
@@ -103,10 +193,57 @@ export const ModelDetailsModal = () => {
       toast.success("Download realizado com sucesso!");
     } catch (err) {
       toast.error("Erro ao baixar o arquivo");
+    } finally {
+      setDownloading(false);
     }
   };
 
-  // Formatando a data para melhor exibição
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setDeleting(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/templates/${viewingModel.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Erro ${response.status}`);
+      }
+
+      // ATUALIZA O CONTEXTO - IMPORTANTE!
+      if (deleteModel) {
+        deleteModel(viewingModel.id);
+      }
+
+      // Recarrega a lista para garantir sincronização
+      if (loadModels) {
+        await loadModels();
+      }
+
+      toast.success("Modelo excluído com sucesso!");
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Erro ao excluir modelo:", error);
+      toast.error(error.message || "Erro ao excluir o modelo");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+
   const formattedDate = new Date(viewingModel.createdAt).toLocaleDateString(
     "pt-BR",
     {
@@ -117,55 +254,129 @@ export const ModelDetailsModal = () => {
   );
 
   return (
-    <div role="dialog" aria-modal="true" className={styles.modalOverlay}>
-      <div className={styles.modalContent} aria-labelledby="modal-title">
-        <header className={styles.modalHeader}>
-          <h2 id="modal-title">Detalhes do Modelo</h2>
-          <button
-            onClick={handleClose}
-            className={styles.closeButton}
-            aria-label="Fechar modal"
-          >
-            &times;
-          </button>
-        </header>
+    <>
+      <div role="dialog" aria-modal="true" className={styles.modalOverlay}>
+        <div className={styles.modalContent} aria-labelledby="modal-title">
+          <header className={styles.modalHeader}>
+            <h2 id="modal-title">Detalhes do Modelo</h2>
+            <button
+              onClick={handleClose}
+              className={styles.closeButton}
+              aria-label="Fechar modal"
+            >
+              &times;
+            </button>
+          </header>
 
-        <main className={styles.modalBody}>
-          <dl className={styles.detailsList}>
-            <dt>Nome do Modelo:</dt>
-            <dd>{viewingModel.name}</dd>
+          <main className={styles.modalBody}>
+            <dl className={styles.detailsList}>
+              <dt>Nome do Modelo:</dt>
+              <dd>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedModel?.name || ""}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    className={styles.editInput}
+                    placeholder="Digite o nome do modelo"
+                  />
+                ) : (
+                  viewingModel.name
+                )}
+              </dd>
 
-            <dt>Descrição:</dt>
-            <dd>{viewingModel.description}</dd>
+              <dt>Descrição:</dt>
+              <dd>
+                {isEditing ? (
+                  <textarea
+                    value={editedModel?.description || ""}
+                    onChange={(e) =>
+                      handleInputChange("description", e.target.value)
+                    }
+                    className={styles.editTextarea}
+                    rows="3"
+                    placeholder="Digite a descrição do modelo"
+                  />
+                ) : (
+                  viewingModel.description || "Sem descrição"
+                )}
+              </dd>
 
-            <dt>Data de Criação:</dt>
-            <dd>{formattedDate}</dd>
+              <dt>Data de Criação:</dt>
+              <dd>{formattedDate}</dd>
 
-            {/* Adicionei informações extras do modelo */}
-            <dt>Arquivo:</dt>
-            <dd>{viewingModel.fileName}</dd>
+              <dt>Arquivo:</dt>
+              <dd>{viewingModel.fileName}</dd>
 
-            <dt>Tamanho:</dt>
-            <dd>{(viewingModel.fileSize / 1024).toFixed(2)} KB</dd>
+              <dt>Tamanho:</dt>
+              <dd>{(viewingModel.fileSize / 1024).toFixed(2)} KB</dd>
+            </dl>
+          </main>
 
-            {/* <dt>Status:</dt>
-            <dd className={viewingDocument.delivered ? styles.statusDelivered : styles.statusPending}>
-              {viewingDocument.delivered ? "Entregue" : "Pendente"}
-            </dd> */}
-          </dl>
-        </main>
-
-        <footer className={styles.modalFooter}>
-          <button
-            onClick={handleDownload}
-            className={styles.downloadButton}
-            disabled={downloading}
-          >
-            <DownloadIcon />
-            <span>{downloading ? "Baixando..." : "Download"}</span>
-          </button>
-        </footer>
+          <footer className={styles.modalFooter}>
+            <div className={styles.footerActions}>
+              {!isEditing ? (
+                <>
+                  <button
+                    onClick={handleEdit}
+                    className={styles.editButton}
+                    aria-label="Editar modelo"
+                  >
+                    <EditIcon />
+                    <span>Editar</span>
+                  </button>
+                  <button
+                    onClick={handleDeleteClick}
+                    className={styles.deleteButton}
+                    aria-label="Excluir modelo"
+                  >
+                    <DeleteIcon />
+                    <span>Excluir</span>
+                  </button>
+                  <button
+                    onClick={handleDownload}
+                    className={styles.downloadButton}
+                    disabled={downloading}
+                    aria-label={
+                      downloading ? "Baixando arquivo..." : "Baixar arquivo"
+                    }
+                  >
+                    <DownloadIcon />
+                    <span>{downloading ? "Baixando..." : "Download"}</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleCancelEdit}
+                    className={styles.cancelButton}
+                    disabled={saving}
+                    aria-label="Cancelar edição"
+                  >
+                    <span>Cancelar</span>
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className={styles.saveButton}
+                    disabled={saving || !editedModel?.name?.trim()}
+                    aria-label="Salvar alterações"
+                  >
+                    <span>{saving ? "Salvando..." : "Confirmar"}</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </footer>
+        </div>
       </div>
-    </div>
+
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Excluir Modelo"
+        message={`Tem certeza que deseja excluir o modelo "${viewingModel.name}"? Esta ação não pode ser desfeita.`}
+      />
+    </>
   );
 };

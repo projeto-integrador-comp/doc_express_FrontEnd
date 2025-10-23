@@ -1,4 +1,5 @@
 import { useContext, useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styles from "./Header.module.scss";
 import { RxHamburgerMenu, RxChevronDown } from "react-icons/rx";
 import { TbLogout, TbUserEdit, TbUserX } from "react-icons/tb";
@@ -10,6 +11,7 @@ const Header = () => {
     useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -28,15 +30,35 @@ const Header = () => {
     };
   }, []);
 
+  // Função para verificar se o link é da página atual
+  const isActiveLink = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
         <h1 className={styles.logo}>DocExpress</h1>
 
         <nav>
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/models">Modelos</Link>
-          <Link to="/upload">Upload</Link>
+          <Link
+            to="/dashboard"
+            className={isActiveLink("/dashboard") ? styles.active : ""}
+          >
+            Dashboard
+          </Link>
+          <Link
+            to="/models"
+            className={isActiveLink("/models") ? styles.active : ""}
+          >
+            Modelos
+          </Link>
+          <Link
+            to="/upload"
+            className={isActiveLink("/upload") ? styles.active : ""}
+          >
+            Upload
+          </Link>
         </nav>
 
         <div className={styles.menuContainer} ref={menuRef}>
