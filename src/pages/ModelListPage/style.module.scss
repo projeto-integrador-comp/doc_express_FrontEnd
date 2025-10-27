@@ -11,3 +11,58 @@
     color: var(--color-primary);
   }
 }
+
+.filterContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; // Para responsividade
+  gap: 16px;
+  margin-bottom: 24px;  
+  max-width: 1200px; /* ou o mesmo valor usado no grid dos modelos */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px; /* adiciona respiro interno lateral */
+}
+
+.searchInput {
+  flex-grow: 1; // Faz a barra de busca ocupar o espaço disponível
+  min-width: 250px; // Largura mínima
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  }
+}
+
+.filterButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.filterButton {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  // Classe 'active' que será aplicada via React
+  &.active {
+    background-color: #007bff; // O azul dos seus botões "Visualizar"
+    color: white;
+    border-color: #007bff;
+  }
+}
