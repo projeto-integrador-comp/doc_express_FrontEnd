@@ -1,48 +1,51 @@
-import React, {
-  useState,
-  DragEvent,
-  ChangeEvent,
-  FormEvent,
-  ChangeEventHandler,
-} from "react";
+import React, { useState, DragEvent, ChangeEvent, FormEvent } from "react";
 import styles from "./style.module.scss";
 import Header from "../../components/Header/Header";
 import { supabase } from "../../services/supabaseClient";
 
-// dados do formulário
+// -------------------------------
+// INTERFACE DOS DADOS DO FORMULÁRIO
+// -------------------------------
 interface FormData {
   documentName: string;
   documentDescription: string;
   file: File | null;
 }
 
-// ----------------------------------------------------------------------
-// FUNÇÃO DE UTILIDADE: Remove acentos e caracteres especiais do nome do arquivo
-// ----------------------------------------------------------------------
+// -------------------------------
+// PROPS DO COMPONENTE
+// -------------------------------
+interface UploadPageProps {
+  onUploadSuccess?: () => void; // função para atualizar a lista de modelos
+}
+
+// -------------------------------
+// FUNÇÃO PARA LIMPAR O NOME DO ARQUIVO
+// -------------------------------
 const sanitizeString = (str: string) => {
   return str
-    .normalize("NFD") // decompõe os caracteres (ex: 'ç' vira 'c' + cedilha)
-    .replace(/[\u0300-\u036f]/g, "") // remove acentos
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "") // remove tudo que não for letra, número, espaço ou hífen
-    .trim() // remove espaços do início/fim
-    .replace(/\s+/g, "_"); // substitui espaços por underscores
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "_");
 };
 
-const UploadPage: React.FC = () => {
-  // armazena o nome do arquivo selecionado e os dados do formulário
+// -------------------------------
+// COMPONENTE PRINCIPAL
+// -------------------------------
+const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   const [formData, setFormData] = useState<FormData>({
     documentName: "",
     documentDescription: "",
     file: null,
   });
   const [fileName, setFileName] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // estado de Carregamento
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (
-    event: ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({
       ...formData,
@@ -50,39 +53,30 @@ const UploadPage: React.FC = () => {
     });
   };
 
-  // seleção de arquivo
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
+    if (event.target.files?.length) {
       const selectedFile = event.target.files[0];
       setFileName(selectedFile.name);
-      setFormData((prev) => ({
-        ...prev,
-        file: selectedFile,
-      }));
+      setFormData({ ...formData, file: selectedFile });
     }
   };
 
-  // Drag & Drop
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+    if (event.dataTransfer.files?.length) {
       const droppedFile = event.dataTransfer.files[0];
       setFileName(droppedFile.name);
-      setFormData((prev) => ({
-        ...prev,
-        file: droppedFile,
-      }));
+      setFormData({ ...formData, file: droppedFile });
     }
   };
 
-  // permite o arraste aqui
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  // ----------------------------------------------------------------------
-  // FUNÇÃO PRINCIPAL DE UPLOAD PARA O SUPABASE
-  // ----------------------------------------------------------------------
+  // -----------------------------------------------------
+  // ENVIO DE ARQUIVO (LOCAL OU SUPABASE, AUTOMÁTICO)
+  // -----------------------------------------------------
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -91,80 +85,88 @@ const UploadPage: React.FC = () => {
       return;
     }
 
-    setIsLoading(true); // INICIA O CARREGAMENTO
-
-    const bucketName = "templates"; // nome do bucket no supabase
-    const file = formData.file;
+    setIsLoading(true);
 
     try {
-      // cria um nome de arquivo seguro e único
-      const fileExtension = formData.file.name.split(".").pop();
-      const safeDocumentName = sanitizeString(formData.documentName); // arruma o nome pro supabase não quebrar
-      const uniqueFileName = `${safeDocumentName}-${Date.now()}.${fileExtension}`;
-      const filePath = `uploads/${uniqueFileName}`;
+      const isLocalhost = window.location.hostname === "localhost";
+      const file = formData.file;
 
-      // UPLOAD PARA O SUPABASE STORAGE
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from(bucketName)
-        .upload(filePath, formData.file, {
-          cacheControl: "3600",
-          upsert: false,
-          contentType: file.type,
+      if (isLocalhost) {
+        // 🔹 MODO LOCAL: envia via API do backend (Multer + TypeORM)
+        const form = new FormData();
+        form.append("name", formData.documentName);
+        form.append("description", formData.documentDescription);
+        form.append("file", file);
+
+        const response = await fetch("http://localhost:3000/templates", {
+          method: "POST",
+          body: form,
         });
 
-      if (uploadError) {
-        console.error("Erro ao enviar para o Storage:", uploadError);
-        alert(`Falha no upload do arquivo: ${uploadError.message}`);
-        return;
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Erro no upload local: ${errorText}`);
+        }
+
+        alert("Arquivo salvo localmente com sucesso!");
+      } else {
+        // 🔹 MODO PRODUÇÃO: envia via SUPABASE
+        const bucketName = "templates";
+        const fileExtension = file.name.split(".").pop();
+        const safeDocumentName = sanitizeString(formData.documentName);
+        const uniqueFileName = `${safeDocumentName}-${Date.now()}.${fileExtension}`;
+        const filePath = `uploads/${uniqueFileName}`;
+
+        // Upload no storage do Supabase
+        const { error: uploadError } = await supabase.storage
+          .from(bucketName)
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: file.type,
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from(bucketName)
+          .getPublicUrl(filePath);
+
+        const publicUrl = urlData.publicUrl;
+
+        const now = new Date().toISOString();
+        const templateData = {
+          name: formData.documentName,
+          description: formData.documentDescription,
+          fileName: file.name,
+          fileSize: file.size,
+          mimeType: file.type,
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
+          fileUrl: publicUrl,
+        };
+
+        const { error: dbError } = await supabase
+          .from("templates")
+          .insert([templateData]);
+
+        if (dbError) throw dbError;
+
+        alert("Arquivo enviado e salvo no Supabase com sucesso!");
       }
 
-      // pega a URL pública do arquivo
-      const { data: urlData } = supabase.storage
-        .from(bucketName)
-        .getPublicUrl(filePath);
-
-      const publicUrl = urlData.publicUrl;
-
-      // Dados para salvar na tabela "templates"
-      const now = new Date().toISOString();
-      const templateData = {
-        name: formData.documentName,
-        description: formData.documentDescription,
-        fileName: file.name,
-        fileSize: file.size,
-        mimeType: file.type,
-        isActive: true,
-        createdAt: now,
-        updatedAt: now,
-        fileUrl: publicUrl,
-      };
-
-      // 2. SALVAR DADOS NO BANCO DE DADOS (tabela de documentos)
-      const { error: dbError } = await supabase
-        .from("templates") // <-- nome da tabela do db
-        .insert([templateData]);
-
-      if (dbError) {
-        console.error("Erro ao salvar no DB:", dbError);
-        alert(
-          `Upload do arquivo OK, mas falha ao salvar registro: ${dbError.message}`
-        );
-        // talvez deletar o arquivo do Storage para limpeza?:
-        // await supabase.storage.from(bucketName).remove([uploadData.path]);
-        return;
-      }
-
-      alert(
-        `Sucesso! Documento "${formData.documentName}" enviado e registrado.`
-      );
-      // limpa o formulário após o sucesso
+      // limpa o formulário
       setFormData({ documentName: "", documentDescription: "", file: null });
       setFileName(null);
-    } catch (error) {
-      console.error("Erro geral no formulário:", error);
-      alert("Ocorreu um erro inesperado. Verifique o console.");
+
+      // 🔹 Atualiza a lista de modelos
+      if (onUploadSuccess) onUploadSuccess();
+    } catch (error: any) {
+      console.error("Erro no upload:", error);
+      alert(error.message || "Erro ao enviar o arquivo.");
     } finally {
-      setIsLoading(false); // FINALIZA O CARREGAMENTO
+      setIsLoading(false);
     }
   };
 
@@ -178,7 +180,6 @@ const UploadPage: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit} className={styles.documentForm}>
-          {/* CAMPOS DO FORMULÁRIO */}
           <div className={styles.formGroup}>
             <label htmlFor="documentName">Nome do Documento:</label>
             <input
@@ -204,10 +205,8 @@ const UploadPage: React.FC = () => {
             />
           </div>
 
-          {/* ÁREA DE UPLOAD NO FINAL DO FORMULÁRIO */}
           <div className={styles.uploadAreaContainer}>
             <h3 className={styles.uploadHeader}>Anexar Arquivo</h3>
-
             <div
               className={styles.dropArea}
               onDrop={handleDrop}
@@ -233,7 +232,7 @@ const UploadPage: React.FC = () => {
           <button
             type="submit"
             className={styles.submitButton}
-            disabled={!formData.file || !formData.documentName || isLoading} // desabilitado no loading
+            disabled={!formData.file || !formData.documentName || isLoading}
           >
             {isLoading ? "Enviando..." : "Salvar e Enviar Documento"}
           </button>
