@@ -6,10 +6,9 @@ export const ModelItem = ({ model }) => {
   const { setViewingModel } = useContext(ModelContext);
 
   const handleViewClick = () => {
-    setViewingModel(model); // Define o modelo que será visualizado no modal
+    setViewingModel(model);
   };
 
-  // Extrair o tipo de arquivo do fileName
   const getFileType = () => {
     if (model.fileName) {
       const extension = model.fileName.split(".").pop().toLowerCase();
@@ -20,7 +19,6 @@ export const ModelItem = ({ model }) => {
 
   const fileType = getFileType();
 
-  // Função para determinar a cor baseada no tipo de arquivo
   const getFileTypeStyle = (type) => {
     const typeColors = {
       pdf: "var(--orange)",
@@ -30,13 +28,9 @@ export const ModelItem = ({ model }) => {
       xls: "var(--green)",
       default: "var(--gray700)",
     };
-
-    return {
-      backgroundColor: typeColors[type] || typeColors.default,
-    };
+    return { backgroundColor: typeColors[type] || typeColors.default };
   };
 
-  // Função para formatar o texto do tipo de arquivo
   const getFileTypeText = (type) => {
     const typeTexts = {
       pdf: "PDF",
@@ -45,7 +39,6 @@ export const ModelItem = ({ model }) => {
       xlsx: "XLSX",
       xls: "XLS",
     };
-
     return typeTexts[type] || type.toUpperCase();
   };
 

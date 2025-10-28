@@ -1,11 +1,7 @@
-import { ModelContext } from "../../providers/ModelContext";
 import { ModelItem } from "./ModelItem";
 import styles from "./style.module.scss";
-import { useContext } from "react";
 
-export const ModelList = () => {
-  const { models } = useContext(ModelContext);
-
+export const ModelList = ({ models = [] }) => {
   return (
     <div className={styles.container}>
       <div className={styles.modelGrid}>
@@ -14,7 +10,7 @@ export const ModelList = () => {
         ) : (
           <div className={styles.empty}>
             <p className="title textCenter">
-              Você ainda não possui modelos cadastrados
+              Nenhum modelo encontrado.
             </p>
           </div>
         )}
