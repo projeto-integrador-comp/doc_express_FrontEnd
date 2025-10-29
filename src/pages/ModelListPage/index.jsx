@@ -4,20 +4,17 @@ import { ModelList } from "../../components/ModelList";
 import styles from "./style.module.scss";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../providers/UserContext";
-import { api } from "../../services/api";
+import { ModelContext } from "../../providers/ModelContext";
 
-// Tipos para os botões
 const TIPOS_FILTRO = ["todos", "DOCX", "XLSX", "PDF"];
 
 export const ModelListPage = () => {
-  const [models, setModels] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { models, loading, loadModels } = useContext(ModelContext);
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("todos");
-
-  const { user } = useContext(UserContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
@@ -25,24 +22,9 @@ export const ModelListPage = () => {
       return;
     }
 
-    const fetchModels = async () => {
-      try {
-        setLoading(true);
-        const token = localStorage.getItem("@tokenDocExpress");
-
-        const response = await api.get("/templates", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setModels(response.data);
-      } catch (error) {
-        console.error("❌ Erro:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchModels();
+    // SEMPRE carrega os modelos quando o usuário acessa a página
+    loadModels();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   // 🔹 FILTRO 1: Busca (por título/descrição)
