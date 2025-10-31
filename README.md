@@ -188,12 +188,16 @@ Este projeto foi desenvolvido como parte do **Projeto Integrador - UNIVESP**.
 
 ### 👥 Nossa Equipe
 
-[![Juliano Lima](https://github.com/julianohbl.png?size=100)](https://github.com/julianohbl)
-[![Miguel Lucio](https://github.com/Miguel-Lucio.png?size=100)](https://github.com/Miguel-Lucio)
-[![Felipe Reis](https://github.com/felipecsr.png?size=100)](https://github.com/felipecsr)
-[![Layla Nechy](https://github.com/Nu-li.png?size=100)](https://github.com/Nu-li)
+<a href="https://github.com/julianohbl"><img src="https://github.com/julianohbl.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/Miguel-Lucio"><img src="https://github.com/Miguel-Lucio.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/felipecsr"><img src="https://github.com/felipecsr.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/Nu-li"><img src="https://github.com/Nu-li.png?size=100" width="100" height="100"></a>
 
-[![Henrique Kriguer](https://github.com/Henrique-Kriguer.png?size=100)](https://github.com/Henrique-Kriguer)
-[![Rubens Laurindo](https://github.com/rubenslaurindo.png?size=100)](https://github.com/rubenslaurindo)
+<br>
+
+<a href="https://github.com/Henrique-Kriguer"><img src="https://github.com/Henrique-Kriguer.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/rubenslaurindo"><img src="https://github.com/rubenslaurindo.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/abiratanl"><img src="https://github.com/abiratanl.png?size=100" width="100" height="100"></a>
+<a href="https://github.com/23200967"><img src="https://github.com/23200967.png?size=100" width="100" height="100"></a>
 
 </div>
