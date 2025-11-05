@@ -2,6 +2,8 @@ import React, { useState, DragEvent, ChangeEvent, FormEvent } from "react";
 import styles from "./style.module.scss";
 import Header from "../../components/Header/Header";
 import { supabase } from "../../services/supabaseClient";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // -------------------------------
 // INTERFACE DOS DADOS DO FORMULÁRIO
@@ -44,6 +46,8 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   const [fileName, setFileName] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const allowedExtensions = ["docx", "xlsx", "pdf"];
+
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -56,6 +60,16 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.length) {
       const selectedFile = event.target.files[0];
+      const extension = selectedFile.name.split(".").pop()?.toLowerCase();
+
+      if (!extension || !allowedExtensions.includes(extension)) {
+        toast.error(
+          "Tipo de arquivo inválido. Apenas .docx, .xlsx e .pdf são permitidos."
+        );
+        event.target.value = "";
+        return;
+      }
+
       setFileName(selectedFile.name);
       setFormData({ ...formData, file: selectedFile });
     }
@@ -65,6 +79,15 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
     event.preventDefault();
     if (event.dataTransfer.files?.length) {
       const droppedFile = event.dataTransfer.files[0];
+      const extension = droppedFile.name.split(".").pop()?.toLowerCase();
+
+      if (!extension || !allowedExtensions.includes(extension)) {
+        toast.error(
+          "Tipo de arquivo inválido. Apenas .docx, .xlsx e .pdf são permitidos."
+        );
+        return;
+      }
+
       setFileName(droppedFile.name);
       setFormData({ ...formData, file: droppedFile });
     }
@@ -75,13 +98,13 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
   };
 
   // -----------------------------------------------------
-  // ENVIO DE ARQUIVO (LOCAL OU SUPABASE, AUTOMÁTICO)
+  // ENVIO DE ARQUIVO (LOCAL OU SUPABASE)
   // -----------------------------------------------------
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!formData.file) {
-      alert("Por favor, selecione um arquivo para upload.");
+      toast.warn("Por favor, selecione um arquivo para upload.");
       return;
     }
 
@@ -108,7 +131,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
           throw new Error(`Erro no upload local: ${errorText}`);
         }
 
-        alert("Arquivo salvo localmente com sucesso!");
+        toast.success("Arquivo salvo localmente com sucesso!");
       } else {
         // 🔹 MODO PRODUÇÃO: envia via SUPABASE
         const bucketName = "templates";
@@ -153,18 +176,18 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
 
         if (dbError) throw dbError;
 
-        alert("Arquivo enviado e salvo no Supabase com sucesso!");
+        toast.success("Arquivo enviado e salvo no Supabase com sucesso!");
       }
 
       // limpa o formulário
       setFormData({ documentName: "", documentDescription: "", file: null });
       setFileName(null);
 
-      // 🔹 Atualiza a lista de modelos
+      // Atualiza lista
       if (onUploadSuccess) onUploadSuccess();
     } catch (error: any) {
       console.error("Erro no upload:", error);
-      alert(error.message || "Erro ao enviar o arquivo.");
+      toast.error(error.message || "Erro ao enviar o arquivo.");
     } finally {
       setIsLoading(false);
     }
@@ -217,6 +240,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
                 id="fileUpload"
                 className={styles.fileInput}
                 onChange={handleFileSelect}
+                accept=".docx,.xlsx,.pdf"
               />
               <label htmlFor="fileUpload" className={styles.uploadButton}>
                 Selecionar Arquivo
@@ -238,6 +262,9 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
           </button>
         </form>
       </div>
+
+      {/* Toast notifications */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
