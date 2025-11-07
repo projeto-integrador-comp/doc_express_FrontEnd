@@ -6,6 +6,8 @@ import { DocumentContext } from "../../../providers/DocumentContext";
 import { ModelContext } from "../../../providers/ModelContext";
 import { toast } from "react-toastify";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
+import {api} from "../../../services/api";
+
 
 const DownloadIcon = () => (
   <svg
@@ -175,7 +177,7 @@ export const ModelDetailsModal = () => {
       [field]: value,
     }));
   };
-
+/*
   const handleDownload = async () => {
     if (!viewingModel?.fileUrl) return;
 
@@ -197,6 +199,53 @@ export const ModelDetailsModal = () => {
       setDownloading(false);
     }
   };
+*/
+
+// ... (dentro de ModelDetailsModal) ...
+
+  const handleDownload = async () => {
+    // Agora verifica pelo ID, que é usado na rota de backend
+    if (!viewingModel?.id) return; 
+
+    setDownloading(true);
+    try {
+      // 1. Usa o AXIOS (api) para chamar sua rota de download no backend
+      const response = await api.get(
+        // Rota de download que está no seu backend: GET /templates/:id/download
+        `/templates/${viewingModel.id}/download`,
+        {
+          // 2. ESSENCIAL: Diz ao Axios para esperar um arquivo binário (Blob)
+          responseType: 'blob', 
+          // 3. Inclui o token para o backend autenticar a requisição
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
+          },
+        }
+      );
+
+      // O Axios armazena o Blob (arquivo real) em response.data
+      const blob = response.data; 
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = viewingModel.fileName; 
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Limpa a URL do Blob da memória
+      
+      toast.success("Download realizado com sucesso!");
+
+    } catch (err) {
+      console.error("Erro ao baixar:", err);
+      // Se a requisição falhar, significa que o backend não conseguiu buscar o arquivo.
+      toast.error("Erro ao baixar o arquivo. Verifique a conexão com o servidor.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
