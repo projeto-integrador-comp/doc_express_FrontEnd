@@ -177,53 +177,23 @@ export const ModelDetailsModal = () => {
       [field]: value,
     }));
   };
-/*
-  const handleDownload = async () => {
-    if (!viewingModel?.fileUrl) return;
 
-    setDownloading(true);
-    try {
-      const response = await fetch(viewingModel.fileUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = viewingModel.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success("Download realizado com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao baixar o arquivo");
-    } finally {
-      setDownloading(false);
-    }
-  };
-*/
-
-// ... (dentro de ModelDetailsModal) ...
 
   const handleDownload = async () => {
-    // Agora verifica pelo ID, que é usado na rota de backend
     if (!viewingModel?.id) return; 
 
     setDownloading(true);
     try {
-      // 1. Usa o AXIOS (api) para chamar sua rota de download no backend
       const response = await api.get(
-        // Rota de download que está no seu backend: GET /templates/:id/download
         `/templates/${viewingModel.id}/download`,
         {
-          // 2. ESSENCIAL: Diz ao Axios para esperar um arquivo binário (Blob)
           responseType: 'blob', 
-          // 3. Inclui o token para o backend autenticar a requisição
           headers: {
             Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
           },
         }
       );
 
-      // O Axios armazena o Blob (arquivo real) em response.data
       const blob = response.data; 
       
       const url = window.URL.createObjectURL(blob);
