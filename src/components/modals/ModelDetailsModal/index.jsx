@@ -6,6 +6,8 @@ import { DocumentContext } from "../../../providers/DocumentContext";
 import { ModelContext } from "../../../providers/ModelContext";
 import { toast } from "react-toastify";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
+import {api} from "../../../services/api";
+
 
 const DownloadIcon = () => (
   <svg
@@ -176,27 +178,44 @@ export const ModelDetailsModal = () => {
     }));
   };
 
+
   const handleDownload = async () => {
-    if (!viewingModel?.fileUrl) return;
+    if (!viewingModel?.id) return; 
 
     setDownloading(true);
     try {
-      const response = await fetch(viewingModel.fileUrl);
-      const blob = await response.blob();
+      const response = await api.get(
+        `/templates/${viewingModel.id}/download`,
+        {
+          responseType: 'blob', 
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
+          },
+        }
+      );
+
+      const blob = response.data; 
+      
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = viewingModel.fileName;
+      link.download = viewingModel.fileName; 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Limpa a URL do Blob da memória
+      
       toast.success("Download realizado com sucesso!");
+
     } catch (err) {
-      toast.error("Erro ao baixar o arquivo");
+      console.error("Erro ao baixar:", err);
+      // Se a requisição falhar, significa que o backend não conseguiu buscar o arquivo.
+      toast.error("Erro ao baixar o arquivo. Verifique a conexão com o servidor.");
     } finally {
       setDownloading(false);
     }
   };
+
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
