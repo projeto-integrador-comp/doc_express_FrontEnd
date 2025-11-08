@@ -185,24 +185,24 @@ export const ModelDetailsModal = () => {
     setDownloading(true);
 
     try {
-      // 1. Tenta baixar direto do Supabase
+      const filePath = viewingModel.fileName.startsWith("uploads/")
+        ? viewingModel.fileName
+        : `uploads/${viewingModel.fileName}`;
+
       const { data, error } = await supabase.storage
-        .from("templates") // nome do bucket
-        .download(`uploads/${viewingModel.fileName}`);
+        .from("templates")
+        .download(filePath);
 
-      if (error || !data) throw new Error("Erro no Supabase");
+      if (error) throw error;
 
-      // Cria URL e baixa
       const url = window.URL.createObjectURL(data);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = viewingModel.fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = viewingModel.fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
       window.URL.revokeObjectURL(url);
-
-      toast.success("Download realizado com sucesso (via Supabase)!");
     } catch (supabaseError) {
       console.warn(
         "⚠️ Erro ao baixar do Supabase, tentando backend...",
@@ -233,7 +233,7 @@ export const ModelDetailsModal = () => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
 
-        toast.success("Download realizado com sucesso (via backend)!");
+        toast.success("Download realizado com sucesso!");
       } catch (backendError) {
         console.error("❌ Erro ao baixar pelo backend:", backendError);
         toast.error(
