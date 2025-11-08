@@ -6,8 +6,9 @@ import { DocumentContext } from "../../../providers/DocumentContext";
 import { ModelContext } from "../../../providers/ModelContext";
 import { toast } from "react-toastify";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
-import {api} from "../../../services/api";
+import { api } from "../../../services/api";
 
+import { supabase } from "../../../services/supabaseClient";
 
 const DownloadIcon = () => (
   <svg
@@ -178,44 +179,71 @@ export const ModelDetailsModal = () => {
     }));
   };
 
-
   const handleDownload = async () => {
-    if (!viewingModel?.id) return; 
+    if (!viewingModel?.id) return;
 
     setDownloading(true);
-    try {
-      const response = await api.get(
-        `/templates/${viewingModel.id}/download`,
-        {
-          responseType: 'blob', 
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("@tokenDocExpress")}`,
-          },
-        }
-      );
 
-      const blob = response.data; 
-      
-      const url = window.URL.createObjectURL(blob);
+    try {
+      // 1. Tenta baixar direto do Supabase
+      const { data, error } = await supabase.storage
+        .from("templates") // nome do bucket
+        .download(`uploads/${viewingModel.fileName}`);
+
+      if (error || !data) throw new Error("Erro no Supabase");
+
+      // Cria URL e baixa
+      const url = window.URL.createObjectURL(data);
       const link = document.createElement("a");
       link.href = url;
-      link.download = viewingModel.fileName; 
+      link.download = viewingModel.fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url); // Limpa a URL do Blob da memória
-      
-      toast.success("Download realizado com sucesso!");
+      window.URL.revokeObjectURL(url);
 
-    } catch (err) {
-      console.error("Erro ao baixar:", err);
-      // Se a requisição falhar, significa que o backend não conseguiu buscar o arquivo.
-      toast.error("Erro ao baixar o arquivo. Verifique a conexão com o servidor.");
+      toast.success("Download realizado com sucesso (via Supabase)!");
+    } catch (supabaseError) {
+      console.warn(
+        "⚠️ Erro ao baixar do Supabase, tentando backend...",
+        supabaseError
+      );
+
+      try {
+        // 2. Fallback: baixa do backend
+        const response = await api.get(
+          `/templates/${viewingModel.id}/download`,
+          {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem(
+                "@tokenDocExpress"
+              )}`,
+            },
+          }
+        );
+
+        const blob = response.data;
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = viewingModel.fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        toast.success("Download realizado com sucesso (via backend)!");
+      } catch (backendError) {
+        console.error("❌ Erro ao baixar pelo backend:", backendError);
+        toast.error(
+          "Erro ao baixar o arquivo. Verifique sua conexão com o servidor."
+        );
+      }
     } finally {
       setDownloading(false);
     }
   };
-
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
