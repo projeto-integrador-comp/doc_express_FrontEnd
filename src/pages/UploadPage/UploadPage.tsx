@@ -161,7 +161,7 @@ const UploadPage: React.FC<UploadPageProps> = ({ onUploadSuccess }) => {
         const templateData = {
           name: formData.documentName,
           description: formData.documentDescription,
-          fileName: file.name,
+          fileName: filePath,
           fileSize: file.size,
           mimeType: file.type,
           isActive: true,
