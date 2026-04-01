@@ -1,0 +1,58 @@
+// src/components/AttendanceList/style.module.scss
+.tableWrapper {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    background-color: #f1f5f9;
+    padding: 12px;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+  }
+}
+
+.low {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.normal {
+  color: #10b981;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #3b82f6;
+    }
+  }
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+  color: #94a3b8;
+}
