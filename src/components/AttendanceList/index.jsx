@@ -1,10 +1,10 @@
 import styles from "./style.module.scss";
 import { useContext } from "react";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx";
-import { Eye, Edit, Trash2 } from "lucide-react"; // npm install lucide-react
+import { Eye } from "lucide-react"; 
 
 export const AttendanceList = ({ documents = []}) => {
-  const { setEditingAttendance, setViewingAttendance } = useContext(AttendanceContext);
+  const { setViewingAttendance } = useContext(AttendanceContext);
 
   if (documents.length === 0) {
     return <p className={styles.empty}>Nenhum registro de frequência encontrado.</p>;
@@ -17,8 +17,8 @@ export const AttendanceList = ({ documents = []}) => {
           <tr>
             <th>Aluno</th>
             <th>Turma</th>
-            <th>Assiduidade</th>
-            <th>Ações</th>
+            <th className={styles.center}>Assiduidade</th>
+            <th className={styles.center}>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -26,7 +26,8 @@ export const AttendanceList = ({ documents = []}) => {
             <tr key={student.id}>
               <td>{student.studentName}</td>
               <td>{student.class}</td>
-              <td>
+              {/* ADICIONADO: styles.center aqui para alinhar o corpo */}
+              <td className={styles.center}>
                 <span className={student.frequencyRate < 75 ? styles.low : styles.normal}>
                   {student.frequencyRate}%
                 </span>
@@ -34,10 +35,7 @@ export const AttendanceList = ({ documents = []}) => {
               <td className={styles.actions}>
                 <button onClick={() => setViewingAttendance(student)} title="Visualizar">
                   <Eye size={18} />
-                </button>
-                <button onClick={() => setEditingAttendance(student)} title="Editar">
-                  <Edit size={18} />
-                </button>
+                </button>                
               </td>
             </tr>
           ))}

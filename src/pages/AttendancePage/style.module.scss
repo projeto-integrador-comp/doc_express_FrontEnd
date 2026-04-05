@@ -1,32 +1,68 @@
+// src/pages/AttendancePage/style.module.scss
+
 .container {
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
+}
 
-  .dashboardContent {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+.dashboardContent {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem 0.5rem;
+  }
+}
+
+// SEÇÃO SUPERIOR (Filtros e Exportação)
+.topControlSection {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 2rem;
+  align-items: stretch;
+
+  // Responsividade: Empilha em telas de tablet/celular
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.filterFieldset, .exportFieldset {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  legend {
+    padding: 0 10px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 }
 
 .filterFieldset {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  background: white;
-
-  legend {
-    padding: 0 10px;
-    font-weight: 600;
-    color: #475569;
-  }
+  flex: 2.5;
 
   .filterOptions {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    gap: 15px;
+
+    // Mobile: Alinha filtros um abaixo do outro
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
 
     label {
       display: flex;
@@ -34,39 +70,116 @@
       gap: 8px;
       cursor: pointer;
       font-size: 0.9rem;
-      color: #1e293b;
+      font-weight: 500;
+      color: #334155;
+      white-space: nowrap;
 
       input[type="radio"] {
         accent-color: #3b82f6;
+        width: 18px;
+        height: 18px;
       }
     }
   }
 }
 
-.listContainer {
-  fieldset {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background: white;
-    padding: 1rem;
+.exportFieldset {
+  flex: 1;
+  display: flex;
+  align-items: center;
 
-    legend {
-      padding: 0 10px;
+  .buttonGroup {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+
+    // Mobile: Botões podem quebrar linha se o celular for muito pequeno
+    @media (max-width: 480px) {
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      min-width: 70px; // Garante que o texto não suma
+      padding: 10px 5px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        filter: brightness(1.2);
+        transform: translateY(-1px);
+      }
+    }
+
+    .btnExcel { background-color: #166534; }
+    .btnPdf { background-color: #991b1b; }
+    .btnCsv { background-color: #1e40af; }
+  }
+}
+
+// LISTAGEM (O Card Branco)
+.listContainer {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .listHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .titleInfo {
+      h3 {
+        color: #0f172a;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      p {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        margin: 4px 0 0 0;
+      }
+    }
+
+    .counter {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
     }
   }
 }
 
-.addButton {
-  background-color: #3b82f6;
-  color: white;
+// Container para scroll da tabela no Mobile
+// Importante para a tabela não empurrar o resto do layout
+.listContainer fieldset {
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: filter 0.2s;
-
-  &:hover {
-    filter: brightness(0.9);
-  }
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  overflow-x: auto; // Isso cria o scroll horizontal na tabela
 }
