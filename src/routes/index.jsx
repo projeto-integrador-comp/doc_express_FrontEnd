@@ -16,11 +16,11 @@ export const RoutesMain = () => {
       <Route element={<PublicRoutes />}>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/attendance" element={<AttendancePage />} />
       </Route>
 
       {/* Rotas Privadas */}
       <Route element={<PrivateRoutes />}>
+        <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/models" element={<ModelListPage />} />        
       </Route>

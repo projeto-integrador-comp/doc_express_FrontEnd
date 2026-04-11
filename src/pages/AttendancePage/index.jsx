@@ -1,5 +1,5 @@
 import styles from "./style.module.scss";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import Header from "../../components/Header/Header";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx"; 
 import { UserContext } from "../../providers/UserContext/index.jsx";
@@ -16,47 +16,42 @@ export const AttendancePage = () => {
     exportToCSV, 
     exportToXLSX,
     exportToPDF,
-    setHiddenCreateAttendance,
     hiddenCreateAttendance,
     editingAttendance,
     viewingAttendance,
-    setViewingAttendance,
   } = useContext(AttendanceContext);
 
   const { hiddenUpdateUser } = useContext(UserContext);
+  
+  // ESTADOS DOS FILTROS
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [searchName, setSearchName] = useState("");
+  const [selectedClass, setSelectedClass] = useState("all");
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
 
-  // Mock para visualização inicial
-  const mockAttendance = {
-    studentName: "Aluno Exemplo",
-    class: "8º Ano B",
-    frequencyRate: 72,
-    absences: 12,
-    status: "Risco",
-    lastUpdate: new Date().toISOString()
-  };
+  // LISTA DE TURMAS ÚNICAS (Dinamismo para o PI3)
+  const classes = [...new Set(attendanceList.map(item => item.class))];
 
-  useEffect(() => {
-    setViewingAttendance(mockAttendance);
-    return () => setViewingAttendance(null);
-  }, []);
-
-  const handleFilterChange = (e) => {
-    setSelectedFilter(e.target.value);
-  };
-
+  // LÓGICA DE FILTRAGEM UNIFICADA
   const filteredAttendance = attendanceList.filter((item) => {
-    if (selectedFilter === "risk") return item.frequencyRate < 75;
-    if (selectedFilter === "warning") return item.frequencyRate >= 75 && item.frequencyRate <= 85;
-    if (selectedFilter === "perfect") return item.frequencyRate === 100;
-    return true;
+    const matchesStatus = 
+      selectedFilter === "all" || 
+      (selectedFilter === "risk" && item.frequencyRate < 75) ||
+      (selectedFilter === "warning" && item.frequencyRate >= 75 && item.frequencyRate <= 85) ||
+      (selectedFilter === "perfect" && item.frequencyRate === 100);
+
+    const matchesName = item.studentName.toLowerCase().includes(searchName.toLowerCase());
+    const matchesClass = selectedClass === "all" || item.class === selectedClass;
+    const matchesPeriod = selectedPeriod === "all" || item.period === selectedPeriod;
+
+    return matchesStatus && matchesName && matchesClass && matchesPeriod;
   });
 
   return (
     <div className={styles.container}>
       <Header />
       
-      {/* Modais */}
+      {/* Camada de Modais */}
       {!hiddenCreateAttendance && <RegisterAttendanceModal />}
       {editingAttendance && <UpdateAttendanceModal />}
       {viewingAttendance && <AttendanceDetailsModal />}      
@@ -64,50 +59,92 @@ export const AttendancePage = () => {
 
       <section className={styles.dashboardContent}>
         
-        {/* Painel de Controle Superior */}
         <div className={styles.topControlSection}>
-          
           <fieldset className={styles.filterFieldset}>
-            <legend>Filtros de Assiduidade</legend>
-            <div className={styles.filterOptions}>
-              <label>
-                <input type="radio" name="attendanceFilter" value="all" checked={selectedFilter === "all"} onChange={handleFilterChange} />
-                Todos
-              </label>
-              <label>
-                <input type="radio" name="attendanceFilter" value="risk" checked={selectedFilter === "risk"} onChange={handleFilterChange} />
-                Risco Crítico ({"<"}75%)
-              </label>
-              <label>
-                <input type="radio" name="attendanceFilter" value="warning" checked={selectedFilter === "warning"} onChange={handleFilterChange} />
-                Atenção (75%-85%)
-              </label>
-              <label>
-                <input type="radio" name="attendanceFilter" value="perfect" checked={selectedFilter === "perfect"} onChange={handleFilterChange} />
-                Frequência 100%
-              </label>
+            <legend>Busca e Filtros Avançados</legend>
+            
+            <div className={styles.filterLayout}>
+              {/* BLOCO 1: NOME, TURMA E PERÍODO */}
+              <div className={styles.inputsColumn}>
+                <div className={styles.inputGroup}>
+                  <label>Nome do Aluno:</label>
+                  <input 
+                    type="text" 
+                    placeholder="Pesquisar por nome..." 
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                  />
+                </div>
+
+                <div className={styles.rowInputs}>
+                  <div className={styles.inputGroup}>
+                    <label>Turma:</label>
+                    <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)}>
+                      <option value="all">Todas</option>
+                      {classes.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  <div className={styles.inputGroup}>
+                    <label>Período:</label>
+                    <select value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
+                      <option value="all">Todos</option>
+                      <option value="Matutino">Matutino</option>
+                      <option value="Vespertino">Vespertino</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* BLOCO 2: CARDS DE STATUS */}
+              <div className={styles.statusColumn}>
+                <label className={styles.statusTitle}>Assiduidade:</label>
+                <div className={styles.statusCardsGroup}>
+                  {[
+                    { id: "all", label: "Todos", sub: "Geral" },
+                    { id: "risk", label: "Risco", sub: "<75%" },
+                    { id: "warning", label: "Atenção", sub: "75-85%" },
+                    { id: "perfect", label: "100%", sub: "Frequência" }
+                  ].map((item) => (
+                    <label 
+                      key={item.id} 
+                      className={`${styles.statusCard} ${selectedFilter === item.id ? styles.activeCard : ""}`}
+                    >
+                      <input 
+                        type="radio" 
+                        name="att" 
+                        value={item.id} 
+                        checked={selectedFilter === item.id} 
+                        onChange={(e) => setSelectedFilter(e.target.value)} 
+                      />
+                      <span className={styles.cardLabel}>{item.label}</span>
+                      <span className={styles.cardSub}>{item.sub}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
           </fieldset>
 
+          {/* BLOCO 3: EXPORTAÇÃO */}
           <fieldset className={styles.exportFieldset}>
-            <legend>Exportar Relatório</legend>
+            <legend>Relatórios</legend>
             <div className={styles.buttonGroup}>
-              <button className={styles.btnExcel} onClick={() => exportToXLSX(filteredAttendance)} title="Exportar Excel">Excel</button>
-              <button className={styles.btnPdf} onClick={() => exportToPDF(filteredAttendance)} title="Exportar PDF">PDF</button>
-              <button className={styles.btnCsv} onClick={() => exportToCSV(filteredAttendance)} title="Exportar CSV">CSV</button>
+              <button className={styles.btnExcel} onClick={() => exportToXLSX(filteredAttendance)}>Excel</button>
+              <button className={styles.btnPdf} onClick={() => exportToPDF(filteredAttendance)}>PDF</button>
+              <button className={styles.btnCsv} onClick={() => exportToCSV(filteredAttendance)}>CSV</button>
             </div>
           </fieldset>
-          
         </div>
 
-        {/* Listagem de Alunos */}
+        {/* LISTAGEM PRINCIPAL */}
         <div className={styles.listContainer}>
           <header className={styles.listHeader}>
             <div className={styles.titleInfo}>
-              <h3>Resultados da Triagem</h3>
-              <p>Visualizando dados brutos para fins de gestão</p>
+              <h3>Listagem de Assiduidade</h3>
+              <p>Exibindo dados detalhados conforme os filtros aplicados.</p>
             </div>
-            <span className={styles.counter}>{filteredAttendance.length} registro(s) encontrado(s)</span>
+            <span className={styles.counter}>{filteredAttendance.length} Alunos</span>
           </header>
           <AttendanceList documents={filteredAttendance} />
         </div>         

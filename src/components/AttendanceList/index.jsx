@@ -17,6 +17,7 @@ export const AttendanceList = ({ documents = []}) => {
           <tr>
             <th>Aluno</th>
             <th>Turma</th>
+            <th>Período</th>
             <th className={styles.center}>Assiduidade</th>
             <th className={styles.center}>Ações</th>
           </tr>
@@ -26,7 +27,7 @@ export const AttendanceList = ({ documents = []}) => {
             <tr key={student.id}>
               <td>{student.studentName}</td>
               <td>{student.class}</td>
-              {/* ADICIONADO: styles.center aqui para alinhar o corpo */}
+              <td>{student.period}</td>              
               <td className={styles.center}>
                 <span className={student.frequencyRate < 75 ? styles.low : styles.normal}>
                   {student.frequencyRate}%
