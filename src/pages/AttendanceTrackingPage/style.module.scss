@@ -1,0 +1,195 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8fafc; // bg-gray-50
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboardContent {
+  padding: 2rem;
+  max-width: 75%; // max-w-[75%] do PTA
+  margin: 1.5rem auto 0 auto;
+  flex: 1;
+  width: 100%;
+
+  @media (max-width: 1024px) { max-width: 95%; }
+}
+
+// Caixa de Boas Vindas
+.profileBox {
+  background: white;
+  border-radius: 0.75rem; // rounded-xl
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); // shadow-sm
+  border: 1px solid #e5e7eb; // border-gray-200
+  padding: 1.5rem; // p-6
+  margin-bottom: 1.25rem; // mb-5
+
+  .profileHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    h2 { font-size: 1.25rem; font-weight: 700; color: #1f2937; margin: 0; }
+    p { font-size: 0.875rem; color: #6b7280; margin: 0; }
+  }
+
+  .roleTag {
+    background: #f3f4f6;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #4b5563;
+    span { font-weight: 700; text-transform: uppercase; color: #2563eb; }
+  }
+}
+
+// Seção de Cards
+.cardsContainer {
+  margin-bottom: 2rem;
+
+  .sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-left: 4px solid #2563eb;
+    padding-left: 0.75rem;
+
+    .roleHighlight { text-transform: capitalize; color: #2563eb; }
+  }
+
+  .gridCards {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+
+    @media (min-width: 768px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (min-width: 1024px) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+}
+
+// O Card estilo DashboardCard do PTA
+.dashboardCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  &:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .cardIcon {
+    font-size: 1.8rem;
+    background: #eff6ff;
+    padding: 12px;
+    border-radius: 50%;
+  }
+
+  .cardContent {
+    h4 { margin: 0 0 0.25rem 0; font-size: 1rem; font-weight: 700; color: #1f2937; }
+    p { margin: 0; font-size: 0.875rem; color: #6b7280; }
+  }
+}
+
+// Card de Destaque (Ficha de Chamada)
+.cardHighlight {
+  background: #10b981; // emerald-500
+  border-color: #059669;
+  
+  .cardIcon { background: rgba(255, 255, 255, 0.2); color: white; }
+  .cardContent h4, .cardContent p { color: white; }
+  &:hover { background: #059669; }
+}
+
+// Área da Tabela de Triagem
+.listArea {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  .searchHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 1rem;
+
+    h3 { margin: 0; color: #1f2937; font-size: 1.1rem; }
+    
+    .searchInput input {
+      padding: 0.5rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      outline: none;
+      &:focus { border-color: #3b82f6; ring: 2px solid rgba(59,130,246,0.5); }
+    }
+  }
+}
+
+// O Card onde ficam os botões de selecionar perfil
+.roleSelectorCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px dashed #cbd5e1; // Borda tracejada indicando que é área de configuração/teste
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+// Os botões de alternância
+.roleButtons {
+  display: flex;
+  background: #f1f5f9;
+  padding: 6px;
+  border-radius: 10px;
+  gap: 5px;
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover { background: #e2e8f0; color: #1e293b; }
+  }
+
+  // Estilo do botão quando ele está selecionado
+  .activeRole {
+    background: white;
+    color: #2563eb;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
