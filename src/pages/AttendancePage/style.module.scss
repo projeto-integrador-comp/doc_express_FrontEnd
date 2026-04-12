@@ -181,3 +181,31 @@
 }
 
 .listContainer fieldset { border: none; padding: 0; margin: 0; width: 100%; overflow-x: auto; }
+
+.pageHeader {
+  display: flex;
+  justify-content: flex-end; 
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.backButton {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s;
+  text-transform: capitalize;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+  }
+}

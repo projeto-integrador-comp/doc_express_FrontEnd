@@ -164,7 +164,7 @@
   }
 }
 
-// Os botões de alternância
+
 .roleButtons {
   display: flex;
   background: #f1f5f9;
@@ -185,8 +185,7 @@
 
     &:hover { background: #e2e8f0; color: #1e293b; }
   }
-
-  // Estilo do botão quando ele está selecionado
+ 
   .activeRole {
     background: white;
     color: #2563eb;

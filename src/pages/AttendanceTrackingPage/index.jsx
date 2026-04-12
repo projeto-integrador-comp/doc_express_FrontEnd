@@ -1,5 +1,6 @@
 import styles from "./style.module.scss";
 import { useContext, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom"; // 1. Adicione o useLocation AQUI!
 import Header from "../../components/Header/Header";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx"; 
 import { UserContext } from "../../providers/UserContext/index.jsx";
@@ -11,30 +12,38 @@ import { RegisterAttendanceModal } from "../../components/modals/RegisterAttenda
 const PERFIS = {
   ADMINISTRADOR: 'admin',
   PROFESSOR: 'professor',
-  USUARIO: 'aluno' // ou comum
+  USUARIO: 'usuário'
 };
 
 export const AttendanceTrackingPage = () => {
+  const navigate = useNavigate(); 
+  const location = useLocation(); // 2. Instancie o location
+  
   const { setHiddenCreateAttendance, hiddenCreateAttendance } = useContext(AttendanceContext);
   const { user } = useContext(UserContext);
   const [searchName, setSearchName] = useState("");
 
-  // 1. ESTADO DE SIMULAÇÃO DE PERFIL
-  // Inicia com o perfil real do usuário, mas permite mudar clicando nos botões
-  const [simulatedRole, setSimulatedRole] = useState(user?.role || PERFIS.ADMINISTRADOR);
+  // 3. O SEGREDO ESTÁ AQUI 👇
+  // Primeiro ele tenta ler se veio do "Voltar" (location.state.activeProfile). 
+  // Se não veio de lá, usa o perfil real do usuário. Se não tiver usuário, usa ADMIN.
+  const [simulatedRole, setSimulatedRole] = useState(
+    location.state?.activeProfile || user?.role || PERFIS.ADMINISTRADOR
+  );
 
   // 2. O DICIONÁRIO DE PERMISSÕES
   const MENU_CONFIG = {
     [PERFIS.ADMINISTRADOR]: [
-      { id: 1, title: 'Cadastrar alunos', description: 'Permitir associar presença/falta', icon: '👨‍🎓', action: () => setHiddenCreateAttendance(false) },
-      { id: 2, title: 'Cadastrar professor', description: 'Permitir criar registros de chamadas', icon: '👩‍🏫', action: () => alert("Modal Professor") },
-      { id: 3, title: 'Cadastrar turma', description: 'Associar alunos a turma', icon: '📚', action: () => alert("Modal Turma") }
+      { id: 1, title: 'Cadastrar alunos', description: 'Cadastrar novos alunos', icon: '👨‍🎓', action: () => setHiddenCreateAttendance(false) },
+      { id: 2, title: 'Cadastrar professor ou monitor', description: 'Cadastrar novos professores ou monitores', icon: '👩‍🏫', action: () => alert("Modal Professor") },
+      { id: 3, title: 'Cadastrar turma', description: 'Cadastrar novas turmas', icon: '📚', action: () => alert("Modal Turma") }
     ],
     [PERFIS.PROFESSOR]: [
-      { id: 1, title: 'Abrir ficha de chamada', description: 'Apontamento da turma de alunos', icon: '📋', action: () => window.location.href='/attendance', highlight: true }
+      { id: 1, title: 'Abrir ficha de chamada', description: 'Abrir ficha de chamada para registrar presença', icon: '📋', action: () => navigate('/attendanceregister'), highlight: true },      
+      { id: 2, title: 'Relatórios', description: 'Exportar e visualizar triagem de assiduidade', icon: '📊', action: () => navigate('/attendance', { state: { originRole: simulatedRole } }) }
     ],
     [PERFIS.USUARIO]: [
-      { id: 1, title: 'Consultar os dados', description: 'Avaliar frequência e histórico', icon: '🔍', action: () => document.getElementById("searchInput").focus() }
+      { id: 1, title: 'Consultar os dados', description: 'Avaliar frequência e histórico de faltas', icon: '🔍', action: () => document.getElementById("searchInput")?.focus() },      
+      { id: 2, title: 'Relatórios', description: 'Exportar e visualizar relatórios do sistema', icon: '📊', action: () => navigate('/attendance', { state: { originRole: simulatedRole } }) }
     ]
   };
 
@@ -48,9 +57,9 @@ export const AttendanceTrackingPage = () => {
 
       <div className={styles.dashboardContent}>
         
-        {/* 3. O SELETOR DE PERFIS (Barra de Teste) */}
+        {/* O SELETOR DE PERFIS (Barra de Teste) */}
         <div className={styles.roleSelectorCard}>
-          <p>Simular visualização do sistema como:</p>
+          <p>Visualização do sistema como:</p>
           <div className={styles.roleButtons}>
             <button 
               className={simulatedRole === PERFIS.ADMINISTRADOR ? styles.activeRole : ""} 
@@ -68,12 +77,11 @@ export const AttendanceTrackingPage = () => {
               className={simulatedRole === PERFIS.USUARIO ? styles.activeRole : ""} 
               onClick={() => setSimulatedRole(PERFIS.USUARIO)}
             >
-              Aluno/Usuário
+              Usuário
             </button>
           </div>
         </div>
-
-        {/* Renderização do Menu Atual */}
+        
         <div className={styles.cardsContainer}>
           <h3 className={styles.sectionTitle}>
             Ações Permitidas - <span className={styles.roleHighlight}>{simulatedRole}</span>
@@ -91,18 +99,6 @@ export const AttendanceTrackingPage = () => {
             ))}
           </div>
         </div>
-
-        {/* Restante da página... */}
-        <div className={styles.listArea}>
-          <div className={styles.searchHeader}>
-            <h3>Consulta de Assiduidade</h3>
-            <div className={styles.searchInput}>
-              <input id="searchInput" type="text" placeholder="Pesquisar registro..." value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-            </div>
-          </div>
-          <AttendanceList />
-        </div>
-
       </div>
     </div>
   );
