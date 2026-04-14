@@ -22,6 +22,7 @@ export const RoutesMain = () => {
 
       {/* Rotas Privadas */}
       <Route element={<PrivateRoutes />}>
+        <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/models" element={<ModelListPage />} />
         <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
