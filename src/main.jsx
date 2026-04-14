@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import UserProvider from "./providers/UserContext/index.jsx";
 import DocumentProvider from "./providers/DocumentContext/index.jsx";
 import { ModelProvider } from "./providers/ModelContext/index.jsx";
+import { AttendanceProvider } from "./providers/AttendanceContext/index.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById("root")).render(
       <UserProvider>
         <DocumentProvider>
           <ModelProvider>
-            <App />
+            <AttendanceProvider>               
+              <App />
+            </AttendanceProvider>
           </ModelProvider>
         </DocumentProvider>
       </UserProvider>

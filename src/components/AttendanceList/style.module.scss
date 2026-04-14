@@ -1,0 +1,113 @@
+/* src/components/AttendanceList/style.module.scss */
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto; // Permite o scroll lateral apenas na tabela no mobile
+  -webkit-overflow-scrolling: touch; // Melhora o deslize em iPhones
+  margin-top: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0; // Adiciona uma borda sutil ao redor da tabela
+}
+
+.table {
+  width: 100%;
+  min-width: 600px; // Garante que a tabela não "esmague" em telas muito pequenas
+  border-collapse: collapse;
+  text-align: left;
+
+  th {
+    background-color: #f1f5f9;
+    padding: 12px;
+    color: #64748b;
+    font-size: 0.75rem; // Diminuído levemente para o mobile
+    text-transform: uppercase;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap; // Evita que o título quebre linha
+  }
+
+  td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1e293b;
+    vertical-align: middle;
+    font-size: 0.9rem;
+  }
+
+  /* Efeito de destaque ao passar o mouse */
+  tbody tr:hover {
+    background-color: #f8fafc;
+  }
+}
+
+/* Centralização para Assiduidade e Ações */
+.center {
+  text-align: center !important;
+}
+
+/* Coluna de Ações */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: #f1f5f9;
+      color: #3b82f6;
+      transform: scale(1.1); // Leve aumento no ícone ao passar o mouse
+    }
+  }
+}
+
+/* Cores de Status de Assiduidade */
+.low {
+  color: #ef4444;
+  font-weight: 700;
+  background: #fee2e2; // Adicionado um fundo leve para melhor destaque
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.normal {
+  color: #10b981;
+  font-weight: 700;
+  background: #d1fae5; // Adicionado um fundo leve
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Estado Vazio */
+.empty {
+  padding: 3rem;
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 500;
+  background: white;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+}
+
+/* Ajustes finos para Mobile */
+@media (max-width: 768px) {
+  .table {
+    td, th {
+      padding: 10px 8px; // Reduz o respiro para caber mais dados
+    }
+  }
+  
+  .actions {
+    gap: 8px; // Aproxima um pouco os botões no celular
+  }
+}
