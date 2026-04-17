@@ -48,8 +48,7 @@ export const AttendanceTrackingPage = () => {
       description: 'Avaliar frequência e histórico de faltas', 
       icon: '🔍', 
       action: () => navigate('/attendanceoverview', { state: { originRole: simulatedRole } }) 
-      },      
-      { id: 2, title: 'Relatórios', description: 'Exportar e visualizar relatórios do sistema', icon: '📊', action: () => navigate('/attendance', { state: { originRole: simulatedRole } }) }
+      }
     ]
   };
 
