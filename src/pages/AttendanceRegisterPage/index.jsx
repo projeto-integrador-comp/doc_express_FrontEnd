@@ -79,15 +79,16 @@ export const AttendanceRegisterPage = () => {
       <main className={styles.mainContent}>
         
         <header className={styles.pageHeader}>
-          <div className={styles.headerInfo}>
-            <button className={styles.backButton} onClick={() => navigate(-1)}>
-              ← Voltar
-            </button>
-            <div>
-              <h1>Diário de Classe</h1>
-              <p className={styles.dateText}>{today}</p>
-            </div>
+          <div className={styles.titleArea}>
+            <h1>Diário de Classe</h1>
+            <p className={styles.dateText}>{today}</p>
           </div>
+          <button 
+            className={styles.backButton} 
+            onClick={() => navigate('/attendancetracking', { state: { activeProfile: 'professor' } })}
+          >
+            ← Voltar para Painel do Professor
+          </button>
         </header>
 
         {/* BARRA DE FILTROS */}
@@ -165,7 +166,7 @@ export const AttendanceRegisterPage = () => {
 
         <footer className={styles.pageFooter}>
           <div className={styles.summary}>
-            Mostrando {filteredStudents.length} alunos | 
+            Mostrando: {filteredStudents.length} alunos | 
             Presentes: {filteredStudents.filter(s => s.status === 'P').length} | 
             Faltas: {filteredStudents.filter(s => s.status === 'F').length}
           </div>
