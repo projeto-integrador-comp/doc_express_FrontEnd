@@ -42,7 +42,13 @@ export const AttendanceTrackingPage = () => {
       { id: 2, title: 'Relatórios', description: 'Exportar e visualizar triagem de assiduidade', icon: '📊', action: () => navigate('/attendance', { state: { originRole: simulatedRole } }) }
     ],
     [PERFIS.USUARIO]: [
-      { id: 1, title: 'Consultar os dados', description: 'Avaliar frequência e histórico de faltas', icon: '🔍', action: () => document.getElementById("searchInput")?.focus() },      
+      { 
+      id: 1, 
+      title: 'Consultar os dados', 
+      description: 'Avaliar frequência e histórico de faltas', 
+      icon: '🔍', 
+      action: () => navigate('/attendanceoverview', { state: { originRole: simulatedRole } }) 
+      },      
       { id: 2, title: 'Relatórios', description: 'Exportar e visualizar relatórios do sistema', icon: '📊', action: () => navigate('/attendance', { state: { originRole: simulatedRole } }) }
     ]
   };
