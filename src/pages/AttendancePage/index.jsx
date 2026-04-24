@@ -26,11 +26,9 @@ export const AttendancePage = () => {
 
   //Função para voltar
   const handleGoBack = () => {
-    if (originRole) {
-      // Se veio da dashboard, volta pra lá (você pode tratar lá para abrir no perfil certo se quiser)
+    if (originRole) {      
       navigate('/attendancetracking', { state: { activeProfile: originRole } });
-    } else {
-      // Fallback genérico caso o usuário acesse a URL diretamente
+    } else {      
       navigate(-1); 
     }
   };
@@ -43,7 +41,7 @@ export const AttendancePage = () => {
   const [selectedClass, setSelectedClass] = useState("all");
   const [selectedPeriod, setSelectedPeriod] = useState("all");
 
-  // LISTA DE TURMAS ÚNICAS (Dinamismo para o PI3)
+  // LISTA DE TURMAS ÚNICAS
   const classes = [...new Set(attendanceList.map(item => item.class))];
 
   // LÓGICA DE FILTRAGEM UNIFICADA

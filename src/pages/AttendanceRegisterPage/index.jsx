@@ -2,8 +2,6 @@ import styles from "./style.module.scss";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
-
-// Importe os componentes de modal (Ajuste o caminho conforme onde você os salvou)
 import { WarningModal } from "../../components/modals/AttendanceWarningModal";
 import { SuccessModal } from "../../components/modals/AttendanceSuccessModal";
 
@@ -45,18 +43,18 @@ export const AttendanceRegisterPage = () => {
     return matchesName && matchesClass && matchesPeriod;
   });
 
-  // Função para salvar a chamada (Agora usando os modais)
+  // Função para salvar a chamada
   const handleSaveAttendance = () => {
     const pendentes = filteredStudents.filter(s => s.status === null);
     
     if (pendentes.length > 0) {
-      setPendingCount(pendentes.length); // Guarda a quantidade
-      setIsWarningOpen(true);            // Abre o modal de aviso
+      setPendingCount(pendentes.length); 
+      setIsWarningOpen(true); 
       return;
     }
     
     console.log("Dados salvos:", students);
-    setIsSuccessOpen(true); // Abre o modal de sucesso
+    setIsSuccessOpen(true);
   };
 
   const today = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });

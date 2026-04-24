@@ -8,7 +8,6 @@ import { UserContext } from "../../providers/UserContext/index.jsx";
 import { AttendanceList } from "../../components/AttendanceList";
 import { RegisterAttendanceModal } from "../../components/modals/RegisterAttendanceModal/index.jsx";
 
-// Constantes dos perfis
 const PERFIS = {
   ADMINISTRADOR: 'admin',
   PROFESSOR: 'professor',
@@ -17,20 +16,16 @@ const PERFIS = {
 
 export const AttendanceTrackingPage = () => {
   const navigate = useNavigate(); 
-  const location = useLocation(); // 2. Instancie o location
+  const location = useLocation();
   
   const { setHiddenCreateAttendance, hiddenCreateAttendance } = useContext(AttendanceContext);
   const { user } = useContext(UserContext);
-  const [searchName, setSearchName] = useState("");
-
-  // 3. O SEGREDO ESTÁ AQUI 👇
-  // Primeiro ele tenta ler se veio do "Voltar" (location.state.activeProfile). 
-  // Se não veio de lá, usa o perfil real do usuário. Se não tiver usuário, usa ADMIN.
+  const [searchName, setSearchName] = useState("");  
   const [simulatedRole, setSimulatedRole] = useState(
     location.state?.activeProfile || user?.role || PERFIS.ADMINISTRADOR
   );
 
-  // 2. O DICIONÁRIO DE PERMISSÕES
+  
   const MENU_CONFIG = {
     [PERFIS.ADMINISTRADOR]: [
       { id: 1, title: 'Cadastrar alunos', description: 'Cadastrar novos alunos', icon: '👨‍🎓', action: () => setHiddenCreateAttendance(false) },
@@ -51,8 +46,7 @@ export const AttendanceTrackingPage = () => {
       }
     ]
   };
-
-  // Puxa o menu correto baseado no estado simulado
+  
   const menuAtual = MENU_CONFIG[simulatedRole] || MENU_CONFIG[PERFIS.USUARIO];
 
   return (

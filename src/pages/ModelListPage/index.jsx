@@ -21,10 +21,9 @@ export const ModelListPage = () => {
       navigate("/");
       return;
     }
-
-    // SEMPRE carrega os modelos quando o usuário acessa a página
+    
     loadModels();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [user, navigate]);
 
   // 🔹 FILTRO 1: Busca (por título/descrição)
