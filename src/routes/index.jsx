@@ -7,22 +7,26 @@ import { PublicRoutes } from "./PublicRoutes";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { ModelListPage } from "../pages/ModelListPage";
 import { AttendancePage } from "../pages/AttendancePage";
+import { AttendanceTrackingPage } from "../pages/AttendanceTrackingPage";
+import { AttendanceRegisterPage } from "../pages/AttendanceRegisterPage";
 import UploadPage from "../pages/UploadPage/UploadPage";
 
 export const RoutesMain = () => {
   return (
     <Routes>
-      {/* Rotas Públicas */}
+      {/* Rotas Públicas */}        
       <Route element={<PublicRoutes />}>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
       {/* Rotas Privadas */}
-      <Route element={<PrivateRoutes />}>
-        <Route path="/attendance" element={<AttendancePage />} />
+      <Route element={<PrivateRoutes />}>        
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/models" element={<ModelListPage />} />        
+        <Route path="/models" element={<ModelListPage />} />
+        <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/attendanceregister" element={<AttendanceRegisterPage />} />        
       </Route>
 
       <Route element={<PrivateRoutes />}>

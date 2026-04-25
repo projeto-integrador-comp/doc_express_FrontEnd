@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import Header from "../../components/Header/Header";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx"; 
 import { UserContext } from "../../providers/UserContext/index.jsx";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import { RegisterAttendanceModal } from "../../components/modals/RegisterAttendanceModal/index.jsx";
 import { AttendanceList } from "../../components/AttendanceList";
 import { UpdateAttendanceModal } from "../../components/modals/UpdateAttendanceModal/index.jsx";
@@ -11,6 +11,9 @@ import { AttendanceDetailsModal } from "../../components/modals/AttendanceDetail
 import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
 
 export const AttendancePage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const originRole = location.state?.originRole;
   const {
     attendanceList,
     exportToCSV, 
@@ -20,6 +23,17 @@ export const AttendancePage = () => {
     editingAttendance,
     viewingAttendance,
   } = useContext(AttendanceContext);
+
+  //Função para voltar
+  const handleGoBack = () => {
+    if (originRole) {
+      // Se veio da dashboard, volta pra lá (você pode tratar lá para abrir no perfil certo se quiser)
+      navigate('/attendancetracking', { state: { activeProfile: originRole } });
+    } else {
+      // Fallback genérico caso o usuário acesse a URL diretamente
+      navigate(-1); 
+    }
+  };
 
   const { hiddenUpdateUser } = useContext(UserContext);
   
@@ -58,6 +72,14 @@ export const AttendancePage = () => {
       {!hiddenUpdateUser && <UpdateUserModal />}
 
       <section className={styles.dashboardContent}>
+
+        <div className={styles.pageHeader}>
+          <button className={styles.backButton} onClick={handleGoBack}>
+            ← Voltar para {originRole ? `Painel do ${originRole}` : 'Página Anterior'}
+          </button>
+        </div>
+
+        <div className={styles.topControlSection}></div>
         
         <div className={styles.topControlSection}>
           <fieldset className={styles.filterFieldset}>
