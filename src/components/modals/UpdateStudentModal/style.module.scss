@@ -54,6 +54,43 @@
   }
 }
 
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px !important;
+  width: 100%;
+
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px !important;
+    width: 100%;
+
+    label {
+      color: #343b41 !important;
+      font-size: 0.9rem !important;
+      font-weight: 600 !important;
+      text-align: left !important;
+    }
+
+    input, select {
+      background-color: #f8f9fa !important;
+      color: #343b41 !important;
+      border: 1px solid #dee2e6 !important;
+      padding: 12px 15px !important;
+      border-radius: 4px !important;
+      font-size: 1rem !important;
+      width: 100% !important;
+
+      &:focus {
+        border-color: #007bff !important;
+        background-color: #ffffff !important;
+        outline: none !important;
+      }
+    }
+  }
+}
+
 .actions {
   display: flex;
   flex-direction: column;
@@ -61,7 +98,6 @@
   margin-top: 10px;
 }
 
-// Estilos para os botões dentro do actions
 .submitBtn {
   background-color: #007bff !important;
   color: #ffffff !important;

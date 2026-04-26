@@ -20,7 +20,6 @@
   display: flex;
   flex-direction: column;
   gap: 25px !important;
-  position: relative;
 }
 
 .header {
@@ -36,44 +35,17 @@
     color: #343b41 !important;
     font-size: 1.5rem !important;
     font-weight: 700 !important;
-    margin: 0 !important;
   }
 
   .closeBtn {
     position: absolute;
     right: 0;
-    top: -5px;
     background: none !important;
     border: none !important;
     color: #adb5bd !important;
     font-size: 1.5rem !important;
     cursor: pointer;
-    line-height: 1;
-    
-    &:hover { color: #343b41 !important; }
   }
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-// Estilos para os botões dentro do actions
-.submitBtn {
-  background-color: #007bff !important;
-  color: #ffffff !important;
-  padding: 12px !important;
-  border-radius: 4px !important;
-  font-weight: 700 !important;
-  font-size: 1rem !important;
-  border: none !important;
-  cursor: pointer;
-  width: 100%;
-
-  &:hover { background-color: #0056b3 !important; }
 }
 
 .cancelBtn {
@@ -86,6 +58,4 @@
   cursor: pointer;
   text-align: center;
   width: 100%;
-
-  &:hover { filter: brightness(0.9); }
 }

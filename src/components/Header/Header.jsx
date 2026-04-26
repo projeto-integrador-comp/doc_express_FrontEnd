@@ -59,13 +59,25 @@ const Header = () => {
           >
             Upload
           </Link>
+
+          {/* 🔑 NOVO ITEM: Aparece apenas para o Administrador */}
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin/management"
+              className={isActiveLink("/admin/management") ? styles.active : ""}
+            >
+              Administração
+            </Link>
+          )}
         </nav>
 
         <div className={styles.menuContainer} ref={menuRef}>
+          {/* ... restante do código do menu hambúrguer igual */}
           <button className={styles.menuButton} onClick={toggleMenu}>
             {!menuOpen ? <RxHamburgerMenu /> : <RxChevronDown />}
           </button>
-
+          
+          {/* ... menuOpen && ( ... ) */}
           {menuOpen && (
             <nav className={styles.menu}>
               <ul>

@@ -8,6 +8,7 @@ import { PrivateRoutes } from "./PrivateRoutes";
 import { ModelListPage } from "../pages/ModelListPage";
 import { AttendancePage } from "../pages/AttendancePage";
 import UploadPage from "../pages/UploadPage/UploadPage";
+import { AdminManagementPage } from "../pages/AdminManagementPage";
 
 export const RoutesMain = () => {
   return (
@@ -22,7 +23,8 @@ export const RoutesMain = () => {
       <Route element={<PrivateRoutes />}>
         <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/models" element={<ModelListPage />} />        
+        <Route path="/models" element={<ModelListPage />} />    
+        <Route path="/admin/management" element={<AdminManagementPage />} />    
       </Route>
 
       <Route element={<PrivateRoutes />}>

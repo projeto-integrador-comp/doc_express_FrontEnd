@@ -5,119 +5,150 @@ import { toast } from "react-toastify";
 
 export const UserContext = createContext({});
 
-const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [documentsList, setDocumentsList] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [deletingUser, setDeletingUser] = useState(null);
-  const [hiddenUpdateUser, setHiddenUpdateUser] = useState(true);
+  const [allUsersList, setAllUsersList] = useState([]);
+  const [updatingUser, setUpdatingUser] = useState(null);
+
+  // AJUSTE: O loading começa como TRUE se houver um token para evitar o "pisca"
+  const [loading, setLoading] = useState(() => {
+    const token = localStorage.getItem("@tokenDocExpress");
+    return !!token;
+  });
 
   const navigate = useNavigate();
-
-  const pathname = window.location.pathname;
 
   useEffect(() => {
     const token = localStorage.getItem("@tokenDocExpress");
 
     const userAutoLogin = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-
         const { data } = await api.get("/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(data.user);
         setDocumentsList(data.user.documents);
-        navigate(pathname);
+        
+        // Aqui não fazemos navigate, deixamos o PrivateRoutes cuidar da rota atual
       } catch (error) {
-        if (error.response?.status == 401) toast.error("Acesso expirado");
+        console.error(error);
+        localStorage.removeItem("@tokenDocExpress");
+        setUser(null);
+        navigate("/");
       } finally {
         setLoading(false);
       }
     };
 
-    if (token) userAutoLogin();
-  }, []);
+    userAutoLogin();
+  }, [navigate]);
 
-  const userLogin = async (formData, setLoading, reset) => {
+  const userLogin = async (formData, setFormLoading, reset) => {
     try {
-      setLoading(true);
+      setFormLoading(true);
       const { data } = await api.post("/login", formData);
-
       localStorage.setItem("@tokenDocExpress", data.token);
       setUser(data.user);
       setDocumentsList(data.user.documents);
-
       toast.success("Usuário logado");
-
       reset();
       navigate("/dashboard");
     } catch (error) {
-      if (error.response?.data.message === "Invalid credentials.") {
-        toast.error("Email e/ou senha incorretos");
-      } else if (error.message === "Request failed with status code 401") {
-        toast.warn("servidor inativo. Tente novamente para iniciálo!");
-      }
+      toast.error("Email e/ou senha incorretos");
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
-  const userRegister = async (formData, setLoading, reset) => {
+  const userRegister = async (formData, setFormLoading, reset) => {
     try {
-      setLoading(true);
+      setFormLoading(true);
       await api.post("/users", formData);
-      toast.success("Usuário cadastrado");
+      toast.success("Usuário cadastrado!");
       reset();
       navigate("/");
     } catch (error) {
-      if (error.response?.data.message === "Email already exists.") {
-        toast.error("Email já cadastrado");
-      }
+      toast.error(error.response?.data.message || "Erro ao cadastrar");
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
-  const userUpdate = async (formData, setLoading, id) => {
+  const adminRegisterUser = async (formData, setFormLoading, reset) => {
     const token = localStorage.getItem("@tokenDocExpress");
+    try {
+      setFormLoading(true);
+      await api.post("/users", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Colaborador cadastrado!");
+      if (reset) reset();
+      await getAllUsers();
+    } catch (error) {
+      toast.error(error.response?.data.message || "Erro ao cadastrar");
+    } finally {
+      setFormLoading(false);
+    }
+  };
 
+  const getAllUsers = async () => {
+    const token = localStorage.getItem("@tokenDocExpress");
+    try {
+      const { data } = await api.get("/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAllUsersList(data);
+    } catch (error) {
+      console.error("Erro ao listar usuários:", error);
+    }
+  };
+
+  const userUpdate = async (formData, id) => {
+    const token = localStorage.getItem("@tokenDocExpress");
     try {
       setLoading(true);
       const { data } = await api.patch(`/users/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser({ ...user, ...data });
-      toast.success("Usuário atualizado");
-      setHiddenUpdateUser(true);
-    } catch (error) {
-      if (error.response?.data.message === "Email already exists.") {
-        toast.error("Email já cadastrado");
+
+      if (id === user?.id) {
+        setUser({ ...user, ...data });
       }
+
+      toast.success("Colaborador atualizado!");
+      await getAllUsers();
+      setUpdatingUser(null);
+    } catch (error) {
+      toast.error("Erro na atualização");
     } finally {
       setLoading(false);
     }
   };
 
-  const userDelete = async (setLoading, id) => {
+  const userDelete = async (id) => {
     const token = localStorage.getItem("@tokenDocExpress");
-
     try {
       setLoading(true);
       await api.delete(`/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(null);
-      setDocumentsList([]);
 
-      setDeletingUser(null);
-      toast.error("Usuário deletado");
-      navigate("/");
-      localStorage.removeItem("@tokenMyContacts");
-    } catch (error) {
-      if (error.response?.data.message === "User not found.") {
-        toast.error("Usuário não encontrado");
+      if (id === user?.id) {
+        userLogout();
+      } else {
+        toast.success("Colaborador removido");
+        await getAllUsers();
       }
+    } catch (error) {
+      toast.error("Erro ao deletar usuário.");
     } finally {
       setLoading(false);
     }
@@ -126,10 +157,10 @@ const UserProvider = ({ children }) => {
   const userLogout = () => {
     setUser(null);
     setDocumentsList([]);
-    toast.error("Usuário deslogado");
-    navigate("/");
     localStorage.removeItem("@tokenDocExpress");
+    navigate("/");
   };
+
   return (
     <UserContext.Provider
       value={{
@@ -139,10 +170,13 @@ const UserProvider = ({ children }) => {
         loading,
         deletingUser,
         setDeletingUser,
-        hiddenUpdateUser,
-        setHiddenUpdateUser,
+        allUsersList,
+        updatingUser,
+        setUpdatingUser,
         userLogin,
         userRegister,
+        adminRegisterUser,
+        getAllUsers,
         userUpdate,
         userDelete,
         userLogout,
@@ -152,4 +186,5 @@ const UserProvider = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
 export default UserProvider;

@@ -1,0 +1,37 @@
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; // Espaço entre o texto "Turma" e a caixa
+  margin-top: 20px; // Afasta do campo "Nome do Aluno"
+  margin-bottom: 25px; // Afasta do botão "Cadastrar Aluno"
+
+  label {
+    color: #343b41;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .selectInput {
+    background-color: #f8f9fa;
+    color: #343b41;
+    border: 1px solid #dee2e6;
+    padding: 12px 15px; // Mesma altura dos outros inputs
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:focus {
+      border-color: #007bff;
+      background-color: #ffffff;
+      outline: none;
+    }
+  }
+
+  .error {
+    color: #ff5252;
+    font-size: 0.75rem;
+    margin-top: 5px;
+  }
+}

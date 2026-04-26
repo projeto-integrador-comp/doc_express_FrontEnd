@@ -18,7 +18,10 @@ export const schema = z
       .min(6, "Mínimo de 6 caracteres")
       .nonempty("O campo senha é obrigatório"),
     confirmPassword: z.string().nonempty("Confirme sua senha"),
-    admin: z.boolean().default(false),
+    // Alteração aqui: de boolean para enum para casar com o Backend
+    role: z.enum(["ADMIN", "TEACHER", "MONITOR"], {
+      errorMap: () => ({ message: "Selecione um cargo válido" }),
+    }).default("MONITOR"),
   })
   .refine(({ password, confirmPassword }) => password === confirmPassword, {
     message: "As senhas não correspondem",

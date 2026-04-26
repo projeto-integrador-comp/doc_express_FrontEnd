@@ -23,3 +23,44 @@
     width: 369px;
   }
 }
+
+.selectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; // Espaço entre o Label e o Select
+  margin-top: 15px; // Espaço em relação ao campo de Email (acima)
+  margin-bottom: 15px; // Espaço em relação ao campo de Senha (abaixo)
+
+  label {
+    color: #343b41;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .selectInput {
+    background-color: #f8f9fa;
+    color: #343b41;
+    border: 1px solid #dee2e6;
+    padding: 12px 15px;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+
+    &:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .error {
+    color: #ff5252;
+    font-size: 0.75rem;
+    margin-top: 5px;
+  }
+}
