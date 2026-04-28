@@ -1,0 +1,301 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  width: 100%;
+  flex: 1;
+}
+
+// ----------------------------------------
+// Cabeçalho
+// ----------------------------------------
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .titleArea {
+    h1 { margin: 0; color: #0f172a; font-size: 1.8rem; }
+    .studentInfo { margin: 5px 0 0 0; color: #64748b; font-weight: 600; font-size: 1rem; }
+  }
+
+  .backButton {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f1f5f9;
+      color: #1e293b;
+      border-color: #94a3b8;
+    }
+  }
+}
+
+// ----------------------------------------
+// Dashboard de Resumo (Cards)
+// ----------------------------------------
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+
+  .summaryCard {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    text-align: center;
+
+    h3 { margin: 0 0 10px 0; color: #64748b; font-size: 1rem; font-weight: 600; text-transform: uppercase; }
+
+    .highlightValue {
+      font-size: 2.5rem;
+      font-weight: 800;
+      &.good { color: #10b981; } 
+      &.bad { color: #ef4444; }  
+    }
+
+    .valuePresent { font-size: 2.5rem; font-weight: 800; color: #3b82f6; }
+    .valueAbsent { font-size: 2.5rem; font-weight: 800; color: #ef4444; }
+  }
+}
+
+// ----------------------------------------
+// Calendário Visual
+// ----------------------------------------
+.calendarSection {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  overflow: hidden;
+
+  .sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+
+    @media (max-width: 500px) {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    h2 { margin: 0; font-size: 1.2rem; color: #1e293b; }
+    
+    // Seletor de mês com botões
+    .monthSelector {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 8px;
+
+      .monthDisplay {
+        font-weight: 700;
+        color: #1e293b;
+        min-width: 120px;
+        text-align: center;
+        text-transform: capitalize;
+      }
+
+      .arrowBtn {
+        background: transparent;
+        border: none;
+        color: #64748b;
+        font-weight: bold;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0 10px;
+        transition: color 0.2s;
+        &:hover { color: #2563eb; }
+      }
+    }
+  }
+
+  .calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 1.5rem;
+
+    .weekDay {
+      text-align: center;
+      font-weight: 700;
+      color: #64748b;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .emptyDay { min-height: 40px; }
+
+    .calendarDay {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+
+      &.dayPresent { background: #d1fae5; color: #047857; border-color: #34d399; }
+      &.dayAbsent { background: #fee2e2; color: #b91c1c; border-color: #f87171; }
+    }
+  }
+}
+
+// ----------------------------------------
+// Histórico e Filtros
+// ----------------------------------------
+.historySection {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 3rem;
+
+  .filtersBar {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    
+    
+    h2 { margin: 0 0 1.2rem 0; font-size: 1.2rem; color: #1e293b; }
+
+    .filterGroup {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+
+      .inputBox {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-width: 150px;
+
+        label { font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 5px; }
+        
+        input, select {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #cbd5e1;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          color: #1e293b;
+          outline: none;
+          background-color: white; 
+          &:focus { border-color: #3b82f6; }
+        }
+
+        
+        select:invalid { color: #64748b; }
+      }
+
+      .btnClear {
+        padding: 10px 16px;
+        background: white;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+        &:hover { background: #e2e8f0; }
+      }
+    }
+  }
+
+  
+  .historyList {
+    display: flex;
+    flex-direction: column;
+    animation: slideDown 0.3s ease-out; // Efeito suave ao abrir
+
+    .listHeader {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      padding: 1rem 1.5rem;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: 700;
+      color: #475569;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .emptyState { padding: 3rem; text-align: center; color: #64748b; font-weight: 600; }
+
+    .historyItem {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2fr;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      align-items: center;
+      transition: background 0.2s;
+
+      &:hover { background: #f8fafc; }
+      &:last-child { border-bottom: none; }
+
+      .dateText { font-weight: 600; color: #1e293b; }
+      .noteBlock { color: #64748b; font-size: 0.95rem; }
+
+      .statusBadge {
+        padding: 6px 12px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-block;
+        text-align: center;
+
+        &.badgeP { background: #d1fae5; color: #047857; } 
+        &.badgeF { background: #fee2e2; color: #b91c1c; } 
+      }
+    }
+  }
+}
+
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .historySection .listHeader { grid-template-columns: 1fr 1fr; }
+  .historySection .historyItem { grid-template-columns: 1fr 1fr; }
+  .hideMobile { display: none; }
+}

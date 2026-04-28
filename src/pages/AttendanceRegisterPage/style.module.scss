@@ -1,0 +1,274 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  width: 100%;
+  flex: 1;
+}
+
+// Cabeçalho da Página
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .headerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+
+    .backButton {
+      background: transparent;
+      border: 1px solid #cbd5e1;
+      color: #475569;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      &:hover { background: #f1f5f9; }
+    }
+
+    h1 { margin: 0; color: #0f172a; font-size: 1.8rem; }
+    .dateText { margin: 5px 0 0 0; color: #64748b; text-transform: capitalize; }
+  }
+}
+
+// ----------------------------------------
+// NOVA SEÇÃO: Filtros (Busca, Turma, Período)
+// ----------------------------------------
+.filterSection {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 15px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; // Fica um campo por linha no celular
+  }
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 5px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+// ----------------------------------------
+// Lista de Alunos e Cartões
+// ----------------------------------------
+.attendanceList {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+
+  .listHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 700;
+    color: #475569;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+
+    @media (max-width: 600px) { .actionsLabel { display: none; } }
+  }
+
+  .listBody {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.studentCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s;
+
+  &:hover { background: #f8fafc; }
+  &:last-child { border-bottom: none; }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .studentInfo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: #3b82f6;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    
+    // Novo ajuste para o bloco que tem o Nome e a Turma embaixo
+    .nameAndDetails {
+      display: flex;
+      flex-direction: column;
+    
+      .studentName { font-weight: 600; color: #1e293b; font-size: 1.05rem; }
+      .studentClass { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+    }
+  }
+}
+
+// Estado vazio (quando a busca não acha nada)
+.emptyState {
+  padding: 3rem;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+// ----------------------------------------
+// Botões de Ação (Presente, Falta, etc)
+// ----------------------------------------
+.actionGroup {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: 600px) { width: 100%; }
+
+  .btnStatus {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    background: #f1f5f9;
+    color: #64748b;
+
+    @media (max-width: 600px) { flex: 1; padding: 12px 0; }
+
+    &:hover { filter: brightness(0.95); }
+  }
+
+  // Cores quando NÃO selecionados (Hover/Border)
+  .btnPresent:hover { border-color: #10b981; color: #10b981; }
+  .btnAbsent:hover { border-color: #ef4444; color: #ef4444; }
+  .btnJustified:hover { border-color: #f59e0b; color: #f59e0b; }
+
+  // Classes Ativas (Quando clicado)
+  .activeP { background: #10b981; color: white; border-color: #10b981; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+  .activeF { background: #ef4444; color: white; border-color: #ef4444; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+  .activeJ { background: #f59e0b; color: white; border-color: #f59e0b; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+}
+
+// ----------------------------------------
+// Rodapé
+// ----------------------------------------
+.pageFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .summary { font-weight: 600; color: #475569; }
+
+  .btnSave {
+    background: #2563eb;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    @media (max-width: 600px) { width: 100%; }
+
+    &:hover { 
+      background: #1d4ed8; 
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); 
+    }
+  }
+}
+
+.backButton {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s;
+  text-transform: capitalize;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+  }
+}
