@@ -59,6 +59,13 @@ const Header = () => {
           >
             Upload
           </Link>
+          {/* Adicionado o link para o Painel de Frequência */}
+          <Link
+            to="/attendancetracking"
+            className={isActiveLink("/attendancetracking") ? styles.active : ""}
+          >
+            Frequência
+          </Link>
         </nav>
 
         <div className={styles.menuContainer} ref={menuRef}>
