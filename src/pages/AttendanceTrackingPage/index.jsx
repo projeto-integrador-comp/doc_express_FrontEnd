@@ -9,9 +9,9 @@ import { AttendanceList } from "../../components/AttendanceList";
 import { RegisterAttendanceModal } from "../../components/modals/RegisterAttendanceModal/index.jsx";
 
 const PERFIS = {
-  ADMINISTRADOR: 'admin',
-  PROFESSOR: 'professor',
-  USUARIO: 'usuário'
+  ADMINISTRADOR: 'ADMIN',
+  PROFESSOR: 'TEACHER',
+  USUARIO: 'MONITOR'
 };
 
 export const AttendanceTrackingPage = () => {
@@ -57,7 +57,7 @@ export const AttendanceTrackingPage = () => {
       <div className={styles.dashboardContent}>
         
         {/* O SELETOR DE PERFIS (Barra de Teste) */}
-        <div className={styles.roleSelectorCard}>
+        {/* <div className={styles.roleSelectorCard}>
           <p>Visualização do sistema como:</p>
           <div className={styles.roleButtons}>
             <button 
@@ -79,7 +79,7 @@ export const AttendanceTrackingPage = () => {
               Usuário
             </button>
           </div>
-        </div>
+        </div> */}
         
         <div className={styles.cardsContainer}>
           <h3 className={styles.sectionTitle}>
