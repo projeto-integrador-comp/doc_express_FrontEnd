@@ -8,17 +8,14 @@ import { SuccessModal } from "../../components/modals/AttendanceSuccessModal";
 export const AttendanceRegisterPage = () => {
   const navigate = useNavigate();
 
-  // ESTADOS DOS MODAIS
   const [isWarningOpen, setIsWarningOpen] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
-
-  // 1. ESTADOS DE FILTRO
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [filterClass, setFilterClass] = useState("Berçário II");
   const [filterPeriod, setFilterPeriod] = useState("Matutino");
-
-  // Dados mockados
+  
   const [students, setStudents] = useState([
     { id: 1, name: "Elisa Oliveira", status: null, turma: "Berçário II", periodo: "Matutino" },
     { id: 2, name: "Gustavo Santos", status: null, turma: "Berçário II", periodo: "Matutino" },
@@ -34,16 +31,14 @@ export const AttendanceRegisterPage = () => {
     ));
   };
 
-  // 2. LÓGICA DE FILTRAGEM
-  const filteredStudents = students.filter((student) => {
+    const filteredStudents = students.filter((student) => {
     const matchesName = student.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClass = filterClass === "Todas" || student.turma === filterClass;
     const matchesPeriod = filterPeriod === "Todos" || student.periodo === filterPeriod;
     
     return matchesName && matchesClass && matchesPeriod;
   });
-
-  // Função para salvar a chamada
+  
   const handleSaveAttendance = () => {
     const pendentes = filteredStudents.filter(s => s.status === null);
     
@@ -61,9 +56,8 @@ export const AttendanceRegisterPage = () => {
 
   return (
     <div className={styles.container}>
-      <Header />
+      <Header />      
       
-      {/* RENDERIZANDO OS MODAIS */}
       <WarningModal 
         isOpen={isWarningOpen} 
         onClose={() => setIsWarningOpen(false)} 
@@ -80,16 +74,9 @@ export const AttendanceRegisterPage = () => {
           <div className={styles.titleArea}>
             <h1>Diário de Classe</h1>
             <p className={styles.dateText}>{today}</p>
-          </div>
-          <button 
-            className={styles.backButton} 
-            onClick={() => navigate('/attendancetracking', { state: { activeProfile: 'professor' } })}
-          >
-            ← Voltar para Painel do Professor
-          </button>
+          </div>          
         </header>
-
-        {/* BARRA DE FILTROS */}
+        
         <section className={styles.filterSection}>
           <div className={styles.searchBox}>
             <label>Buscar Aluno</label>
