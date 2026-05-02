@@ -3,17 +3,14 @@ import { useContext, useState } from "react";
 import Header from "../../components/Header/Header";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx"; 
 import { UserContext } from "../../providers/UserContext/index.jsx";
-import { useNavigate, useLocation } from "react-router-dom";
 import { RegisterAttendanceModal } from "../../components/modals/RegisterAttendanceModal/index.jsx";
 import { AttendanceList } from "../../components/AttendanceList";
 import { UpdateAttendanceModal } from "../../components/modals/UpdateAttendanceModal/index.jsx";
 import { AttendanceDetailsModal } from "../../components/modals/AttendanceDetailsModal/index.jsx";
 import { UpdateUserModal } from "../../components/modals/UpdateUserModal/index.jsx";
+import { AttendanceFilter } from "../../components/AttendanceFilter"; 
 
 export const AttendancePage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const originRole = location.state?.originRole;
   const {
     attendanceList,
     exportToCSV, 
@@ -24,15 +21,6 @@ export const AttendancePage = () => {
     viewingAttendance,
   } = useContext(AttendanceContext);
 
-  //Função para voltar
-  const handleGoBack = () => {
-    if (originRole) {      
-      navigate('/attendancetracking', { state: { activeProfile: originRole } });
-    } else {      
-      navigate(-1); 
-    }
-  };
-
   const { hiddenUpdateUser } = useContext(UserContext);
   
   // ESTADOS DOS FILTROS
@@ -40,11 +28,18 @@ export const AttendancePage = () => {
   const [searchName, setSearchName] = useState("");
   const [selectedClass, setSelectedClass] = useState("all");
   const [selectedPeriod, setSelectedPeriod] = useState("all");
-
-  // LISTA DE TURMAS ÚNICAS
+    
   const classes = [...new Set(attendanceList.map(item => item.class))];
+  
+  const mappedForAutocomplete = attendanceList.map(item => ({
+    id: item.id || Math.random(),
+    name: item.studentName,
+    turma: item.class,
+    periodo: item.period,
+    frequencyRate: item.frequencyRate
+  }));
 
-  // LÓGICA DE FILTRAGEM UNIFICADA
+  // LÓGICA DE FILTRAGEM UNIFICADA DA TABELA
   const filteredAttendance = attendanceList.filter((item) => {
     const matchesStatus = 
       selectedFilter === "all" || 
@@ -55,100 +50,47 @@ export const AttendancePage = () => {
     const matchesName = item.studentName.toLowerCase().includes(searchName.toLowerCase());
     const matchesClass = selectedClass === "all" || item.class === selectedClass;
     const matchesPeriod = selectedPeriod === "all" || item.period === selectedPeriod;
-
+    
     return matchesStatus && matchesName && matchesClass && matchesPeriod;
   });
 
   return (
     <div className={styles.container}>
-      <Header />
-      
-      {/* Camada de Modais */}
+      <Header />      
+     
       {!hiddenCreateAttendance && <RegisterAttendanceModal />}
       {editingAttendance && <UpdateAttendanceModal />}
       {viewingAttendance && <AttendanceDetailsModal />}      
       {!hiddenUpdateUser && <UpdateUserModal />}
 
       <section className={styles.dashboardContent}>
-
-        <div className={styles.pageHeader}>
-          <button className={styles.backButton} onClick={handleGoBack}>
-            ← Voltar para {originRole ? `Painel do ${originRole}` : 'Página Anterior'}
-          </button>
-        </div>
-
-        <div className={styles.topControlSection}></div>
         
-        <div className={styles.topControlSection}>
-          <fieldset className={styles.filterFieldset}>
-            <legend>Busca e Filtros Avançados</legend>
-            
-            <div className={styles.filterLayout}>
-              {/* BLOCO 1: NOME, TURMA E PERÍODO */}
-              <div className={styles.inputsColumn}>
-                <div className={styles.inputGroup}>
-                  <label>Nome do Aluno:</label>
-                  <input 
-                    type="text" 
-                    placeholder="Pesquisar por nome..." 
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.rowInputs}>
-                  <div className={styles.inputGroup}>
-                    <label>Turma:</label>
-                    <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)}>
-                      <option value="all">Todas</option>
-                      {classes.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label>Período:</label>
-                    <select value={selectedPeriod} onChange={(e) => setSelectedPeriod(e.target.value)}>
-                      <option value="all">Todos</option>
-                      <option value="Matutino">Matutino</option>
-                      <option value="Vespertino">Vespertino</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* BLOCO 2: CARDS DE STATUS */}
-              <div className={styles.statusColumn}>
-                <label className={styles.statusTitle}>Assiduidade:</label>
-                <div className={styles.statusCardsGroup}>
-                  {[
-                    { id: "all", label: "Todos", sub: "Geral" },
-                    { id: "risk", label: "Risco", sub: "<75%" },
-                    { id: "warning", label: "Atenção", sub: "75-85%" },
-                    { id: "perfect", label: "100%", sub: "Frequência" }
-                  ].map((item) => (
-                    <label 
-                      key={item.id} 
-                      className={`${styles.statusCard} ${selectedFilter === item.id ? styles.activeCard : ""}`}
-                    >
-                      <input 
-                        type="radio" 
-                        name="att" 
-                        value={item.id} 
-                        checked={selectedFilter === item.id} 
-                        onChange={(e) => setSelectedFilter(e.target.value)} 
-                      />
-                      <span className={styles.cardLabel}>{item.label}</span>
-                      <span className={styles.cardSub}>{item.sub}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </fieldset>
-
-          {/* BLOCO 3: EXPORTAÇÃO */}
-          <fieldset className={styles.exportFieldset}>
-            <legend>Relatórios</legend>
+        <header className={styles.pageHeader} style={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+          <div className={styles.titleArea}>
+            <h1>Relatórios</h1>
+          </div>
+        </header>        
+        
+        <div className={styles.topControlSection} style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>         
+          
+          
+          <div style={{ flex: '1 1 auto' }}>
+            <AttendanceFilter 
+              searchName={searchName}
+              setSearchName={setSearchName}
+              selectedClass={selectedClass}
+              setSelectedClass={setSelectedClass}
+              selectedPeriod={selectedPeriod}
+              setSelectedPeriod={setSelectedPeriod}
+              selectedFilter={selectedFilter}
+              setSelectedFilter={setSelectedFilter}
+              classes={classes}
+              studentsForSuggestions={mappedForAutocomplete}
+            />
+          </div>
+          
+          <fieldset className={styles.exportFieldset} style={{ flex: '0 1 auto' }}>
+            <legend>Exportar Dados</legend>
             <div className={styles.buttonGroup}>
               <button className={styles.btnExcel} onClick={() => exportToXLSX(filteredAttendance)}>Excel</button>
               <button className={styles.btnPdf} onClick={() => exportToPDF(filteredAttendance)}>PDF</button>
@@ -167,7 +109,7 @@ export const AttendancePage = () => {
             <span className={styles.counter}>{filteredAttendance.length} Alunos</span>
           </header>
           <AttendanceList documents={filteredAttendance} />
-        </div>         
+        </div>        
       </section>
     </div>
   );

@@ -2,85 +2,86 @@ import styles from "./style.module.scss";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
+import { AttendanceFilter } from "../../components/AttendanceFilter";
 
 export const AttendanceOverviewPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const originRole = location.state?.originRole;
-
-  const roleLabels = { admin: 'Administrador', professor: 'Professor', usuário: 'Usuário' };
-
-  const handleGoBack = () => {
-    if (originRole) {
-      navigate('/attendancetracking', { state: { activeProfile: originRole } });
-    } else {
-      navigate(-1);
-    }
-  };
+  const roleLabels = { admin: 'ADMIN', professor: 'TEACHER', usuário: 'MONITOR' };  
   
+  const [searchName, setSearchName] = useState("");
+  const [selectedClass, setSelectedClass] = useState("all");
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
   const [calendarDate, setCalendarDate] = useState(new Date(2026, 4, 1));   
+
+  const mockStudents = [
+    {
+      id: 1, name: "Elisa Oliveira", turma: "Berçário II", periodo: "Matutino",
+      history: [
+        { id: 1, date: "15/05/2026", status: "P", note: "" },
+        { id: 2, date: "14/05/2026", status: "F", note: "Atestado médico" },
+        { id: 3, date: "13/05/2026", status: "P", note: "" },
+        { id: 4, date: "12/05/2026", status: "P", note: "" },
+      ]
+    },
+    {
+      id: 2, name: "Gustavo Silva", turma: "Maternal II", periodo: "Matutino",
+      history: [
+        { id: 1, date: "15/05/2026", status: "F", note: "Sem justificativa" },
+        { id: 2, date: "14/05/2026", status: "F", note: "Sem justificativa" },
+        { id: 3, date: "13/05/2026", status: "P", note: "" },
+      ]
+    },
+    {
+      id: 3, name: "Ana Clara", turma: "Maternal I", periodo: "Vespertino",
+      history: [
+        { id: 1, date: "15/05/2026", status: "P", note: "" },
+        { id: 2, date: "14/05/2026", status: "P", note: "" },
+        { id: 3, date: "13/05/2026", status: "P", note: "" },
+      ]
+    }
+  ];
   
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterDate, setFilterDate] = useState("");
+  const studentsWithFrequency = mockStudents.map(student => {
+    const total = student.history.length;
+    const present = student.history.filter(h => h.status === "P").length;
+    const freq = total > 0 ? Math.round((present / total) * 100) : 0;
+    return { ...student, frequencyRate: freq, totalClasses: total, totalPresent: present, totalAbsent: total - present };
+  });
 
-  // Dados mockados
-  const studentData = {
-    name: "Elisa Oliveira", turma: "Berçário II", periodo: "Matutino",
-    history: [
-      { id: 1, date: "15/05/2026", status: "P", note: "" },
-      { id: 2, date: "14/05/2026", status: "F", note: "Atestado médico" },
-      { id: 3, date: "13/05/2026", status: "P", note: "" },
-      { id: 4, date: "12/05/2026", status: "P", note: "" },
-      { id: 5, date: "11/05/2026", status: "P", note: "" },
-      { id: 6, date: "08/05/2026", status: "P", note: "" },
-      { id: 7, date: "07/05/2026", status: "F", note: "Gripe" },
-      { id: 8, date: "06/05/2026", status: "P", note: "" },
-      { id: 9, date: "05/05/2026", status: "P", note: "" },
-      { id: 10, date: "04/05/2026", status: "P", note: "" },
-    ]
-  };
+  const filteredStudents = studentsWithFrequency.filter(item => {
+    const matchesStatus = 
+      selectedFilter === "all" || 
+      (selectedFilter === "risk" && item.frequencyRate < 75) ||
+      (selectedFilter === "warning" && item.frequencyRate >= 75 && item.frequencyRate <= 85) ||
+      (selectedFilter === "perfect" && item.frequencyRate === 100);
 
-  const totalClasses = studentData.history.length;
-  const totalPresent = studentData.history.filter(h => h.status === "P").length;
-  const totalAbsent = studentData.history.filter(h => h.status === "F").length;
-  const attendancePercentage = Math.round((totalPresent / totalClasses) * 100) || 0;
+    const matchesName = item.name.toLowerCase().includes(searchName.toLowerCase());
+    const matchesClass = selectedClass === "all" || item.turma === selectedClass;
+    const matchesPeriod = selectedPeriod === "all" || item.periodo === selectedPeriod;
+
+    return matchesStatus && matchesName && matchesClass && matchesPeriod;
+  });
+  
+  const studentData = searchName.trim() !== "" 
+    ? filteredStudents.find(s => s.name.toLowerCase() === searchName.toLowerCase())
+    : null;
+
+  const classesList = [...new Set(mockStudents.map(item => item.turma))];
 
   // LÓGICA DO CALENDÁRIO
   const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-  
-  const handlePrevMonth = () => {
-    setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1));
-  };
+  const handlePrevMonth = () => setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1));
+  const handleNextMonth = () => setCalendarDate(new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1));
 
   const year = calendarDate.getFullYear();
   const month = calendarDate.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfWeek = new Date(year, month, 1).getDay(); 
-
-  // LÓGICA DOS FILTROS E DA LISTA
-  const convertToBRDate = (isoDate) => {
-    if (!isoDate) return "";
-    const [y, m, d] = isoDate.split("-");
-    return `${d}/${m}/${y}`;
-  };
-
-  const searchDateBR = convertToBRDate(filterDate);
-  
-  const filteredHistory = studentData.history.filter(record => {
-    const matchStatus = filterStatus === "" || filterStatus === "Todos" || record.status === filterStatus;
-    const matchDate = searchDateBR === "" || record.date === searchDateBR;
-    return matchStatus && matchDate;
-  });
-
-  const clearFilters = () => {
-    setFilterDate("");
-    setFilterStatus("");
-  };
 
   return (
     <div className={styles.container}>
@@ -91,33 +92,49 @@ export const AttendanceOverviewPage = () => {
         <header className={styles.pageHeader}>
           <div className={styles.titleArea}>
             <h1>Consultar Frequência</h1>
-            <p className={styles.studentInfo}>
-              {studentData.name} • {studentData.turma} ({studentData.periodo})
-            </p>
-          </div>
-          <button className={styles.backButton} onClick={handleGoBack}>
-            ← Voltar para Painel do {roleLabels[originRole] || 'Sistema'}
-          </button>
+          </div>          
         </header>
 
+        <AttendanceFilter 
+          searchName={searchName}
+          setSearchName={setSearchName}
+          selectedClass={selectedClass}
+          setSelectedClass={setSelectedClass}
+          selectedPeriod={selectedPeriod}
+          setSelectedPeriod={setSelectedPeriod}
+          selectedFilter={selectedFilter}
+          setSelectedFilter={setSelectedFilter}
+          classes={classesList}
+          studentsForSuggestions={studentsWithFrequency} 
+        />
+        
         <section className={styles.summaryGrid}>
           <div className={styles.summaryCard}>
-            <h3>Frequência</h3>
-            <div className={`${styles.highlightValue} ${attendancePercentage >= 75 ? styles.good : styles.bad}`}>
-              {attendancePercentage}%
+            <h3 style={{ color: '#475569' }}>Frequência Geral</h3>
+            <div 
+              className={`${styles.highlightValue} ${studentData ? (studentData.frequencyRate >= 75 ? styles.good : styles.bad) : ''}`} 
+              style={{ color: !studentData ? '#cbd5e1' : undefined }}
+            >
+              {studentData ? `${studentData.frequencyRate}%` : '-'}
             </div>
+            <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#1e293b', fontWeight: 'bold', marginTop: '10px' }}>
+              {studentData ? `${studentData.name} (${studentData.turma})` : 'Nenhum aluno selecionado'}
+            </p>
           </div>
           <div className={styles.summaryCard}>
             <h3>Presenças</h3>
-            <div className={styles.valuePresent}>{totalPresent}</div>
+            <div className={styles.valuePresent} style={{ color: !studentData ? '#cbd5e1' : undefined }}>
+              {studentData ? studentData.totalPresent : '-'}
+            </div>
           </div>
           <div className={styles.summaryCard}>
             <h3>Faltas</h3>
-            <div className={styles.valueAbsent}>{totalAbsent}</div>
+            <div className={styles.valueAbsent} style={{ color: !studentData ? '#cbd5e1' : undefined }}>
+              {studentData ? studentData.totalAbsent : '-'}
+            </div>
           </div>
         </section>
-
-        {/* CALENDÁRIO DINÂMICO COM SETAS */}
+        
         <section className={styles.calendarSection}>
           <div className={styles.sectionHeader}>
             <h2>Calendário Visual</h2>
@@ -141,9 +158,8 @@ export const AttendanceOverviewPage = () => {
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const dayStr = String(i + 1).padStart(2, '0');
               const monthStr = String(month + 1).padStart(2, '0');
-              const dateStr = `${dayStr}/${monthStr}/${year}`;
-              
-              const record = studentData.history.find(h => h.date === dateStr);
+              const dateStr = `${dayStr}/${monthStr}/${year}`;                           
+              const record = studentData ? studentData.history.find(h => h.date === dateStr) : null;
               
               let dayClass = styles.calendarDay;
               if (record) {
@@ -154,69 +170,13 @@ export const AttendanceOverviewPage = () => {
             })}
           </div>
         </section>
-
         
-        <section className={styles.historySection}>
-          
-          <div className={styles.filtersBar}>
-            <h2>Lançamentos Detalhados</h2>
-            
-            <div className={styles.filterGroup}>
-              <div className={styles.inputBox}>
-                <label>Filtrar Dia</label>
-                <input 
-                  type="date" 
-                  value={filterDate} 
-                  onChange={(e) => setFilterDate(e.target.value)} 
-                />
-              </div>
-
-              <div className={styles.inputBox}>
-                <label>Status</label>
-                <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>                  
-                  <option value="" disabled>Selecione um status...</option>
-                  <option value="Todos">Todos os Status</option>
-                  <option value="P">Apenas Presenças</option>
-                  <option value="F">Apenas Faltas</option>
-                </select>
-              </div>
-              
-              {(filterDate !== "" || filterStatus !== "") && (
-                <button className={styles.btnClear} onClick={clearFilters}>Limpar Filtros</button>
-              )}
-            </div>
+        {!studentData && (
+          <div style={{ padding: '40px', textAlign: 'center', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', marginTop: '20px' }}>
+            <h3 style={{ color: '#475569', marginBottom: '10px' }}>Aguardando seleção 🔍</h3>
+            <p style={{ color: '#64748b' }}>Utilize a barra de pesquisa acima para buscar e selecionar um aluno. Os dados de frequência aparecerão logo em seguida.</p>
           </div>
-          
-          {(filterStatus !== "" || filterDate !== "") && (
-            <div className={styles.historyList}>
-              <div className={styles.listHeader}>
-                <span>Data</span>
-                <span>Status</span>
-                <span className={styles.hideMobile}>Observação</span>
-              </div>
-
-              {filteredHistory.length === 0 ? (
-                <div className={styles.emptyState}>Nenhum registro encontrado para este filtro.</div>
-              ) : (
-                filteredHistory.map((record) => (
-                  <div key={record.id} className={styles.historyItem}>
-                    <div className={styles.dateBlock}>
-                      <span className={styles.dateText}>{record.date}</span>
-                    </div>
-                    <div className={styles.statusBlock}>
-                      <span className={`${styles.statusBadge} ${record.status === 'P' ? styles.badgeP : styles.badgeF}`}>
-                        {record.status === 'P' ? 'Presente' : 'Falta'}
-                      </span>
-                    </div>
-                    <div className={`${styles.noteBlock} ${styles.hideMobile}`}>
-                      {record.note || "-"}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </section>
+        )}
 
       </main>
     </div>

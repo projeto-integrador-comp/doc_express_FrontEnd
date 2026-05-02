@@ -19,7 +19,7 @@ export const AttendanceList = ({ documents = []}) => {
             <th>Turma</th>
             <th>Período</th>
             <th className={styles.center}>Assiduidade</th>
-            <th className={styles.center}>Ações</th>
+            <th className={styles.center}>Detalhes</th>
           </tr>
         </thead>
         <tbody>
