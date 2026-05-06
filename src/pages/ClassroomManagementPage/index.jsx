@@ -75,49 +75,67 @@ export const ClassroomManagementPage = () => {
           </button>
         </div>
 
-        <h1 className={styles.titleCenter}>Gestão de Turmas</h1>
+        <h1>Gestão de Turmas</h1>
 
         <div className={styles.headerRight}>
-          <button onClick={() => setShowCreateModal(true)} className={styles.addButton}>
+          <button
+            onClick={() => {
+              setEditingClassroom(null); // Garante que é uma nova turma
+              setShowCreateModal(true);
+            }}
+            className={styles.addButton}
+          >
             + Nova Turma
           </button>
         </div>
       </header>
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Nome da Turma</th>
-            <th>Professor Responsável</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {classrooms.map((cls) => ( // 'cls' é o item atual da iteração
-            <tr key={cls.id}>
-              <td>{cls.name}</td>
-              {/* Usamos o opcional chaining para evitar erro se não houver professor */}
-              <td>{cls.teacher?.name || "Sem professor"}</td>
-              <td>
-                <div className={styles.actionButtons}>
-                  {/* IMPORTANTE: Aqui deve ser 'cls', que é a variável do map */}
-                  <button onClick={() => setEditingClassroom(cls)}>
-                    Editar
-                  </button>
-                  <button onClick={() => handleDelete(cls.id)}>
-                    Excluir
-                  </button>
-                </div>
-              </td>
+      {/* MainCard para aplicar o fundo branco e sombra do seu CSS */}
+      <div className={styles.mainCard}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Nome da Turma</th>
+              <th>Professor Responsável</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {classrooms.map((cls) => (
+              <tr key={cls.id}>
+                <td>{cls.name}</td>
+                <td>{cls.teacher?.name || "Sem professor"}</td>
+                <td>
+                  {/* Container de ações centralizado via SCSS */}
+                  <div className={styles.actionButtons}>
+                    <button
+                      className={styles.editBtn}
+                      onClick={() => setEditingClassroom(cls)}
+                    >
+                      ✏️ Editar
+                    </button>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => deleteClassroom(cls.id)}
+                    >
+                      🗑️ Excluir
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
+      {/* Lógica dos Modais preservada exatamente como a sua */}
       {showCreateModal && (
         <RegisterClassroomModal
           teachers={teachers}
-          onClose={() => { setShowCreateModal(false); loadData(); }}
+          onClose={() => {
+            setShowCreateModal(false);
+            loadData();
+          }}
         />
       )}
 
@@ -125,10 +143,12 @@ export const ClassroomManagementPage = () => {
         <RegisterClassroomModal
           classroom={editingClassroom}
           teachers={teachers}
-          onClose={() => { setEditingClassroom(null); loadData(); }}
+          onClose={() => {
+            setEditingClassroom(null);
+            loadData();
+          }}
         />
       )}
-
     </div>
   );
 };

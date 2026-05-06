@@ -8,6 +8,67 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    width: 100%;
+
+    .headerLeft, .headerRight {
+      flex: 1;
+      display: flex;
+    }
+
+    .headerRight {
+      justify-content: flex-end;
+    }
+
+    h1 {
+      flex: 2;
+      text-align: center;
+      color: #1a202c;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .backButton {
+      background-color: transparent;
+      color: #4a5568;
+      border: 1px solid #e2e8f0;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #f7fafc;
+        border-color: #cbd5e0;
+      }
+    }
+
+    .addButton {
+      background-color: #1a5fb4; 
+      color: white !important;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: filter 0.2s;
+
+      &:hover {
+        filter: brightness(1.2);
+      }
+    }
+  }
 }
 
 .mainCard {
@@ -17,69 +78,68 @@
   overflow: hidden;
 }
 
-.contentWrapper {
-  max-width: 1200px; // Ou a largura que você usou na outra página
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-
-  h1 {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-  }
-}
-
-.mainCard {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  overflow: hidden; // Garante que a tabela não saia do arredondamento
-}
-
 .table {
-  width: 100%; // Isso faz a tabela ocupar toda a largura do card
+  width: 100%;
   border-collapse: collapse;
 
-  thead {
-    background-color: #f1f4f8; // Cor do topo da tabela na imagem
+  thead th {
+    padding: 1rem;
+    text-align: left;
+    color: #555;
+    background-color: #f1f4f8;
+    font-size: 0.85rem;
+    text-transform: uppercase;
 
-    th {
-      padding: 1rem;
-      text-align: left;
-      color: #555;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
+    &:last-child {
+      text-align: center; 
     }
   }
 
   tbody td {
     padding: 1rem;
     border-bottom: 1px solid #eee;
-    color: #444;
+    vertical-align: middle;
+
+    &:last-child {
+      text-align: center; /* Centraliza o título AÇÕES */
+    }
   }
 }
 
-// Botões de ação dentro da TD
+/* CONTAINER DOS BOTÕES DENTRO DA TD */
 .actions {
   display: flex;
-  gap: 0.5rem;
+  justify-content: center; /* Centraliza os botões dentro da célula */
+  gap: 10px;
+  width: 100%;
+}
 
-  button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    // Adicione as cores azul e vermelho conforme a imagem
-  }
+.editBtn {
+  background-color: #3182ce;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  &:hover { background-color: #2b6cb0; }
+}
+
+.deleteBtn {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  &:hover { background-color: #c53030; }
 }

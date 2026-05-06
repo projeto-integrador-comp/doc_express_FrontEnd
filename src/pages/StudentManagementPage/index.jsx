@@ -63,18 +63,24 @@ export const StudentManagementPage = () => {
     <div className={styles.pageContainer}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <button className={styles.backBtn} onClick={() => navigate(-1)}>
-            ⬅ Voltar
-          </button>
-          <h1>Gestão de Estudantes</h1>
-          <button
-            className={styles.addBtn}
-            onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
-          >
-            + Novo Estudante
-          </button>
-        </header>
+          <div className={styles.headerLeft}>
+            <button onClick={() => navigate(-1)} className={styles.backButton}>
+              ⬅️ Voltar
+            </button>
+          </div>
 
+          <h1 className={styles.titleCenter}>Gestão de Estudantes</h1>
+
+          <div className={styles.headerRight}>
+            {/* O botão precisa estar aqui dentro e usar styles.addButton */}
+            <button
+              onClick={() => { setEditingStudent(null); setIsModalOpen(true); }}
+              className={styles.addButton}
+            >
+              + Novo Estudante
+            </button>
+          </div>
+        </header>
         <main className={styles.mainCard}>
           <table className={styles.table}>
             <thead>
@@ -92,14 +98,15 @@ export const StudentManagementPage = () => {
                     <td>
                       {classrooms.find(c => c.id === student.classroom?.id)?.name || "N/A"}
                     </td>
-                    <td className={styles.actions}>
+                    <td className={styles.actions}> {/* A classe .actions agora centraliza o flex */}
                       <button
                         className={styles.editBtn}
                         onClick={() => {
-                          setEditingStudent(student); 
+                          setEditingStudent(student);
                           setIsModalOpen(true);
-                        }}>✏️ Editar
-                        </button>
+                        }}>
+                        ✏️ Editar
+                      </button>
                       <button
                         className={styles.deleteBtn}
                         onClick={() => deleteStudent(student.id)}
