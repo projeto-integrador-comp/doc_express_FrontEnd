@@ -22,10 +22,13 @@ export const ClassroomManagementPage = () => {
       ]);
 
       setClassrooms(classRes.data);
-      // Filtra como no seu modal para consistência
+
+      // AJUSTE 1: Filtro mais restrito
+      // Remova "ADMIN" e "MONITOR" se você quer que APENAS professores apareçam no dropdown
       const onlyTeachers = userRes.data.filter(user =>
-        user.role === "TEACHER" || user.role === "admin"
+        user.role === "TEACHER"
       );
+
       setTeachers(onlyTeachers);
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
@@ -90,17 +93,21 @@ export const ClassroomManagementPage = () => {
           </tr>
         </thead>
         <tbody>
-          {classrooms.map((cls) => (
+          {classrooms.map((cls) => ( // 'cls' é o item atual da iteração
             <tr key={cls.id}>
               <td>{cls.name}</td>
-              <td>{getTeacherName(cls)}</td>
-              <td className={styles.actionButtons} style={{ display: 'flex', gap: '15px' }}>
-                <button className={styles.editBtn} onClick={() => setEditingClassroom(cls)}>
-                  ✏️ Editar
-                </button>
-                <button className={styles.deleteBtn} onClick={() => deleteClassroom(cls.id)}>
-                  🗑️ Excluir
-                </button>
+              {/* Usamos o opcional chaining para evitar erro se não houver professor */}
+              <td>{cls.teacher?.name || "Sem professor"}</td>
+              <td>
+                <div className={styles.actionButtons}>
+                  {/* IMPORTANTE: Aqui deve ser 'cls', que é a variável do map */}
+                  <button onClick={() => setEditingClassroom(cls)}>
+                    Editar
+                  </button>
+                  <button onClick={() => handleDelete(cls.id)}>
+                    Excluir
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -108,15 +115,20 @@ export const ClassroomManagementPage = () => {
       </table>
 
       {showCreateModal && (
-        <RegisterClassroomModal onClose={() => { setShowCreateModal(false); loadData(); }} />
+        <RegisterClassroomModal
+          teachers={teachers}
+          onClose={() => { setShowCreateModal(false); loadData(); }}
+        />
       )}
 
       {editingClassroom && (
         <RegisterClassroomModal
           classroom={editingClassroom}
+          teachers={teachers}
           onClose={() => { setEditingClassroom(null); loadData(); }}
         />
       )}
+
     </div>
   );
 };

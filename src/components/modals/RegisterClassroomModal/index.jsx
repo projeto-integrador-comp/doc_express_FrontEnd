@@ -1,70 +1,65 @@
 import styles from "./style.module.scss";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import { api } from "../../../services/api"; 
+import { api } from "../../../services/api";
 
-export const RegisterClassroomModal = ({ onClose, classroom = null }) => {
+export const RegisterClassroomModal = ({ classroom, teachers, onClose, setClassrooms }) => {
+  // Debug para confirmar se a lista chegou
+  console.log("Professores disponíveis no modal:", teachers); 
+
   const isEditing = !!classroom;
-  
-  // O useForm inicia com os valores da turma caso esteja editando
-  const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: classroom ? {
-      name: classroom.name,
-      teacherId: classroom.teacherId
-    } : {}
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm({
+    // ... seu defaultValues atual
   });
 
-  const [teachers, setTeachers] = useState([]);
-
-  // Busca professores cadastrados para preencher o select
+  // 2. useEffect para garantir que os campos atualizem se o modal abrir/fechar
   useEffect(() => {
-    const loadTeachers = async () => {
-      try {
-        const token = localStorage.getItem("@tokenDocExpress");
-        const response = await api.get("/users", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        
-        // Filtra para mostrar apenas usuários com role TEACHER
-        // Importante: use o valor exato que o seu backend espera (TEACHER ou admin)
-        const onlyTeachers = response.data.filter(user => 
-          user.role === "TEACHER" || user.role === "admin"
-        );
-        setTeachers(onlyTeachers);
-      } catch (error) {
-        console.error("Erro ao carregar professores:", error);
-      }
-    };
-    loadTeachers();
-  }, []);
+    if (classroom) {
+      setValue("name", classroom.name);
 
+      // O pulo do gato: Verifique se o professor existe e passe o ID dele
+      if (classroom.teacher && classroom.teacher.id) {
+        setValue("teacherId", classroom.teacher.id);
+      }
+    } else {
+      // Limpa os campos ao cadastrar nova turma
+      setValue("name", "");
+      setValue("teacherId", "");
+    }
+  }, [classroom, setValue]);
+
+  // 2. Envio correto no submit
   const submit = async (data) => {
     try {
       const token = localStorage.getItem("@tokenDocExpress");
-      const config = {
-        headers: { Authorization: `Bearer ${token}` }
-      };
 
+      // Garantimos que o payload envie o teacherId para a FK do banco
       const payload = {
         name: data.name,
-        teacherId: data.teacherId,
-        monitorIds: classroom?.monitorIds || []
+        teacherId: data.teacherId // Deve ser o UUID do professor selecionado
       };
 
-      if (isEditing) {
-        // Rota de PATCH para atualização parcial
-        await api.patch(`/classrooms/${classroom.id}`, payload, config);
-        alert("Turma atualizada com sucesso!");
+      if (classroom) {
+        await api.patch(`/classrooms/${classroom.id}`, payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert("Turma atualizada!");
       } else {
-        // Rota de POST para criação
-        await api.post("/classrooms", payload, config);
-        alert("Turma cadastrada com sucesso!");
+        await api.post("/classrooms", payload, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert("Turma criada!");
       }
-
       onClose();
     } catch (error) {
-      console.error("Erro na operação:", error.response?.data || error.message);
-      alert("Ocorreu um erro ao processar a requisição. Verifique os dados.");
+      console.error(error.response?.data);
+      alert("Erro ao salvar turma.");
     }
   };
 
@@ -72,6 +67,7 @@ export const RegisterClassroomModal = ({ onClose, classroom = null }) => {
     <div className={styles.modalOverlay} onClick={onClose} role="dialog">
       <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
+          {/* Agora o isEditing funciona! */}
           <h2>{isEditing ? "Editar Turma" : "Cadastrar Nova Turma"}</h2>
           <button type="button" className={styles.closeButton} onClick={onClose}>X</button>
         </div>
@@ -81,13 +77,13 @@ export const RegisterClassroomModal = ({ onClose, classroom = null }) => {
             <label htmlFor="name">
               Nome da Turma <span className={styles.requiredAsterisk}>*</span>
             </label>
-            <input 
-              type="text" 
-              id="name" 
-              placeholder="Ex: 3º Ano A" 
-              {...register("name", { required: true, minLength: 1, maxLength: 120 })} 
+            <input
+              type="text"
+              id="name"
+              placeholder="Ex: 3º Ano A"
+              {...register("name", { required: "O nome é obrigatório" })}
             />
-            {errors.name && <span className={styles.error}>Nome é obrigatório (máx 120 caracteres)</span>}
+            {errors.name && <span className={styles.error}>{errors.name.message}</span>}
           </div>
 
           <div className={styles.inputGroup}>
@@ -96,18 +92,14 @@ export const RegisterClassroomModal = ({ onClose, classroom = null }) => {
             </label>
             <select id="teacherId" {...register("teacherId", { required: true })}>
               <option value="">Selecione um professor</option>
-              {teachers.map((teacher) => (
-                <option key={teacher.id} value={teacher.id}>
-                  {teacher.name}
+              {teachers?.map((t) => (
+                <option key={t.id} value={t.id}> {/* O value DEVE ser o ID */}
+                  {t.name}
                 </option>
               ))}
             </select>
-            {errors.teacherId && <span className={styles.error}>Selecione um professor responsável</span>}
+            {errors.teacherId && <span className={styles.error}>{errors.teacherId.message}</span>}
           </div>
-
-          <p className={styles.formNote}>
-            <span className={styles.requiredAsterisk}>*</span> Campos de preenchimento obrigatório.
-          </p>
 
           <div className={styles.actions}>
             <button type="button" className={styles.cancelButton} onClick={onClose}>
