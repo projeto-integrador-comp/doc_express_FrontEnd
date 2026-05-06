@@ -1,0 +1,84 @@
+// Sugestão de complemento para os seus novos modais
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalBox {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    border-bottom: 2px solid #f3f4f6;
+    padding-bottom: 0.5rem;
+  }
+
+  .inputGroup {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label { font-weight: 600; color: #374151; }
+    input, select {
+      padding: 0.6rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.4rem;
+    }
+  }
+
+  .submitButton {
+    width: 100%;
+    padding: 0.75rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+    &:hover { background: #1d4ed8; }
+  }
+  .modalHeader {
+  display: flex;
+  justify-content: space-between; // Empurra o título para a esquerda e o X para a direita
+  align-items: center;
+  margin-bottom: 1.5rem;
+  width: 100%;
+
+  h2 {
+    margin: 0; // Remove margens que podem desalinhá-lo com o botão
+    font-size: 1.5rem;
+    color: #1f2937;
+  }
+
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #6b7280; // Cor cinza suave
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #ef4444; // Muda para vermelho ao passar o mouse (feedback de fechar)
+    }
+  }
+}
+}

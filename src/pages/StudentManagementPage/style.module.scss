@@ -1,0 +1,85 @@
+.pageContainer {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.mainCard {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.contentWrapper {
+  max-width: 1200px; // Ou a largura que você usou na outra página
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+}
+
+.mainCard {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden; // Garante que a tabela não saia do arredondamento
+}
+
+.table {
+  width: 100%; // Isso faz a tabela ocupar toda a largura do card
+  border-collapse: collapse;
+
+  thead {
+    background-color: #f1f4f8; // Cor do topo da tabela na imagem
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      color: #555;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    color: #444;
+  }
+}
+
+// Botões de ação dentro da TD
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    // Adicione as cores azul e vermelho conforme a imagem
+  }
+}
