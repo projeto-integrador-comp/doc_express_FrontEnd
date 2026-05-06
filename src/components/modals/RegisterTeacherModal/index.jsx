@@ -12,43 +12,32 @@ export const RegisterTeacherModal = ({ onClose, user }) => {
   useEffect(() => {
     if (user) {
       setValue("name", user.name);
-      setValue("email", user.email);
-      setValue("role", user.role?.toUpperCase());
-      // Senha geralmente não se preenche na edição por segurança
+      setValue("role", user.role); // Agora o cargo deve ser recuperado corretamente
     }
   }, [user, setValue]);
 
   const submit = async (data) => {
   try {
     const token = localStorage.getItem("@tokenDocExpress");
+    const headers = { Authorization: `Bearer ${token}` };
 
     if (user) {
-      // O BACKEND REJEITA O CAMPO 'role' NO PATCH
-      // Criamos um novo objeto APENAS com o que é permitido
-      const payload = {
-        name: data.name,
-        email: data.email
+      // MODO EDIÇÃO: Enviamos apenas nome e cargo
+      const payload = { 
+        name: data.name, 
+        role: data.role 
       };
-
-      // Se houver senha, adicionamos
-      if (data.password) payload.password = data.password;
-
-      console.log("Enviando Payload para PATCH:", payload); // Verifique se o 'role' não está aqui!
-
-      await api.patch(`/users/${user.id}`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert("Atualizado com sucesso!");
+      await api.patch(`/users/${user.id}`, payload, { headers });
+      alert("Usuário atualizado com sucesso!");
     } else {
-      // No POST o role é aceito
-      await api.post("/users", data, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert("Cadastrado com sucesso!");
+      // MODO CADASTRO: Payload completo (incluindo email e password)
+      await api.post("/users", data, { headers });
+      alert("Usuário cadastrado com sucesso!");
     }
     onClose();
   } catch (error) {
-    console.error("Erro real do backend:", error.response?.data);
+    console.error("Erro detalhado:", error.response?.data);
+    alert("Erro ao salvar alterações.");
   }
 };
 
@@ -62,37 +51,37 @@ export const RegisterTeacherModal = ({ onClose, user }) => {
         </div>
 
         <form onSubmit={handleSubmit(submit)}>
+          {/* Campo Nome - Sempre visível */}
           <div className={styles.inputGroup}>
-            <label htmlFor="name">Nome Completo <span className={styles.requiredAsterisk}>*</span></label>
-            <input type="text" id="name" {...register("name", { required: true })} />
+            <label>Nome <span className={styles.requiredAsterisk}>*</span></label>
+            <input {...register("name", { required: true })} />
           </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="email">E-mail <span className={styles.requiredAsterisk}>*</span></label>
-            <input type="email" id="email" {...register("email", { required: true })} />
-          </div>
-
-          {/* 4. Senha só é obrigatória no cadastro */}
+          {/* Campo Email - SÓ APARECE SE NÃO FOR EDIÇÃO */}
           {!user && (
             <div className={styles.inputGroup}>
-              <label htmlFor="password">Senha Provisória <span className={styles.requiredAsterisk}>*</span></label>
-              <input type="password" id="password" {...register("password", { required: true })} />
+              <label>Email <span className={styles.requiredAsterisk}>*</span></label>
+              <input
+                type="email"
+                {...register("email", { required: !user })}
+                placeholder="exemplo@email.com"
+              />
             </div>
           )}
 
+          {/* Campo Cargo - Sempre visível */}
           <div className={styles.inputGroup}>
-            <label htmlFor="role">Cargo <span className={styles.requiredAsterisk}>*</span></label>
-            <select id="role" {...register("role", { required: true })}>
-              <option value="">Selecione o perfil</option>
+            <label>Cargo <span className={styles.requiredAsterisk}>*</span></label>
+            <select {...register("role", { required: true })}>
+              <option value="">Selecione o cargo</option>
+              <option value="ADMIN">Administrador</option>
               <option value="TEACHER">Professor</option>
               <option value="MONITOR">Monitor</option>
             </select>
           </div>
 
-          <p className={styles.formNote}><span className={styles.requiredAsterisk}>*</span> Campos obrigatórios.</p>
-
           <button type="submit" className={styles.submitButton}>
-            {user ? "Salvar Alterações" : "Finalizar Cadastro"}
+            {user ? "Salvar Alterações" : "Cadastrar"}
           </button>
         </form>
       </div>
