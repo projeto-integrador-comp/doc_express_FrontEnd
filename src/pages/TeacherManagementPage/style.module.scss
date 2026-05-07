@@ -1,0 +1,146 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+    width: 100%;
+
+    // Garante que as colunas laterais tenham o mesmo tamanho para centralizar o título
+    .headerLeft, .headerRight {
+      flex: 1;
+      display: flex;
+    }
+
+    .headerRight {
+      justify-content: flex-end;
+    }
+
+    h1 {
+      flex: 2; // Dá mais peso ao centro
+      text-align: center;
+      color: #1a202c;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .backButton {
+      background-color: transparent;
+      color: #4a5568;
+      border: 1px solid #e2e8f0;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: #f7fafc;
+        border-color: #cbd5e0;
+      }
+    }
+
+    .addButton {
+      background-color: #2b6cb0;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.2s;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #2c5282;
+      }
+    }
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+    thead {
+      background-color: #edf2f7;
+
+      th {
+        padding: 1rem;
+        text-align: left;
+        color: #4a5568;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background 0.2s;
+        border-bottom: 1px solid #edf2f7;
+
+        &:hover {
+          background-color: #f7fafc;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: 1rem;
+          color: #2d3748;
+          vertical-align: middle;
+
+          .actionButtons {
+            display: flex !important;
+            gap: 12px !important;
+            align-items: center;
+          }
+
+          .editBtn,
+          .deleteBtn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px !important;
+            border-radius: 4px !important;
+            border: none !important;
+            cursor: pointer;
+            color: white !important;
+            font-weight: 500;
+            transition: opacity 0.2s;
+
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+
+          .editBtn {
+            background-color: #2b6cb0 !important;
+          }
+
+          .deleteBtn {
+            background-color: #e53e3e !important;
+          }
+        }
+      }
+    }
+  }
+}

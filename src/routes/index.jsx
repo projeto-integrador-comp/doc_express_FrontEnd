@@ -11,31 +11,33 @@ import { AttendanceTrackingPage } from "../pages/AttendanceTrackingPage";
 import { AttendanceRegisterPage } from "../pages/AttendanceRegisterPage";
 import { AttendanceOverviewPage } from "../pages/AttendanceOverviewPage";
 import UploadPage from "../pages/UploadPage/UploadPage";
+import { ClassroomManagementPage } from "../pages/ClassroomManagementPage";
+
+import { StudentManagementPage } from "../pages/StudentManagementPage"; 
+import { UserManagementPage as TeacherManagementPage } from "../pages/TeacherManagementPage"; 
 
 export const RoutesMain = () => {
   return (
     <Routes>
-      {/* Rotas Públicas */}        
       <Route element={<PublicRoutes />}>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      {/* Rotas Privadas */}
       <Route element={<PrivateRoutes />}>
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/classroom-management" element={<ClassroomManagementPage />} />
+        <Route path="/teacher-management" element={<TeacherManagementPage />} />
+        <Route path="/student-management" element={<StudentManagementPage />} />
+        
         <Route path="/models" element={<ModelListPage />} />
         <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
         <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/attendanceregister" element={<AttendanceRegisterPage />} />
         <Route path="/attendanceoverview" element={<AttendanceOverviewPage />} />
-      </Route>
-
-      <Route element={<PrivateRoutes />}>
         <Route path="/upload" element={<UploadPage />} />
       </Route>
 
-      {/* Fallback de Erro */}
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
