@@ -13,25 +13,58 @@ export const AttendanceRegisterPage = () => {
   const [pendingCount, setPendingCount] = useState(0);
   
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterClass, setFilterClass] = useState("Berçário II");
-  const [filterPeriod, setFilterPeriod] = useState("Matutino");
+  const [filterClass, setFilterClass] = useState("Todas");
+  const [filterPeriod, setFilterPeriod] = useState("Todos");
   
+  // Adicionados os campos: entryTime, exitTime e isEditingEntry
   const [students, setStudents] = useState([
-    { id: 1, name: "Elisa Oliveira", status: null, turma: "Berçário II", periodo: "Matutino" },
-    { id: 2, name: "Gustavo Santos", status: null, turma: "Berçário II", periodo: "Matutino" },
-    { id: 3, name: "Ana Beatriz Rocha", status: null, turma: "Maternal I", periodo: "Matutino" },
-    { id: 4, name: "Lucas Ferreira", status: null, turma: "Berçário II", periodo: "Vespertino" },
-    { id: 5, name: "Maria Clara", status: null, turma: "Maternal I", periodo: "Vespertino" },
+    { id: 1, name: "Elisa Oliveira", status: null, turma: "Berçário II", periodo: "Matutino", entryTime: "", exitTime: "", isEditingEntry: false },
+    { id: 2, name: "Gustavo Santos", status: null, turma: "Berçário II", periodo: "Matutino", entryTime: "", exitTime: "", isEditingEntry: false },
+    { id: 3, name: "Ana Beatriz Rocha", status: null, turma: "Maternal I", periodo: "Matutino", entryTime: "", exitTime: "", isEditingEntry: false },
+    { id: 4, name: "Lucas Ferreira", status: null, turma: "Berçário II", periodo: "Vespertino", entryTime: "", exitTime: "", isEditingEntry: false },
+    { id: 5, name: "Maria Clara", status: null, turma: "Maternal I", periodo: "Vespertino", entryTime: "", exitTime: "", isEditingEntry: false },
   ]);
 
-  // Função para atualizar o status (P, F, J)
+  // Função para atualizar o status e gravar a hora de entrada
   const handleStatusChange = (id, newStatus) => {
+    setStudents(students.map(student => {
+      if (student.id === id) {
+        let updatedStudent = { ...student, status: newStatus };
+        
+        
+        if (newStatus === 'P' && student.status !== 'P') {
+          const now = new Date();
+          updatedStudent.entryTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          updatedStudent.exitTime = ""; 
+        } 
+        
+        else if (newStatus === 'F') {
+          updatedStudent.entryTime = "";
+          updatedStudent.exitTime = "";
+          updatedStudent.isEditingEntry = false;
+        }
+        
+        return updatedStudent;
+      }
+      return student;
+    }));
+  };
+
+  // Função para alterar manualmente a hora (Entrada ou Saída)
+  const handleTimeChange = (id, field, value) => {
     setStudents(students.map(student => 
-      student.id === id ? { ...student, status: newStatus } : student
+      student.id === id ? { ...student, [field]: value } : student
     ));
   };
 
-    const filteredStudents = students.filter((student) => {
+  // Função para alternar o modo de edição da hora de entrada
+  const toggleEditEntry = (id) => {
+    setStudents(students.map(student => 
+      student.id === id ? { ...student, isEditingEntry: !student.isEditingEntry } : student
+    ));
+  };
+
+  const filteredStudents = students.filter((student) => {
     const matchesName = student.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesClass = filterClass === "Todas" || student.turma === filterClass;
     const matchesPeriod = filterPeriod === "Todos" || student.periodo === filterPeriod;
@@ -119,9 +152,9 @@ export const AttendanceRegisterPage = () => {
               <div className={styles.emptyState}>Nenhum aluno encontrado com estes filtros.</div>
             ) : (
               filteredStudents.map((student) => (
-                <div key={student.id} className={styles.studentCard}>
+                <div key={student.id} className={styles.studentCard} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '15px' }}>
                   
-                  <div className={styles.studentInfo}>
+                  <div className={styles.studentInfo} style={{ flex: '1 1 auto' }}>
                     <div className={styles.avatar}>{student.name.charAt(0)}</div>
                     <div className={styles.nameAndDetails}>
                       <span className={styles.studentName}>{student.name}</span>
@@ -129,19 +162,69 @@ export const AttendanceRegisterPage = () => {
                     </div>
                   </div>
 
-                  <div className={styles.actionGroup}>
-                    <button 
-                      className={`${styles.btnStatus} ${styles.btnPresent} ${student.status === 'P' ? styles.activeP : ''}`}
-                      onClick={() => handleStatusChange(student.id, 'P')}
-                    >
-                      Presente
-                    </button>
-                    <button 
-                      className={`${styles.btnStatus} ${styles.btnAbsent} ${student.status === 'F' ? styles.activeF : ''}`}
-                      onClick={() => handleStatusChange(student.id, 'F')}
-                    >
-                      Falta
-                    </button>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '15px' }}>
+                    
+                    {/* CONTROLES DE HORÁRIO (Só aparecem se for Presente) */}
+                    {student.status === 'P' && (
+                      <div className={styles.timeControls} style={{ display: 'flex', gap: '10px', backgroundColor: '#f8fafc', padding: '5px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        
+                        {/* HORA DE ENTRADA */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.85rem' }}>
+                          <span style={{ fontWeight: 'bold', color: '#64748b' }}>Entrada:</span>
+                          {student.isEditingEntry ? (
+                            <input
+                              type="time"
+                              value={student.entryTime}
+                              onChange={(e) => handleTimeChange(student.id, 'entryTime', e.target.value)}
+                              onBlur={() => toggleEditEntry(student.id)} // Sai da edição ao clicar fora
+                              autoFocus
+                              style={{ padding: '2px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                            />
+                          ) : (
+                            <>
+                              <span style={{ color: '#0f172a', fontWeight: '500' }}>{student.entryTime}</span>
+                              <button 
+                                onClick={() => toggleEditEntry(student.id)}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', padding: 0 }}
+                                title="Editar Entrada"
+                              >
+                                ✏️
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        <div style={{ width: '1px', backgroundColor: '#cbd5e1' }}></div> {/* Divisória */}
+
+                        {/* HORA DE SAÍDA */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.85rem' }}>
+                          <label style={{ fontWeight: 'bold', color: '#64748b' }}>Saída:</label>
+                          <input
+                            type="time"
+                            value={student.exitTime}
+                            onChange={(e) => handleTimeChange(student.id, 'exitTime', e.target.value)}
+                            style={{ padding: '2px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* BOTÕES DE PRESENÇA/FALTA */}
+                    <div className={styles.actionGroup}>
+                      <button 
+                        className={`${styles.btnStatus} ${styles.btnPresent} ${student.status === 'P' ? styles.activeP : ''}`}
+                        onClick={() => handleStatusChange(student.id, 'P')}
+                      >
+                        Presente
+                      </button>
+                      <button 
+                        className={`${styles.btnStatus} ${styles.btnAbsent} ${student.status === 'F' ? styles.activeF : ''}`}
+                        onClick={() => handleStatusChange(student.id, 'F')}
+                      >
+                        Falta
+                      </button>
+                    </div>
+
                   </div>
                 </div>
               ))

@@ -22,6 +22,10 @@ export const RoutesMain = () => {
       <Route element={<PublicRoutes />}>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
+        <Route path="/attendanceregister" element={<AttendanceRegisterPage />} />
+        <Route path="/attendanceoverview" element={<AttendanceOverviewPage />} />
       </Route>
 
       <Route element={<PrivateRoutes />}>
@@ -31,10 +35,6 @@ export const RoutesMain = () => {
         <Route path="/student-management" element={<StudentManagementPage />} />
         
         <Route path="/models" element={<ModelListPage />} />
-        <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
-        <Route path="/attendance" element={<AttendancePage />} />
-        <Route path="/attendanceregister" element={<AttendanceRegisterPage />} />
-        <Route path="/attendanceoverview" element={<AttendanceOverviewPage />} />
         <Route path="/upload" element={<UploadPage />} />
       </Route>
 
