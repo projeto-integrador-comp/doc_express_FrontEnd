@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { AttendanceContext } from "../../providers/AttendanceContext/index.jsx"; 
 import { UserContext } from "../../providers/UserContext/index.jsx";
-
-// Mantemos apenas o modal de registro de presença, se ele ainda for necessário aqui
 import { RegisterAttendanceModal } from "../../components/modals/RegisterAttendanceModal/index.jsx";
 
 const PERFIS = {

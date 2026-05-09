@@ -29,12 +29,11 @@ export const RoutesMain = () => {
         <Route path="/classroom-management" element={<ClassroomManagementPage />} />
         <Route path="/teacher-management" element={<TeacherManagementPage />} />
         <Route path="/student-management" element={<StudentManagementPage />} />
-        
-        <Route path="/models" element={<ModelListPage />} />
         <Route path="/attendancetracking" element={<AttendanceTrackingPage />} />
         <Route path="/attendance" element={<AttendancePage />} />
         <Route path="/attendanceregister" element={<AttendanceRegisterPage />} />
-        <Route path="/attendanceoverview" element={<AttendanceOverviewPage />} />
+        <Route path="/attendanceoverview" element={<AttendanceOverviewPage />} />        
+        <Route path="/models" element={<ModelListPage />} />
         <Route path="/upload" element={<UploadPage />} />
       </Route>
 
