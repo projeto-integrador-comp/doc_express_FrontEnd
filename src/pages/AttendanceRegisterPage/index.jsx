@@ -96,9 +96,8 @@ export const AttendanceRegisterPage = () => {
       <Header />      
       
       <WarningModal isOpen={isWarningOpen} onClose={() => setIsWarningOpen(false)} pendingCount={pendingCount} />
-      <SuccessModal isOpen={isSuccessOpen} onClose={() => setIsSuccessOpen(false)} />
+      <SuccessModal isOpen={isSuccessOpen} onClose={() => setIsSuccessOpen(false)} />      
       
-      {/* NOVO MODAL DE OBSERVAÇÃO */}
       <AttendanceRegisterObservationModal 
         isOpen={activeObsStudentId !== null}
         onClose={() => setActiveObsStudentId(null)}
@@ -143,9 +142,7 @@ export const AttendanceRegisterPage = () => {
             </select>
           </div>
         </section>
-
-        {/* LISTA DE ALUNOS */}
-        {/* LISTA DE ALUNOS */}
+        
         <section className={styles.attendanceList}>
           <div className={styles.listHeader}>
             <span>Aluno</span>
@@ -157,11 +154,8 @@ export const AttendanceRegisterPage = () => {
               <div className={styles.emptyState}>Nenhum aluno encontrado com estes filtros.</div>
             ) : (
               filteredStudents.map((student) => (
-                <div key={student.id} className={styles.studentCard} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '15px' }}>
-                  
-                  {/* ========================================== */}
-                  {/* BLOCO DA ESQUERDA: Aluno + Horários        */}
-                  {/* ========================================== */}
+                <div key={student.id} className={styles.studentCard} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '15px' }}>                  
+                 
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '20px', flex: '1 1 auto' }}>
                     
                     {/* INFORMAÇÕES DO ALUNO */}
@@ -172,8 +166,7 @@ export const AttendanceRegisterPage = () => {
                         <span className={styles.studentClass}>{student.turma} - {student.periodo}</span>
                       </div>
                     </div>
-
-                    {/* CONTROLES DE HORÁRIO (Agora fixos na ESQUERDA, logo após o nome) */}
+                    
                     {student.status === 'P' && (
                       <div className={styles.timeControls} style={{ display: 'flex', gap: '10px', backgroundColor: '#f8fafc', padding: '5px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
                         
@@ -218,11 +211,7 @@ export const AttendanceRegisterPage = () => {
                       </div>
                     )}
                   </div>
-
-
-                  {/* ========================================== */}
-                  {/* BLOCO DA DIREITA: Botões de Ação + Obs     */}
-                  {/* ========================================== */}
+                 
                   <div style={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center', gap: '15px' }}>
                     
                     {/* BOTÕES DE PRESENÇA/FALTA */}
@@ -240,8 +229,7 @@ export const AttendanceRegisterPage = () => {
                         Falta
                       </button>
                     </div>
-
-                    {/* ÍCONE DE OBSERVAÇÃO */}
+                    
                     <button 
                       onClick={() => setActiveObsStudentId(student.id)}
                       className={`${styles.btnObs} ${student.obs ? styles.hasObs : ''}`}

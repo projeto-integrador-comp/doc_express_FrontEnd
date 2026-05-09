@@ -81,7 +81,6 @@ export const AttendanceTrackingPage = () => {
     <div className={styles.container}>
       <Header />
       
-      {/* O Modal de presença permanece se o contexto exigir */}
       {!hiddenCreateAttendance && <RegisterAttendanceModal />}
       
       <div className={styles.dashboardContent}>
