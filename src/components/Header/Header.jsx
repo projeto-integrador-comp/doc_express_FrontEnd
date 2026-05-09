@@ -6,12 +6,19 @@ import { TbLogout, TbUserEdit, TbUserX } from "react-icons/tb";
 import { UserContext } from "../../providers/UserContext";
 import { Link } from "react-router-dom";
 
+const PERFIS = {
+  ADMINISTRADOR: 'ADMIN',
+  PROFESSOR: 'TEACHER',
+  USUARIO: 'MONITOR'
+};
+
 const Header = () => {
-  const { user, setDeletingUser, setHiddenUpdateUser, userLogout } =
-    useContext(UserContext);
+  const { user, setDeletingUser, setHiddenUpdateUser, userLogout } = useContext(UserContext);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
+
+    const simulatedRole = location.state?.activeProfile || user?.role || PERFIS.ADMINISTRADOR;
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -30,9 +37,21 @@ const Header = () => {
     };
   }, []);
 
-  // Função para verificar se o link é da página atual
   const isActiveLink = (path) => {
     return location.pathname === path;
+  };
+
+  const getAttendanceLabel = (role) => {
+    switch (role) {
+      case PERFIS.ADMINISTRADOR: // 'ADMIN'
+        return "Central de Cadastros";
+      case PERFIS.PROFESSOR:     // 'TEACHER'
+        return "Diário de Classe";
+      case PERFIS.USUARIO:       // 'MONITOR'
+        return "Consultar Frequência";
+      default:
+        return "Frequência";
+    }
   };
 
   return (
@@ -58,13 +77,13 @@ const Header = () => {
             className={isActiveLink("/upload") ? styles.active : ""}
           >
             Upload
-          </Link>
-          {/* Adicionado o link para o Painel de Frequência */}
+          </Link>         
+          
           <Link
             to="/attendancetracking"
             className={isActiveLink("/attendancetracking") ? styles.active : ""}
           >
-            Frequência
+            {getAttendanceLabel(simulatedRole)}
           </Link>
         </nav>
 
