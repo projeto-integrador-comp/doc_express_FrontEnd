@@ -271,3 +271,35 @@
     border-color: #94a3b8;
   }
 }
+
+.btnObs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;  
+  
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+
+  &:hover {
+    background: #f1f5f9; 
+    border-color: #cbd5e1;
+  }
+  
+  &.hasObs {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #3b82f6;
+
+    &:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+    }
+  }
+}
