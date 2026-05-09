@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { RegisterClassroomModal } from "../../components/modals/RegisterClassroomModal";
+import Header from "../../components/Header/Header";
 import styles from "./style.module.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -22,9 +23,6 @@ export const ClassroomManagementPage = () => {
       ]);
 
       setClassrooms(classRes.data);
-
-      // AJUSTE 1: Filtro mais restrito
-      // Remova "ADMIN" e "MONITOR" se você quer que APENAS professores apareçam no dropdown
       const onlyTeachers = userRes.data.filter(user =>
         user.role === "TEACHER"
       );
@@ -37,16 +35,14 @@ export const ClassroomManagementPage = () => {
 
   useEffect(() => { loadData(); }, []);
 
-  // Voltando para a lógica "complicada" que resolve o problema de tipagem/nomenclatura
   const getTeacherName = (classroom) => {
     if (!teachers || teachers.length === 0) return "Carregando...";
 
-    // Tenta todas as chaves possíveis para não falhar
+    
     const tId = classroom.teacherId || classroom.teacher_id || classroom.teacher?.id;
 
     if (!tId) return "ID não encontrado";
 
-    // Comparação forçada como String para evitar erro de UUID vs Object
     const teacher = teachers.find(t => String(t.id).trim() === String(tId).trim());
 
     return teacher ? teacher.name : "Não encontrado";
@@ -67,88 +63,89 @@ export const ClassroomManagementPage = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <button onClick={() => navigate(-1)} className={styles.backButton}>
-            ⬅️ Voltar
-          </button>
-        </div>
+    <>      
+        <Header />
+      <div className={styles.container} style={{ marginTop: '30px' }}>
+        <header className={styles.header}>
+          <div className={styles.headerLeft}>
+            <button onClick={() => navigate(-1)} className={styles.backButton}>
+              ⬅️ Voltar
+            </button>
+          </div>
 
-        <h1>Gestão de Turmas</h1>
+          <h1>Gestão de Turmas</h1>
 
-        <div className={styles.headerRight}>
-          <button
-            onClick={() => {
-              setEditingClassroom(null); // Garante que é uma nova turma
-              setShowCreateModal(true);
-            }}
-            className={styles.addButton}
-          >
-            + Nova Turma
-          </button>
-        </div>
-      </header>
+          <div className={styles.headerRight}>
+            <button
+              onClick={() => {
+                setEditingClassroom(null);
+                setShowCreateModal(true);
+              }}
+              className={styles.addButton}
+            >
+              + Nova Turma
+            </button>
+          </div>
+        </header>
 
-      {/* MainCard para aplicar o fundo branco e sombra do seu CSS */}
-      <div className={styles.mainCard}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Nome da Turma</th>
-              <th>Professor Responsável</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {classrooms.map((cls) => (
-              <tr key={cls.id}>
-                <td>{cls.name}</td>
-                <td>{cls.teacher?.name || "Sem professor"}</td>
-                <td>
-                  {/* Container de ações centralizado via SCSS */}
-                  <div className={styles.actionButtons}>
-                    <button
-                      className={styles.editBtn}
-                      onClick={() => setEditingClassroom(cls)}
-                    >
-                      ✏️ Editar
-                    </button>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={() => deleteClassroom(cls.id)}
-                    >
-                      🗑️ Excluir
-                    </button>
-                  </div>
-                </td>
+        <div className={styles.mainCard}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome da Turma</th>
+                <th>Professor Responsável</th>
+                <th>Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {classrooms.map((cls) => (
+                <tr key={cls.id}>
+                  <td>{cls.name}</td>
+                  <td>{cls.teacher?.name || "Sem professor"}</td>
+                  <td>                    
+                    <div className={styles.actionButtons}>
+                      <button
+                        className={styles.editBtn}
+                        onClick={() => setEditingClassroom(cls)}
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={() => deleteClassroom(cls.id)}
+                      >
+                        🗑️ Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        
+        {showCreateModal && (
+          <RegisterClassroomModal
+            teachers={teachers}
+            onClose={() => {
+              setShowCreateModal(false);
+              loadData();
+            }}
+          />
+        )}
+
+        {editingClassroom && (
+          <RegisterClassroomModal
+            classroom={editingClassroom}
+            teachers={teachers}
+            onClose={() => {
+              setEditingClassroom(null);
+              loadData();
+            }}
+          />
+        )}
       </div>
-
-      {/* Lógica dos Modais preservada exatamente como a sua */}
-      {showCreateModal && (
-        <RegisterClassroomModal
-          teachers={teachers}
-          onClose={() => {
-            setShowCreateModal(false);
-            loadData();
-          }}
-        />
-      )}
-
-      {editingClassroom && (
-        <RegisterClassroomModal
-          classroom={editingClassroom}
-          teachers={teachers}
-          onClose={() => {
-            setEditingClassroom(null);
-            loadData();
-          }}
-        />
-      )}
-    </div>
+    </>
   );
 };
