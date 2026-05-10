@@ -57,7 +57,8 @@ export const StudentManagementPage = () => {
   };
 
   return (
-    <>      
+    <>
+      <Header />
       <div className={styles.pageContainer} style={{ marginTop: '30px' }}>
         <div className={styles.container}>
           <header className={styles.header}>
