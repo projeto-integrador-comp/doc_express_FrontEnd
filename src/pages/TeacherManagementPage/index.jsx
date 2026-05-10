@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../services/api";
 import { RegisterTeacherModal } from "../../components/modals/RegisterTeacherModal";
-import Header from "../../components/Header/Header"; // <-- Importação do Header adicionada
+import Header from "../../components/Header/Header"; 
 import styles from "./style.module.scss";
 
 export const UserManagementPage = () => {
@@ -16,12 +16,11 @@ export const UserManagementPage = () => {
       const token = localStorage.getItem("@tokenDocExpress");
       const response = await api.get("/users", {
         headers: { Authorization: `Bearer ${token}` }
-      });
-      // Garante que users seja sempre um array para evitar erro no .map
+      });      
       setUsers(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Erro ao carregar usuários:", error);
-      setUsers([]); // Reset em caso de erro
+      setUsers([]);
     }
   };
 
@@ -35,8 +34,7 @@ export const UserManagementPage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         loadData();
-      } catch (error) {
-        // Isso vai te mostrar se o erro é "Insufficient permissions" ou algo do tipo
+      } catch (error) {        
         console.error("Erro do Backend:", error.response?.data);
         alert(`Erro: ${error.response?.data?.message || "Sem permissão para excluir este usuário"}`);
       }
@@ -51,11 +49,8 @@ export const UserManagementPage = () => {
 
   return (
     <>
-      {/* HEADER GLOBAL: Agora ele fica fora do container, pegando a tela inteira! */}
-      <Header />
-
-      {/* CONTEÚDO DA PÁGINA: O container abraça apenas a parte de gestão */}
-      <div className={styles.container} style={{ marginTop: '30px' }}> {/* Adicionei um marginTop para afastar do Header, se quiser pode tirar ou colocar no SCSS */}
+      <Header />      
+      <div className={styles.container} style={{ marginTop: '30px' }}>
         
         <header className={styles.header}>
           <div className={styles.headerLeft}>
