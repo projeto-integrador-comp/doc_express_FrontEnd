@@ -16,7 +16,6 @@ export const AttendanceFilter = ({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef(null);
 
-  
   const suggestions = studentsForSuggestions.filter(student => {    
     const matchesName = searchName && student.name.toLowerCase().includes(searchName.toLowerCase());
     if (!matchesName) return false;
@@ -25,12 +24,12 @@ export const AttendanceFilter = ({
     if (!matchesClass) return false;
     
     const matchesPeriod = selectedPeriod === "all" || student.periodo === selectedPeriod;
-    if (!matchesPeriod) return false;
+    if (!matchesPeriod) return false;    
     
     const matchesStatus = 
       selectedFilter === "all" || 
-      (selectedFilter === "risk" && student.frequencyRate < 75) ||
-      (selectedFilter === "warning" && student.frequencyRate >= 75 && student.frequencyRate <= 85) ||
+      (selectedFilter === "risk" && student.frequencyRate !== null && student.frequencyRate < 75) ||
+      (selectedFilter === "warning" && student.frequencyRate !== null && student.frequencyRate >= 75 && student.frequencyRate <= 85) ||
       (selectedFilter === "perfect" && student.frequencyRate === 100);
     if (!matchesStatus) return false;
 
@@ -89,7 +88,7 @@ export const AttendanceFilter = ({
 
             <div className={styles.rowInputs}>
               <div className={styles.inputGroup}>
-                <label>Turma:</label>
+                <label>Turma:</label>                
                 <select value={selectedClass} onChange={(e) => {
                   setSelectedClass(e.target.value);
                   setSearchName(""); 
@@ -120,7 +119,7 @@ export const AttendanceFilter = ({
                 { id: "all", label: "Todos", sub: "Geral" },
                 { id: "risk", label: "Risco", sub: "<75%" },
                 { id: "warning", label: "Atenção", sub: "75-85%" },
-                { id: "perfect", label: "100%", sub: "Frequência" }
+                { id: "perfect", label: "Integral", sub: "100%" } // Atualizado de "100%" para "Integral"
               ].map((item) => (
                 <label 
                   key={item.id} 
