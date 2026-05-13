@@ -1,6 +1,8 @@
 import styles from "./style.module.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { api } from "../../services/api";
+import { toast } from "react-toastify";
 import Header from "../../components/Header/Header";
 import { AttendanceFilter } from "../../components/AttendanceFilter";
 
@@ -16,48 +18,100 @@ export const AttendanceOverviewPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [selectedFilter, setSelectedFilter] = useState("all");
 
-  const [calendarDate, setCalendarDate] = useState(new Date(2026, 4, 1));   
-
-  const mockStudents = [
-    {
-      id: 1, name: "Elisa Oliveira", turma: "Berçário II", periodo: "Matutino",
-      history: [
-        { id: 1, date: "15/05/2026", status: "P", note: "" },
-        { id: 2, date: "14/05/2026", status: "F", note: "Atestado médico" },
-        { id: 3, date: "13/05/2026", status: "P", note: "" },
-        { id: 4, date: "12/05/2026", status: "P", note: "" },
-      ]
-    },
-    {
-      id: 2, name: "Gustavo Silva", turma: "Maternal II", periodo: "Matutino",
-      history: [
-        { id: 1, date: "15/05/2026", status: "F", note: "Sem justificativa" },
-        { id: 2, date: "14/05/2026", status: "F", note: "Sem justificativa" },
-        { id: 3, date: "13/05/2026", status: "P", note: "" },
-      ]
-    },
-    {
-      id: 3, name: "Ana Clara", turma: "Maternal I", periodo: "Vespertino",
-      history: [
-        { id: 1, date: "15/05/2026", status: "P", note: "" },
-        { id: 2, date: "14/05/2026", status: "P", note: "" },
-        { id: 3, date: "13/05/2026", status: "P", note: "" },
-      ]
-    }
-  ];
+  const [calendarDate, setCalendarDate] = useState(new Date(2026, 4, 1));     
   
-  const studentsWithFrequency = mockStudents.map(student => {
-    const total = student.history.length;
-    const present = student.history.filter(h => h.status === "P").length;
-    const freq = total > 0 ? Math.round((present / total) * 100) : 0;
-    return { ...student, frequencyRate: freq, totalClasses: total, totalPresent: present, totalAbsent: total - present };
-  });
+  const [studentsData, setStudentsData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredStudents = studentsWithFrequency.filter(item => {
+  const fetchOverviewData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("@tokenDocExpress");
+      
+      const [responseStudents, responseClassrooms] = await Promise.all([
+        api.get("/students", { headers: { Authorization: `Bearer ${token}` } }),
+        api.get("/classrooms", { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+
+      const alunos = responseStudents.data;
+      const turmas = responseClassrooms.data;
+      
+      const presencesPromises = alunos.map(async (aluno) => {
+        try {
+          const res = await api.get(`/attendance/student/${aluno.id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          const records = Array.isArray(res.data) ? res.data : (res.data?.data || [res.data]);
+          return { alunoId: aluno.id, records };
+        } catch (err) { 
+          return { alunoId: aluno.id, records: [] }; 
+        }
+      });
+
+      const todasPresencasRaw = await Promise.all(presencesPromises);
+      
+      const formattedData = alunos.map(s => {
+        const studentRecordsObj = todasPresencasRaw.find(r => r.alunoId === s.id);
+        const rawRecords = studentRecordsObj ? studentRecordsObj.records : [];        
+        const idDaTurmaDoAluno = s.classroomId || s.classroom_id || s.classroom?.id;                
+        const turmaEncontrada = turmas.find(t => t.id === idDaTurmaDoAluno);        
+        const nomeDaTurma = s.classroom?.name || (turmaEncontrada ? turmaEncontrada.name : "Sem Turma");        
+        const history = rawRecords.map(r => {          
+          const rawDate = String(r.date || r.checkIn || "").split('T')[0];
+          let formattedDate = "";
+          if (rawDate && rawDate.includes('-')) {
+             const [y, m, d] = rawDate.split('-');
+             formattedDate = `${d}/${m}/${y}`;
+          }
+
+          return {
+            id: r.id,
+            date: formattedDate,
+            status: r.status,
+            note: r.observation || ""
+          };
+        });
+        
+        const total = history.length;
+        const present = history.filter(h => h.status === "P").length;
+        const absent = history.filter(h => h.status === "F").length;
+        const totalValid = present + absent;
+
+        let freq = null;
+        if (totalValid > 0) {
+          freq = Math.round((present / totalValid) * 100);
+        }
+
+        return { 
+          id: s.id, 
+          name: s.name, 
+          turma: nomeDaTurma, 
+          periodo: "Matutino",
+          history: history,
+          frequencyRate: freq, 
+          totalClasses: totalValid, 
+          totalPresent: present, 
+          totalAbsent: absent 
+        };
+      });
+
+      setStudentsData(formattedData);
+    } catch (error) {
+      toast.error("Erro ao sincronizar histórico com o servidor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOverviewData();
+  }, []);
+
+  const filteredStudents = studentsData.filter(item => {
     const matchesStatus = 
       selectedFilter === "all" || 
-      (selectedFilter === "risk" && item.frequencyRate < 75) ||
-      (selectedFilter === "warning" && item.frequencyRate >= 75 && item.frequencyRate <= 85) ||
+      (selectedFilter === "risk" && item.frequencyRate !== null && item.frequencyRate < 75) ||
+      (selectedFilter === "warning" && item.frequencyRate !== null && item.frequencyRate >= 75 && item.frequencyRate <= 85) ||
       (selectedFilter === "perfect" && item.frequencyRate === 100);
 
     const matchesName = item.name.toLowerCase().includes(searchName.toLowerCase());
@@ -71,7 +125,7 @@ export const AttendanceOverviewPage = () => {
     ? filteredStudents.find(s => s.name.toLowerCase() === searchName.toLowerCase())
     : null;
 
-  const classesList = [...new Set(mockStudents.map(item => item.turma))];
+  const classesList = [...new Set(studentsData.map(item => item.turma))];
 
   // LÓGICA DO CALENDÁRIO
   const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -95,6 +149,12 @@ export const AttendanceOverviewPage = () => {
           </div>          
         </header>
 
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '10px', color: '#64748b' }}>
+            Carregando histórico dos alunos...
+          </div>
+        )}
+
         <AttendanceFilter 
           searchName={searchName}
           setSearchName={setSearchName}
@@ -105,17 +165,17 @@ export const AttendanceOverviewPage = () => {
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
           classes={classesList}
-          studentsForSuggestions={studentsWithFrequency} 
+          studentsForSuggestions={studentsData} 
         />
         
         <section className={styles.summaryGrid}>
           <div className={styles.summaryCard}>
             <h3 style={{ color: '#475569' }}>Frequência Geral</h3>
             <div 
-              className={`${styles.highlightValue} ${studentData ? (studentData.frequencyRate >= 75 ? styles.good : styles.bad) : ''}`} 
-              style={{ color: !studentData ? '#cbd5e1' : undefined }}
+              className={`${styles.highlightValue} ${studentData ? (studentData.frequencyRate !== null && studentData.frequencyRate >= 75 ? styles.good : styles.bad) : ''}`} 
+              style={{ color: (!studentData || studentData.frequencyRate === null) ? '#cbd5e1' : undefined }}
             >
-              {studentData ? `${studentData.frequencyRate}%` : '-'}
+              {studentData && studentData.frequencyRate !== null ? `${studentData.frequencyRate}%` : '-'}
             </div>
             <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#1e293b', fontWeight: 'bold', marginTop: '10px' }}>
               {studentData ? `${studentData.name} (${studentData.turma})` : 'Nenhum aluno selecionado'}
@@ -158,7 +218,7 @@ export const AttendanceOverviewPage = () => {
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const dayStr = String(i + 1).padStart(2, '0');
               const monthStr = String(month + 1).padStart(2, '0');
-              const dateStr = `${dayStr}/${monthStr}/${year}`;                           
+              const dateStr = `${dayStr}/${monthStr}/${year}`;                          
               const record = studentData ? studentData.history.find(h => h.date === dateStr) : null;
               
               let dayClass = styles.calendarDay;
@@ -171,7 +231,7 @@ export const AttendanceOverviewPage = () => {
           </div>
         </section>
         
-        {!studentData && (
+        {!studentData && !loading && (
           <div style={{ padding: '40px', textAlign: 'center', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1', marginTop: '20px' }}>
             <h3 style={{ color: '#475569', marginBottom: '10px' }}>Aguardando seleção 🔍</h3>
             <p style={{ color: '#64748b' }}>Utilize a barra de pesquisa acima para buscar e selecionar um aluno. Os dados de frequência aparecerão logo em seguida.</p>
