@@ -18,6 +18,7 @@ export const AttendanceDetailsModal = () => {
           <p><strong>Aluno:</strong> {viewingAttendance.studentName}</p>
           <p><strong>Turma:</strong> {viewingAttendance.class}</p>
           <p><strong>Frequência:</strong> {viewingAttendance.frequencyRate}%</p>
+          <p><strong>Presenças:</strong> {viewingAttendance.presences}</p> 
           <p><strong>Faltas:</strong> {viewingAttendance.absences}</p>
           <p><strong>Status:</strong> 
             <span className={viewingAttendance.frequencyRate < 75 ? styles.critical : styles.good}>

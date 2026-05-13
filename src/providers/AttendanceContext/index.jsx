@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
@@ -7,33 +7,9 @@ import autoTable from "jspdf-autotable";
 export const AttendanceContext = createContext({});
 
 export const AttendanceProvider = ({ children }) => {
-  const [attendanceList, setAttendanceList] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [hiddenCreateAttendance, setHiddenCreateAttendance] = useState(true);
   const [editingAttendance, setEditingAttendance] = useState(null);
   const [viewingAttendance, setViewingAttendance] = useState(null);
-
-  const loadAttendanceData = async () => {
-    setLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      const mockData = [
-        { id: 1, studentName: "Ana Clara", class: "Maternal I", period: "Matutino", frequencyRate: 95, absences: 2, status: "Normal" },
-        { id: 2, studentName: "Bruno Oliveira", class: "Maternal I", period: "Vespertino", frequencyRate: 72, absences: 14, status: "Risco" },
-        { id: 3, studentName: "Carla Dias", class: "Berçário II", period: "Vespertino", frequencyRate: 82, absences: 8, status: "Normal" },
-        { id: 4, studentName: "Gustavo Silva", class: "Maternal II", period: "Matutino", frequencyRate: 60, absences: 22, status: "Crítico" },
-      ];
-      setAttendanceList(mockData);
-    } catch (error) {
-      toast.error("Erro ao carregar dados.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadAttendanceData();
-  }, []);
 
   const prepareData = (data) => {
     return data.map(item => ({
@@ -42,6 +18,7 @@ export const AttendanceProvider = ({ children }) => {
       Turma: item.class,
       Período: item.period,
       "Frequência (%)": `${item.frequencyRate}%`,
+      Presenças: item.presences,
       Faltas: item.absences,
       Status: item.status
     }));
@@ -55,7 +32,7 @@ export const AttendanceProvider = ({ children }) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Frequência");
     XLSX.writeFile(workbook, `frequencia_creche_${new Date().toISOString().split('T')[0]}.xlsx`);
     
-    toast.success("Arquivo Excel (.xlsx) gerado com sucesso!"); // Mensagem corrigida
+    toast.success("Arquivo Excel (.xlsx) gerado com sucesso!"); 
   };
 
   const exportToPDF = (dataToExport) => {
@@ -65,13 +42,14 @@ export const AttendanceProvider = ({ children }) => {
       const doc = new jsPDF();
       doc.text("Relatório de Frequência - Creche Amor e Luz", 14, 15);
       
-      const tableColumn = ["ID", "Aluno", "Turma", "Período", "Freq %", "Faltas", "Status"];
+      const tableColumn = ["ID", "Aluno", "Turma", "Período", "Freq %", "Presenças", "Faltas", "Status"];
       const tableRows = dataToExport.map(item => [
         item.id, 
         item.studentName, 
         item.class,
         item.period,
         `${item.frequencyRate}%`, 
+        item.presences, 
         item.absences, 
         item.status
       ]);
@@ -85,7 +63,7 @@ export const AttendanceProvider = ({ children }) => {
       });
 
       doc.save(`relatorio_creche_${new Date().toISOString().split('T')[0]}.pdf`);
-      toast.success("Documento PDF (.pdf) gerado com sucesso!"); // Mensagem corrigida
+      toast.success("Documento PDF (.pdf) gerado com sucesso!"); 
     } catch (error) {
       console.error("Erro no PDF:", error);
       toast.error("Falha ao gerar PDF. Verifique o console.");
@@ -95,9 +73,9 @@ export const AttendanceProvider = ({ children }) => {
   const exportToCSV = (dataToExport) => {
     if (!dataToExport || dataToExport.length === 0) return toast.warn("Sem dados para exportar");
     
-    const headers = ["ID", "Aluno", "Turma", "Período", "Freq", "Faltas", "Status"];
+    const headers = ["ID", "Aluno", "Turma", "Período", "Freq", "Presenças", "Faltas", "Status"];
     const csvContent = "\uFEFF" + [headers.join(","), ...dataToExport.map(i => [
-      i.id, i.studentName, i.class, i.period, i.frequencyRate, i.absences, i.status
+      i.id, i.studentName, i.class, i.period, i.frequencyRate, i.presences, i.absences, i.status // <-- Adicionado presenças
     ].join(","))].join("\n");
     
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -111,14 +89,13 @@ export const AttendanceProvider = ({ children }) => {
 
   return (
     <AttendanceContext.Provider value={{ 
-      attendanceList, 
-      loading,
       exportToXLSX, 
       exportToPDF, 
       exportToCSV,      
       hiddenCreateAttendance,
       setHiddenCreateAttendance,
       editingAttendance,
+      setEditingAttendance,
       setViewingAttendance,
       viewingAttendance,
     }}>
